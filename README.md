@@ -1,4 +1,4 @@
-# AMAIMA README
+# AMAIMA System README
 
 **Advanced Multimodal AI Model Architecture - Enterprise-Grade AI Orchestration Platform**
 
@@ -9,7 +9,7 @@
 [![Next.js 15](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Kotlin 1.9](https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![License: AMAIMA v1.0](https://img.shields.io/badge/License-AMAIMA%20v1.0-blueviolet?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -477,7 +477,17 @@ JSON logging with configurable level.
 
 ## License
 
-MIT License — see [LICENSE](LICENSE).
+**AMAIMA is multi-licensed under the AMAIMA License v1.0 (December 28, 2025)**
+
+You must choose **ONE** of the following options:
+
+1. **AMAIMA Community License** – Responsible open-source use (individuals, research, non-commercial)  
+2. **AMAIMA Production License** – Source-available with delayed open transition (Business Source License 1.1)  
+3. **AMAIMA Commercial License** – Full unrestricted enterprise use (proprietary)
+
+Full license text available in [`LICENSE`](LICENSE).
+
+For commercial licensing inquiries: licensing@amaima.ai
 
 ---
 
