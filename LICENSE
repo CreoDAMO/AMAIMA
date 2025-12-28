@@ -1,21 +1,327 @@
-MIT License
+AMAIMA License v1.0
 
-Copyright (c) 2025 Jacque Antoine DeGraff/Sovereign Spiral Development Framework (SSDF)
+**Advanced Multimodal AI Model Architecture License**  
+**Version 1.0 – December 28, 2025**
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+**Copyright © 2025 Jacque Antoine DeGraff/Sovereign Spiral Development Framework (SSDF). All rights reserved.**
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+---
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## Preamble and Purpose
+
+This License governs the use, modification, distribution, and commercial exploitation of AMAIMA (Advanced Multimodal AI Model Architecture), including all source code, documentation, architecture specifications, algorithms, system designs, machine learning models, training pipelines, and associated intellectual property contained herein.
+
+AMAIMA represents a novel and innovative system that integrates intelligent query routing, progressive quantized model loading, multi-layer verification pipelines, unified real-time communication protocols, and offline-first mobile orchestration. These innovations represent significant investment in research, development, and engineering and deserve appropriate protection while still enabling responsible collaboration and community engagement.
+
+This License provides three distinct paths for users, balancing openness with protection, community growth with commercial viability, and ethical use with technological advancement. Users must explicitly select one license option, and compliance with the selected terms is required for continued use.
+
+---
+
+## Part I: Definitions
+
+For the purposes of this License, the following definitions apply:
+
+**"Software"** means all files, source code, object code, documentation, architecture diagrams, configuration files, machine learning models, training data, scripts, and associated materials included in or distributed with the AMAIMA project, including all modifications, derivatives, and contributions made by any party.
+
+**"Novel Elements"** means the specific innovative components of AMAIMA that represent original intellectual property, including but not limited to: the five-level query complexity taxonomy with client-side machine learning preview; the progressive TensorRT-quantized model loading system with intelligent caching; the multi-layer verification pipeline integrating external security tools; the unified real-time communication protocol achieving cross-platform parity; the offline-first mobile architecture with on-device routing decision mirroring; the smart routing decision engine with feedback loop; and the DARPA AIxCC tool integration architecture.
+
+**"Competing AI Orchestration System"** means any software system, service, or product that provides query routing, model selection, progressive loading, or verification capabilities for artificial intelligence models, whether commercial or open-source, that derives substantial functionality from the Novel Elements of AMAIMA.
+
+**"Artificial Intelligence Training"** means the process of using software, data, or outputs to train, fine-tune, distill, compress, or otherwise improve any artificial intelligence, machine learning, or generative model, including large language models, diffusion models, transformer architectures, and similar systems.
+
+**"Production Use"** means deployment or operation of the Software in a live environment serving end users, generating revenue, or supporting business operations, as distinguished from development, testing, research, or internal evaluation contexts.
+
+**"Contributor"** means any person or entity that submits code, documentation, or other materials to the AMAIMA project.
+
+**"Licensee"** means any person or entity exercising rights under this License.
+
+---
+
+## Part II: Novel Elements Protected
+
+This License specifically protects the following Novel Elements of AMAIMA, which represent original innovations developed through significant research and development effort:
+
+### II.A. Intelligent Query Routing System
+
+The AMAIMA routing system classifies incoming queries across five complexity levels using both client-side machine learning preview and server-side confirmation. The taxonomy distinguishes between trivial, simple, moderate, complex, and expert queries, enabling optimal resource allocation. This system includes the complexity estimation algorithm, the feedback loop for continuous improvement, and the routing decision engine that selects appropriate model sizes and inference strategies.
+
+### II.B. Progressive Model Loading Architecture
+
+AMAIMA implements a sophisticated progressive loading system that preloads models in quantized TensorRT format, enabling sub-two-second cold starts while maintaining inference quality. The loading strategy includes intelligent caching, progressive resolution upgrades, and memory-efficient model management. This architecture significantly advances the state of the art in deployment efficiency for large language models.
+
+### II.C. Multi-Layer Verification Pipeline
+
+The verification system integrates multiple security and correctness tools, including DARPA AIxCC competition tools such as Buttercup for security scanning and SweetBaby for automatic patching. The pipeline implements iterative verification with user feedback integration, representing a novel approach to AI output validation and security assurance.
+
+### II.D. Unified Real-Time Communication Protocol
+
+AMAIMA achieves perfect parity between web, mobile, and backend implementations through a unified WebSocket-based protocol. This protocol supports streaming query responses, workflow execution updates, and real-time system notifications across all platforms simultaneously. The protocol design and implementation represent original innovations in distributed AI system communication.
+
+### II.E. Offline-First Mobile Architecture
+
+The Android implementation of AMAIMA includes on-device intelligence that mirrors server-side routing decisions, enabling offline operation with graceful degradation. This architecture includes the TensorFlow Lite integration for client-side complexity estimation, background synchronization through WorkManager, and local persistence through Room database with conflict resolution strategies.
+
+### II.F. Smart Routing Feedback Loop
+
+AMAIMA implements a continuous improvement mechanism that captures user feedback on query results and uses it to refine routing decisions, model selection, and verification parameters. This feedback loop represents a novel approach to AI system optimization through human-in-the-loop refinement.
+
+---
+
+## Part III: Option 1 – AMAIMA Community License
+
+**Responsible Open-Source Use – For individuals, researchers, educators, and non-commercial applications**
+
+### III.A. Grant of Rights
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this Software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the conditions set forth in this License.
+
+### III.B. Conditions of Use
+
+**III.B.1. Notice Preservation.** The above copyright notice, this entire license text, and identification of the selected license option shall be included in all copies or substantial portions of the Software. This notice shall be prominently displayed in all distribution channels, documentation, and user interfaces.
+
+**III.B.2. Patent Grant.** To the extent that the copyright holder or any Contributor holds patent rights necessarily infringed by the Software or by contributions to the Software, a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable patent license is hereby granted to make, have made, use, offer to sell, sell, import, and otherwise transfer the Software, where such license applies only to those patent claims licensable by the copyright holder or contributor that are necessarily infringed by their contribution(s) alone or by combination with the Software.
+
+**III.B.3. Responsible Use Restrictions.** The Software, derivatives thereof, and any outputs generated by the Software shall not be used for any Prohibited Purpose. Prohibited Purposes include:
+
+- The Software shall not be used to train, fine-tune, distill, compress, or otherwise improve any artificial intelligence, machine learning, or generative model that competes with, replicates, substitutes for, or derives substantial benefit from the Novel Elements of AMAIMA. This prohibition specifically encompasses systems that implement query routing, model selection, progressive loading, or verification capabilities for AI models.
+
+- The Software shall not be used for any illegal, harmful, discriminatory, deceptive, or unethical purpose. Prohibited uses include the creation or dissemination of misinformation, deepfakes, or deceptive content; surveillance systems that violate reasonable privacy expectations; autonomous weapons or systems designed to cause harm; discrimination based on protected characteristics including race, gender, religion, sexual orientation, disability, or national origin; and any use that violates applicable law or third-party rights.
+
+- The Software shall not be used to provide a competing AI orchestration service or product. Prohibited activities include offering AMAIMA or its Novel Elements as a service to third parties, incorporating AMAIMA or its Novel Elements into products sold or licensed to competitors, and using AMAIMA to build market position against the copyright holder.
+
+**III.B.4. Attribution Requirement.** Any public distribution, deployment, demonstration, or publication of the Software or derivatives shall include visible attribution reading "Powered by AMAIMA – Advanced Multimodal AI Model Architecture" with a hyperlink to the official repository at https://github.com/[your-repo]. This attribution shall appear in documentation, user interfaces, and About pages.
+
+**III.B.5. Contribution Requirements.** Contributions to the AMAIMA project are subject to the Contributor License Agreement, which grants the project the right to relicense contributions under any of the three license options. By contributing, Contributors agree to these terms and grant the necessary rights for multi-licensing.
+
+### III.C. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+### III.D. Limitation of Liability
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER, CONTRIBUTORS, OR LICENSEE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---
+
+## Part IV: Option 2 – AMAIMA Production License
+
+**Source-Available – For production use with delayed open transition**
+
+### IV.A. License Selection
+
+This Production License is the Business Source License 1.1 (BSL 1.1) as published by MariaDB plc, with Additional Use Grants and parameters as specified below. The complete BSL 1.1 text is available at https://mariadb.com/bsl11/ and is incorporated herein by reference.
+
+### IV.B. Additional Use Grant
+
+Subject to the terms of this License, the Licensor hereby grants the right to use the Software without payment of fees for the following purposes: development, testing, and quality assurance; academic research and education; internal business evaluation and prototyping; and production use in applications with fewer than 1,000 monthly active users.
+
+### IV.C. Production Use Restrictions
+
+Production use beyond the Additional Use Grant is subject to the following restrictions: deployment or operation in a live environment serving more than 1,000 monthly active users requires a Commercial License; offering the Software or substantial portions thereof as a service to third parties requires a Commercial License; and any use that generates revenue directly from the Software requires a Commercial License.
+
+### IV.D. Change Date and License Conversion
+
+The Change Date for this License is December 28, 2029, which is four years from the initial publication date of this version of the Software. On or after the Change Date, the Software shall be available under the Change License, which is Apache License Version 2.0 (available at https://www.apache.org/licenses/LICENSE-2.0). The Apache License 2.0 shall apply to all copies, modifications, and derivative works of the Software published on or after the Change Date.
+
+### IV.E. Compliance Verification
+
+Licensees operating under the Production License shall maintain records sufficient to verify compliance with the monthly active user limitation and shall provide such records to the Licensor upon written request. Licensees shall promptly notify the Licensor when their use of the Software exceeds the thresholds specified in this License.
+
+### IV.F. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## Part V: Option 3 – AMAIMA Commercial License
+
+**Full unrestricted commercial and enterprise use**
+
+### V.A. Availability
+
+The Software is available under a proprietary Commercial License for organizations requiring unrestricted production deployment, removal of all restrictions, access to premium features, and comprehensive support services.
+
+### V.B. Commercial License Benefits
+
+Organizations operating under the Commercial License receive unlimited production deployment without user limitations, complete removal of all Responsible Use Restrictions and Production Use restrictions, priority technical support with defined service level agreements, access to proprietary enhancements and enterprise integrations not available in community versions, indemnification against intellectual property claims, warranty coverage for critical deployments, and custom modification and development services.
+
+### V.C. Contact Information
+
+For Commercial License inquiries, pricing, and terms, please contact:
+
+**Email:** licensing@amaima.ai  
+**Website:** https://amaima.ai/commercial
+
+### V.D. Negotiation and Custom Terms
+
+Commercial Licenses are negotiable and may be tailored to specific organizational needs, including multi-year agreements, volume discounts, enterprise support tiers, and custom development engagements. The Licensor reserves the right to decline Commercial License requests from organizations engaged in activities inconsistent with the ethical principles embodied in the Community License.
+
+---
+
+## Part VI: General Provisions
+
+### VI.A. License Selection and Compliance
+
+By using, modifying, distributing, or deploying the Software, the Licensee explicitly selects one of the three license options and agrees to be bound by its terms. If no explicit selection is documented, Option 1 (AMAIMA Community License) shall apply by default. Licensees must maintain records sufficient to demonstrate compliance with their selected license option.
+
+### VI.B. Termination
+
+Any use of the Software in violation of the selected license terms immediately and automatically terminates all rights granted under that license. Upon termination, the Licensee must cease all use of the Software, destroy all copies in their possession, and certify such destruction in writing upon request. Termination of one license option does not affect rights under other license options that the Licensee may be eligible to use.
+
+### VI.C. Enforcement
+
+The Licensor reserves the right to pursue enforcement actions against Licensees violating this License, including but not limited to sending demand letters, initiating legal proceedings, seeking injunctive relief, and pursuing damages for breach of contract. Licensees agree that the Novel Elements of AMAIMA represent valuable intellectual property and that unauthorized use causes irreparable harm for which monetary damages are insufficient remedy.
+
+### VI.D. Governing Law and Jurisdiction
+
+This License shall be governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to conflict of law principles. Any dispute arising from this License shall be subject to the exclusive jurisdiction of the state and federal courts located in Wilmington, Delaware, and the Licensee hereby consents to personal jurisdiction in such courts.
+
+### VI.E. No Trademark License
+
+This License does not grant any rights to use the trademarks, service marks, trade names, logos, or branding of the Licensor, except as reasonably required for customary and reasonable use in describing the origin of the Software. Any use of the AMAIMA name or logo requires prior written approval from the Licensor.
+
+### VI.F. Severability
+
+If any provision of this License is held to be invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid, legal, and enforceable while preserving the intent of the original provision.
+
+### VI.G. Entire Agreement
+
+This License constitutes the entire agreement between the Licensor and Licensee regarding the Software. No modification, amendment, or waiver of any provision shall be effective unless in writing and signed by an authorized representative of the Licensor.
+
+### VI.H. Waiver
+
+The failure of the Licensor to exercise any right or remedy under this License shall not constitute a waiver of such right or remedy. Any waiver must be explicit and in writing to be effective.
+
+### VI.I. Amendment
+
+The Licensor reserves the right to amend this License for future versions of the Software, provided that such amendments shall not affect the rights granted for versions already published. Licensees using a specific version of the Software shall be governed by the License in effect at the time of their acquisition of that version.
+
+---
+
+## Part VII: Patent and Intellectual Property Protection
+
+### VII.A. Patent License Scope
+
+The patent license granted in Option 1 (Community License) extends to all patent claims held by the Licensor or Contributors that are necessarily infringed by the Software as distributed. This license is irrevocable, worldwide, royalty-free, and applies to all claims in any patent applications or issued patents owned or controlled by the Licensor or Contributors.
+
+### VII.B. Patent Defense
+
+If any party initiates a patent infringement lawsuit alleging that the Software infringes a patent, the patent license granted under this License shall immediately terminate with respect to the accusing party. The Licensor reserves the right to defend the Software against patent claims and to seek counterclaims against parties initiating baseless infringement allegations.
+
+### VII.C. Trade Secret Protection
+
+The Novel Elements of AMAIMA represent trade secrets protected by reasonable efforts to maintain secrecy. The Licensee agrees not to reverse engineer, decompile, or disassemble any portion of the Software that is not provided in source code form, except as expressly permitted by applicable law. Source code provided under this License shall be treated as confidential information.
+
+---
+
+## Part VIII: Compliance and Attribution Standards
+
+### VIII.A. Source File Headers
+
+Every source file in the Software shall include the following header:
+
+```markdown
+/*
+ * AMAIMA – Advanced Multimodal AI Model Architecture
+ * Copyright © 2025 Jacque Antoine DeGraff. All Rights Reserved.
+ *
+ * This file is part of AMAIMA and is multi-licensed.
+ * You must choose ONE of the following license options:
+ *
+ * 1. AMAIMA Community License (Responsible Open-Source Use)
+ *    See: https://github.com/[your-repo]/blob/main/LICENSE.md#option-1-amaima-community-license
+ *
+ * 2. AMAIMA Production License (Business Source License 1.1)
+ *    See: https://github.com/[your-repo]/blob/main/LICENSE.md#option-2-amaima-production-license
+ *
+ * 3. AMAIMA Commercial License (Proprietary)
+ *    Contact: licensing@amaima.ai
+ *
+ * By using this file, you agree to the terms of your selected license.
+ */
+```
+
+### VIII.B. Distribution Requirements
+
+When distributing the Software or derivatives, the Licensee shall include: the complete LICENSE file with all three options; the NOTICE file crediting Contributors; a README explaining the multi-license structure; and instructions for users to select their appropriate license option.
+
+### VIII.C. Attribution Display
+
+Licensees operating under Option 1 (Community License) shall display attribution as follows: in user interfaces, display "Powered by AMAIMA" with a hyperlink; in documentation, include the attribution in the About or Acknowledgments section; in deployments, include attribution in the footer or About page of the application.
+
+---
+
+## Part IX: Ethical Use Framework
+
+### IX.A. Core Principles
+
+AMAIMA is developed with a commitment to responsible AI development and deployment. The Ethical Use Framework establishes binding principles for all Licensees, regardless of selected license option.
+
+### IX.B. Prohibited Applications
+
+The following applications are prohibited under all license options: autonomous weapons systems designed to kill or harm humans; surveillance systems that violate reasonable expectations of privacy; systems designed to discriminate based on protected characteristics; deceptive systems intended to manipulate or defraud; systems that facilitate human trafficking, slavery, or exploitation; and systems that generate child sexual abuse material or facilitate child exploitation.
+
+### IX.C. Recommended Best Practices
+
+Licensees are encouraged to implement: human oversight in AI-assisted decision-making; transparency about AI capabilities and limitations; bias testing and mitigation for AI outputs; accessibility accommodations for users with disabilities; data minimization and privacy protection; and regular security assessments and updates.
+
+### IX.D. Reporting Violations
+
+Violations of this License or Ethical Use Framework should be reported to: legal@amaima.ai. The Licensor investigates all reported violations and may terminate licenses, pursue legal action, or report violations to appropriate authorities.
+
+---
+
+## Part X: Amendment History and Version Control
+
+### X.A. Version 1.0 – December 28, 2025
+
+Initial publication of the AMAIMA License v1.0 with three license options.
+
+### X.B. Future Amendments
+
+Future amendments to this License shall be documented in this section with effective dates and summary of changes. The Licensor may issue amended versions for future versions of the Software while maintaining the original License for previously published versions.
+
+---
+
+## Part XI: Contact Information
+
+**For general inquiries:** info@amaima.ai  
+**For licensing questions:** licensing@amaima.ai  
+**For legal matters:** legal@amaima.ai  
+**Repository:** https://github.com/[your-repo]  
+**Website:** https://amaima.ai
+
+---
+
+## Part XII: Acknowledgments
+
+AMAIMA builds upon the work of the open-source community, academic researchers, and industry pioneers in artificial intelligence, distributed systems, and mobile development. We acknowledge the contributions of the FastAPI, Next.js, TensorFlow Lite, TensorRT, and Kubernetes communities whose tools and frameworks make projects like AMAIMA possible.
+
+We thank the DARPA AIxCC competition organizers and participants for advancing the state of the art in AI security verification. We acknowledge the researchers and engineers whose publications on model quantization, progressive loading, and intelligent routing informed the AMAIMA architecture.
+
+---
+
+**End of AMAIMA License v1.0**
+
+---
+
+## Quick Reference Summary
+
+| Aspect                  | Community License                  | Production License                  | Commercial License                  |
+|-------------------------|------------------------------------|-------------------------------------|-------------------------------------|
+| **Use Case**            | Research, education, non-commercial| Small-scale production              | Enterprise, large-scale             |
+| **Cost**                | Free                               | Free (with limits)                  | Paid                                |
+| **AI Training Ban**     | Yes                                | N/A                                 | Removed                             |
+| **Competition Ban**     | Yes                                | N/A                                 | Removed                             |
+| **User Limit**          | Unlimited                          | 1,000 MAU                           | Unlimited                           |
+| **Attribution Required**| Yes                                | No                                  | No                                  |
+| **Support**             | Community                          | Community                           | Priority SLA                        |
+| **Change Date**         | N/A                                | Dec 28, 2029                        | N/A                                 |
+| **Contact**             | N/A                                | N/A                                 | licensing@amaima.ai                 |
+
+---
+
+*This License represents the most comprehensive protection available in 2025 for a project of AMAIMA's strategic value and technical novelty while enabling responsible open collaboration and community engagement.* 
+
+**Prepared by Jacque Antoine DeGraff**  
+**December 28, 2025**
