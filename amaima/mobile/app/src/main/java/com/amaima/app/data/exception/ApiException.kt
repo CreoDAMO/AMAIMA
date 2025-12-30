@@ -1,4 +1,4 @@
-// android/data/exception/ApiException.kt
+// data/exception/ApiException.kt
 
 sealed class ApiException(
     message: String,
