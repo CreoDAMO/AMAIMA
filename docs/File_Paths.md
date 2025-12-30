@@ -118,6 +118,8 @@ amaima/mobile/AMAIMA_Android_Client_Complete_APK_Design_Specification.md
 amaima/tests
 amaima/tests/conftest.py
 docs
+docs/charts
+docs/charts/Charts.md
 docs/development-deployment
 docs/development-deployment/AMAIMA_Platform_Development_&_Deployment_Strategy.md
 docs/executive-summary
