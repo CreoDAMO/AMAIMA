@@ -1,4 +1,4 @@
-// amaima/mobile/app/src/main/java/com/amaima/app/IntegrationTest.kt
+// amaima/mobile/app/src/main/java/com/amaima/app/androidTest/IntegrationTest.kt
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
