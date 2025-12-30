@@ -1,4 +1,4 @@
-// mobile/data/repository/AuthRepository.kt
+// data/repository/AuthRepository.kt
 
 interface AuthRepository {
     val authState: StateFlow<AuthState>
