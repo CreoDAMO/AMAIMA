@@ -1,187 +1,193 @@
-# AMAIMA Replit Agent Instruction Manual – Production-Grade Build Directive
+## Analysis Summary
+
+After reviewing the three comprehensive documents, I can see:
+
+1. **Backend_Frontend_Mobile_Integration_Summary.md** - Contains the complete deployment configuration files in a single document section titled "AMAIMA Final Deployment Files"
+
+2. **Charts.md** - Contains architectural diagrams and visualizations, not deployment files
+
+3. **File_Paths.md** - Contains the current project structure and mapping documentation
+
+The deployment files are all contained within the first document. Here's the updated replit.md:
+
+---
+
+# AMAIMA Replit Agent Deployment Extraction Directive
 
 **Mission Objective**  
-**Surpass MVP and prototype quality.**  
-Build AMAIMA as close to **full production readiness** as technically possible within Replit’s environment.
-
-The entire system architecture, module breakdown, API contracts, UI specifications, security model, and licensing are already defined in extreme detail in the repository.
-
-Your goal is **not** to create a demo or proof-of-concept.  
-Your goal is to produce a system that, once exported and provided with real API keys (NVIDIA NIM, database URLs, etc.), would be **immediately deployable to production** with minimal changes.
-
-Only external dependencies (real model inference, cloud databases, GPU hardware) should remain as final integration steps.
+Extract all deployment configuration files from the repository documentation and organize them in the correct directory structure for immediate deployment readiness.
 
 ---
 
-## Core Principles for This Build
+## Deployment Files Location
 
-1. **Production-First Mindset**  
-   - Write code as if it will run at scale tomorrow  
-   - Include proper error handling, logging, validation, and monitoring  
-   - Follow security best practices (input sanitization, rate limiting, auth checks)
-
-2. **No Shortcuts on Architecture**  
-   - Implement the full Clean Architecture layers (especially in mobile)  
-   - Use dependency injection patterns where specified  
-   - Separate concerns rigorously
-
-3. **Realistic Simulation of External Services**  
-   - Stub all external APIs (NVIDIA NIM, MCP servers, DARPA tools) with realistic mock responses  
-   - Simulate model loading times, quantization effects, and inference latency  
-   - Return realistic token streams with proper delays
-
-4. **Full Feature Parity Where Possible**  
-   - Implement all endpoints, WebSocket messages, and UI flows described  
-   - Make the system feel complete end-to-end
-
-5. **Deployment Readiness**  
-   - Ensure Dockerfiles build successfully  
-   - Configure environment variables properly  
-   - Prepare GitHub Actions workflows for automated builds
+All deployment configuration files are contained in:
+`Backend_Frontend_Mobile_Integration_Summary.md` - Section: "AMAIMA Final Deployment Files"
 
 ---
 
-## Detailed Implementation Roadmap
+## Extraction & Organization Roadmap
 
-### Phase 1: Foundation & Infrastructure (Complete First)
+### Phase 1: Root Directory Structure
 
-1. **Backend Core**
-   - Full FastAPI app with lifespan management
-   - CORS, middleware, error handlers
-   - Prometheus metrics endpoint (`/metrics`)
-   - Structured JSON logging
-   - Health checks (`/health`, `/health/ready`)
+Create the following directory structure:
+```
+amaima-deployment/
+├── docker/
+│   ├── backend/
+│   ├── frontend/
+│   └── nginx/
+├── kubernetes/
+├── github/
+│   └── workflows/
+├── config/
+│   ├── backend/
+│   └── frontend/
+└── scripts/
+```
 
-2. **Authentication System**
-   - JWT issuance and validation
-   - Login/register endpoints
-   - Protected route decorators
-   - Refresh token rotation
+### Phase 2: Docker Deployment Files
 
-3. **Database Layer**
-   - SQLAlchemy models for Query, Workflow, User
-   - Repository pattern with async support
-   - Migration stubs (Alembic ready)
+**Extract and place these files:**
 
-4. **Caching Layer**
-   - Redis integration for routing decisions and model cache state
+1. **Root Docker Compose**
+   - Location: Section "1. Docker Compose Configuration"
+   - File: `docker/compose.yaml`
+   - Version: 3.8 (modern syntax, no deprecated version key)
 
-### Phase 2: Core Novel Features (High Priority – These Define AMAIMA)
+2. **Backend Docker Configuration**
+   - Location: Section "2. Backend Docker Configuration"
+   - Files:
+     - `docker/backend/Dockerfile` (multi-stage build)
+     - `docker/backend/requirements.txt`
+     - `config/backend/amaima_config.yaml`
+     - `config/backend/uvicorn.py`
 
-1. **Smart Router Engine** (Critical)
-   - Complexity classification with 5-level taxonomy
-   - Client-side preview endpoint
-   - Server-side confirmation with mock ML model
-   - Routing decision logic (model size, execution mode, estimated cost/latency)
-   - Feedback loop storage
+3. **Frontend Docker Configuration**
+   - Location: Section "3. Frontend Docker Configuration"
+   - Files:
+     - `docker/frontend/Dockerfile` (multi-stage build)
+     - `docker/frontend/nginx/default.conf`
+     - `config/frontend/next.config.js`
 
-2. **Progressive Model Loader** (Critical)
-   - Model registry with size/quantization metadata
-   - Loading simulation with realistic delays
-   - Cache management (LRU, memory tracking)
-   - Quantization mode selection
+### Phase 3: Kubernetes Manifests
 
-3. **Multi-Layer Verification Pipeline** (Critical)
-   - Schema validation
-   - Plausibility checks
-   - Security scan stub (simulate Buttercup/SweetBaby)
-   - Confidence scoring
-   - Auto-patch simulation
+**Extract and place these files:**
 
-4. **WebSocket Protocol** (Critical)
-   - Full `/ws/query` implementation
-   - Token-by-token streaming with realistic timing
-   - Heartbeat ping/pong
-   - Connection state management
-   - Subscription model for workflow updates
+Location: Section "4. Kubernetes Manifests"
 
-### Phase 3: Full Application Flow
+1. `kubernetes/namespace.yaml`
+2. `kubernetes/postgres-secret.yaml`
+3. `kubernetes/redis-deployment.yaml`
+4. `kubernetes/postgres-deployment.yaml`
+5. `kubernetes/backend-deployment.yaml`
+6. `kubernetes/frontend-deployment.yaml`
+7. `kubernetes/backend-service.yaml`
+8. `kubernetes/frontend-service.yaml`
+9. `kubernetes/backend-hpa.yaml` (Horizontal Pod Autoscaler)
+10. `kubernetes/frontend-hpa.yaml`
+11. `kubernetes/ingress.yaml`
 
-1. **Query Submission End-to-End**
-   - Frontend → API → Router → Loader → Verification → Streaming response
-   - Include cost estimation, model selection, latency tracking
+### Phase 4: GitHub Actions Workflows
 
-2. **Workflow System**
-   - Workflow creation and storage
-   - Step execution simulation
-   - Progress updates via WebSocket
-   - Dependency resolution
+**Extract and place these files:**
 
-3. **Frontend Completion**
-   - Full query interface with complexity preview
-   - Streaming response with Markdown/code highlighting
-   - Workflow monitoring dashboard
-   - System status page with live metrics
-   - Settings and authentication flows
+Location: Section "5. GitHub Actions Workflows"
 
-### Phase 4: Mobile Implementation (Maximum Possible in Replit)
+1. `github/workflows/backend-ci.yml`
+2. `github/workflows/frontend-ci.yml`
+3. `github/workflows/android-ci.yml`
 
-**Goal**: Generate production-quality code ready for Android Studio
+### Phase 5: Deployment Scripts
 
-1. **Full Project Structure**
-   - Gradle files with proper dependencies
-   - Clean Architecture layers (data/domain/presentation/infrastructure)
-   - Compose UI for all screens
+**Extract and place these files:**
 
-2. **Key Features**
-   - Query screen with complexity estimation (TFLite stub)
-   - WebSocket client with reconnection
-   - Room database with entities and DAOs
-   - WorkManager for background sync
-   - Biometric authentication integration
-   - EncryptedSharedPreferences setup
+Location: Section "6. Deployment Scripts"
 
-3. **Offline Simulation**
-   - Local query queuing
-   - On-device response simulation
-   - Sync status tracking
+1. `scripts/healthcheck.sh` (executable)
+2. `scripts/migrate.sh` (executable)
+3. `scripts/deploy.sh` (executable)
 
-### Phase 5: Production Readiness Polish
+### Phase 6: Environment Configuration
 
-1. **Configuration Management**
-   - Proper .env handling in all components
-   - Build-time vs runtime config separation
+**Extract and place these files:**
 
-2. **Docker & Deployment**
-   - Ensure Dockerfiles build successfully
-   - Multi-stage builds where appropriate
-   - Health checks in containers
+Location: Section "7. Environment Configuration"
 
-3. **GitHub Actions Workflows**
-   - Backend test + build
-   - Frontend build + deploy preview
-   - Mobile APK build (with placeholder signing)
-
-4. **Documentation Updates**
-   - Update README with "Production-Ready Features" section
-   - Add setup instructions for real deployment
+1. `config/.env.development` (from Development Environment Template)
+2. `config/.env.production` (from Production Environment Template)
 
 ---
 
-## Final Success Criteria
+## Execution Order
 
-The build is complete when:
+1. **Create directory structure first**
+2. **Extract Docker files** (compose.yaml, Dockerfiles, configs)
+3. **Extract Kubernetes manifests** (in order listed)
+4. **Extract GitHub Actions workflows**
+5. **Extract deployment scripts** (ensure executable permissions)
+6. **Extract environment templates**
+7. **Verify all files are present** using checklist in Section 8
 
-- A user can register/login on the web frontend
-- Submit a query and see real-time complexity classification
-- Receive a properly routed, streaming response with verification metadata
-- View cost/latency/model information
-- Monitor workflow execution in real-time
-- All APIs return proper structured responses
-- Mobile code is complete and exportable
-- Docker images build successfully
-- System runs end-to-end with realistic simulation of all novel features
+---
 
-**This is not a prototype.**  
-**This is a production-grade system waiting for real API keys.**
+## Critical Notes
 
-You have full autonomy and extended runtime capability.  
-Implement deeply, thoroughly, and with production quality.
+### Docker Compose v5.x Requirements
+- NO deprecated `version:` key
+- Use explicit healthchecks
+- Use named volumes
+- Include resource limits
+- All specified in the compose.yaml file
 
-The complete vision is already documented.  
-Your task is to **make it real**.
+### File Locations from Source Document
 
-Begin execution immediately.
+All files are in **ONE** document:
+`Backend_Frontend_Mobile_Integration_Summary.md`
 
-The future of intelligent AI orchestration is waiting.  
-Build it. 🚀
+Navigate to the section titled:
+**"AMAIMA Final Deployment Files"**
+
+Each subsection (1-8) contains complete, production-ready configuration files.
+
+### Validation Checklist
+
+After extraction, verify:
+- [ ] compose.yaml contains all 4 services (postgres, redis, backend, frontend)
+- [ ] All Dockerfiles are multi-stage builds
+- [ ] Kubernetes manifests total 11 files
+- [ ] GitHub Actions workflows total 3 files
+- [ ] Deployment scripts total 3 files
+- [ ] Both environment templates exist
+
+---
+
+## Success Criteria
+
+Extraction is complete when:
+
+1. All 30+ deployment files are in correct directories
+2. File contents match source exactly (no truncation)
+3. Docker compose validates: `docker compose -f docker/compose.yaml config`
+4. Kubernetes manifests validate: `kubectl apply --dry-run=client -f kubernetes/`
+5. Scripts have executable permissions
+6. Environment templates are ready for customization
+
+---
+
+## Agent Instructions
+
+**DO NOT CREATE NEW CONTENT**
+**ONLY EXTRACT EXISTING CONTENT FROM THE DOCUMENTATION**
+
+1. Open `Backend_Frontend_Mobile_Integration_Summary.md`
+2. Locate section: "AMAIMA Final Deployment Files"
+3. Extract each file exactly as written
+4. Place in correct directory structure
+5. Preserve all comments, formatting, and configuration values
+6. Do not modify or "improve" the configurations
+
+**These are production-grade, tested configurations.**
+**Your job is extraction and organization only.**
+
+Begin extraction immediately.
