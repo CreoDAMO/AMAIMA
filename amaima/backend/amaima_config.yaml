@@ -1,0 +1,200 @@
+# ============================================
+# AMAIMA Backend Configuration (Production)
+# ============================================
+
+# Application Settings
+app:
+  name: "AMAIMA"
+  version: "5.0.0"
+  environment: "${AMAIMA_ENV}"
+  debug: false
+  host: "0.0.0.0"
+  port: 8000
+
+# Database Configuration
+database:
+  url: "${DATABASE_URL}"
+  pool_size: 20
+  max_overflow: 10
+  pool_timeout: 30
+  pool_recycle: 1800
+  echo: false
+
+# Redis Configuration
+redis:
+  url: "${REDIS_URL}"
+  db: 0
+  max_connections: 50
+  socket_timeout: 5.0
+  socket_connect_timeout: 5.0
+
+# JWT Authentication
+jwt:
+  secret_key: "${JWT_SECRET_KEY}"
+  algorithm: "RS256"
+  access_token_expire_minutes: 15
+  refresh_token_expire_days: 30
+  public_key_path: "/app/keys/public.pem"
+  private_key_path: "/app/keys/private.pem"
+
+# Smart Router Engine Configuration
+router:
+  complexity_levels:
+    - TRIVIAL
+    - SIMPLE
+    - MODERATE
+    - COMPLEX
+    - EXPERT
+  default_model: "llama2-7b"
+  model_mapping:
+    TRIVIAL: "llama2-7b"
+    SIMPLE: "llama2-13b"
+    MODERATE: "llama2-70b"
+    COMPLEX: "mixtral-8x7b"
+    EXPERT: "gpt4-turbo"
+  cache_ttl: 3600
+  enable_predictive_preloading: true
+
+# Progressive Model Loader Configuration
+model_loader:
+  cache_dir: "${MODEL_CACHE_DIR:-/app/models}"
+  tensorrt_enabled: true
+  quantization:
+    default: "FP16"
+    available: ["FP32", "FP16", "INT8", "INT4"]
+  memory:
+    max_usage_percent: 80
+    eviction_policy: "lru"
+    monitor_interval: 5.0
+  preload:
+    enabled: true
+    prediction_window: 100
+    max_preloaded_models: 3
+
+# Multi-Layer Verification Engine Configuration
+verification:
+  enabled: true
+  levels:
+    - syntax
+    - semantic
+    - safety
+    - consistency
+  syntax:
+    enabled: true
+    strict_mode: false
+  semantic:
+    enabled: true
+    confidence_threshold: 0.7
+    cross_reference_enabled: true
+  safety:
+    enabled: true
+    content_policy: "standard"
+    scan_code: true
+    scan_files: true
+  consistency:
+    enabled: true
+    historical_check: true
+    anomaly_detection: true
+
+# Production API Server Configuration
+api:
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:3000"
+      - "https://*.amaima.ai"
+    methods:
+      - "*"
+    headers:
+      - "*"
+  rate_limiting:
+    enabled: true
+    default_requests_per_minute: 60
+    default_requests_per_hour: 1000
+    burst_multiplier: 2.0
+  request_size_limit: "50mb"
+  response_compression: true
+
+# Observability Configuration
+observability:
+  enabled: "${OBSERVABILITY_ENABLED:-true}"
+  log_level: "${LOG_LEVEL:-INFO}"
+  log_format: "json"
+  metrics:
+    enabled: true
+    path: "/metrics"
+    include:
+      - request_count
+      - request_duration
+      - model_inference_time
+      - verification_time
+      - cache_hit_rate
+  tracing:
+    enabled: true
+    sample_rate: 1.0
+    exporter: "otlp"
+  logging:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file:
+      enabled: true
+      path: "/app/logs/amaima.log"
+      max_size: "100mb"
+      backup_count: 5
+
+# Continuous Learning Engine Configuration
+learning:
+  enabled: true
+  nemotoolkit_path: "/app/nemo"
+  feedback_collection:
+    enabled: true
+    storage: "database"
+  reinforcement_learning:
+    enabled: true
+    update_interval: 3600
+    model_checkpoint_interval: 86400
+
+# Benchmark Suite Configuration
+benchmark:
+  enabled: true
+  domains:
+    - mathematics
+    - reasoning
+    - coding
+    - science
+    - language
+  schedule: "0 0 * * 0"
+  retention_days: 90
+
+# Cost Analysis Configuration
+cost:
+  enabled: true
+  tracking:
+    enabled: true
+    granularity: "per_query"
+  budgets:
+    enabled: true
+    default_monthly_limit: 10000.0
+    alerts:
+      - threshold: 0.5
+        action: "warning"
+      - threshold: 0.8
+        action: "alert"
+      - threshold: 0.95
+        action: "critical"
+
+# DARPA Readiness Framework Configuration
+compliance:
+  enabled: true
+  standards:
+    - "NIST 800-53"
+    - "FEDRAMP"
+  audit:
+    enabled: true
+    interval_days: 30
+    automated_collection: true
+  reporting:
+    enabled: true
+    formats:
+      - "pdf"
+      - "html"
+      - "json"
