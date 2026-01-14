@@ -10,7 +10,6 @@ pydantic-settings>=2.1.0
 
 # API Documentation
 fastapi-docs>=0.1.0
-fastapi-openapi>=1.0.0
 
 # Database
 asyncpg>=0.29.0
