@@ -1,0 +1,7 @@
+-r requirements.txt
+
+# Test-specific dependencies
+pytest
+pytest-asyncio
+pytest-cov
+httpx
