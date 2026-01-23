@@ -55,7 +55,7 @@ externalPort = 8000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd amaima/frontend && npm run start"]
+run = ["bash", "-c", "cd amaima/backend && python -m uvicorn main:app --host 0.0.0.0 --port 5000 & cd amaima/frontend && npm start"]
 build = ["bash", "-c", "cd amaima/frontend && npm run build"]
 
 [userenv]
