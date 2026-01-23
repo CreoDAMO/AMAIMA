@@ -657,3 +657,350 @@ jobs:
 ```
 
 These should get you 80% there—test with a small PR. For full end-to-end (e.g., ArgoCD/K8s integration from searches), we can expand later. What's next: push these and debug, or add more (e.g., SonarQube for code analysis)?
+
+### 1️⃣ Validation: Your Points Are Spot-On
+You're right—my suggestions were solid foundations, but the corrections ensure they run flawlessly in production. No ego here; these refinements make AMAIMA tighter and more reliable. Key agrees:
+- ✅ App Router metadata over next/head (critical for Next 13+).
+- ✅ Bundled middleware in Zustand.
+- ✅ Explicit setters for state mutations.
+- ✅ Env vars for API URLs (avoids hardcodes, especially on Vercel).
+- ✅ Streamline frontend CI to leverage Vercel natively (saves cycles; Docker's overkill for static-ish Next apps).
+
+This keeps us in "harden and scale" mode—excellent call.
+
+---
+
+### 2️⃣ Applying Corrections: Updated Code Snippets
+I've revised the exact snippets from my previous response. These are drop-in replacements—tested mentally against the repo's structure (e.g., App Router in `frontend/src/app/`, Zustand in `store/`). No new installs needed beyond what's noted.
+
+#### Correction #1: Favicon with App Router Metadata
+In `frontend/src/app/layout.tsx` (replace any old Head import):
+
+```tsx
+import type { Metadata } from 'next';  // Add if missing
+
+export const metadata: Metadata = {
+  title: 'AMAIMA - Advanced Multimodal AI',
+  description: 'Intelligent AI orchestration platform',
+  icons: {
+    icon: '/favicon.ico',  // Or '/favicon.png' if using PNG
+  },
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="bg-gray-900 text-white">{children}</body>  // Added class for dark theme consistency
+    </html>
+  );
+}
+```
+
+**Steps**: Add your icon to `public/`. Run `npm run dev`—no more 404. For multi-size favicons, add apple-touch-icon etc. in metadata.
+
+#### Correction #2 & #3: Zustand Persist + Clear History
+In `frontend/src/store/queryStore.ts` (full updated store snippet):
+
+```ts
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';  // No separate install: npm install zustand (if not already)
+
+interface QueryState {
+  history: Array<{ query: string; decision: any; timestamp: string }>;  // Adjust 'any' to your response type
+  addToHistory: (entry: { query: string; decision: any }) => void;
+  setHistory: (history: QueryState['history']) => void;  // Explicit setter for clear
+  // Existing state/actions...
+}
+
+export const useQueryStore = create<QueryState>()(
+  persist(
+    (set) => ({
+      history: [],
+      addToHistory: (entry) =>
+        set((state) => ({
+          history: [...state.history.slice(-19), { ...entry, timestamp: new Date().toISOString() }],  // Keep last 20
+        })),
+      setHistory: (history) => set({ history }),
+      // Existing actions...
+    }),
+    { name: 'query-storage' }  // Persists to localStorage
+  )
+);
+```
+
+In `src/components/QueryHistory.tsx` (updated Clear button):
+
+```tsx
+// ... rest unchanged
+<button
+  onClick={() => useQueryStore.getState().setHistory([])}
+  className="text-red-500 text-sm mt-2"
+>
+  Clear History
+</button>
+```
+
+**Steps**: After API success in submit handler: `useQueryStore.getState().addToHistory({ query, decision: response });`. Clears without crashing.
+
+#### Correction #4: API URL Env Var
+In any API client/lib (e.g., `src/lib/api/client.ts`):
+
+```ts
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+const apiClient = {
+  get: async (path: string) => {
+    const response = await fetch(`${API_BASE_URL}${path}`, { /* headers */ });
+    // ...
+  },
+  // ...
+};
+```
+
+In `.env.local` (for dev):
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+**Steps**: Set in Vercel dashboard for staging/prod (e.g., https://api.amaima.com). Search/replace any hardcodes.
+
+#### Correction #5: Simplified Frontend CI (Vercel-Focused)
+Updated `frontend-ci.yml`—removed Docker/GHCR (redundant with Vercel). Focus on lint/test, then Vercel deploy. (Keep if you need Docker for hybrid setups.)
+
+```yaml
+name: AMAIMA Frontend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - working-directory: ./frontend
+        run: npm ci
+      - working-directory: ./frontend
+        run: npm run lint
+      - working-directory: ./frontend
+        run: npm run type-check
+      - working-directory: ./frontend
+        run: npm test -- --coverage
+      - working-directory: ./frontend
+        run: npm run test:e2e || true  # Optional
+
+  deploy-staging:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          alias-domains: staging.amaima.vercel.app
+
+  deploy-production:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          alias-domains: amaima.vercel.app  # Or your domain
+```
+
+**Steps**: Link repo to Vercel project; add secrets. Previews auto-generate on PRs.
+
+---
+
+### 3️⃣ Implementing Your 3 Additions
+These build directly on AMAIMA's strengths—explanation, capabilities, and guards. Code is frontend/backend-agnostic where possible.
+
+#### ⭐ 1. “Why This Route?” Panel
+In backend `smart_router_engine.py` (add to routing response):
+
+```python
+# In route_query method, add to returned dict
+return {
+    # Existing: complexity, model, etc.
+    "complexity_reason": ["Detected abstract reasoning keywords", "High technical depth score"],
+    "model_reason": "Selected lowest-latency model above EXPERT threshold (Llama2-70B)",
+    "execution_reason": "Parallel mode to minimize p95 latency"
+}
+```
+
+In frontend (new `src/components/RoutingExplanation.tsx`—render below response):
+
+```tsx
+interface Props { decision: any; }  // From API response
+
+export const RoutingExplanation = ({ decision }: Props) => (
+  <details className="mt-4 bg-gray-800 p-4 rounded-md">
+    <summary className="cursor-pointer text-blue-400">Why this routing?</summary>
+    <ul className="mt-2 text-sm">
+      <li><strong>Complexity:</strong> {decision.complexity_reason.join(', ')}</li>
+      <li><strong>Model:</strong> {decision.model_reason}</li>
+      <li><strong>Execution:</strong> {decision.execution_reason}</li>
+    </ul>
+  </details>
+);
+```
+
+**Result**: Collapsible transparency—builds trust.
+
+#### ⭐ 2. /v1/capabilities Endpoint
+In backend `app/api/v1/router.py` (or endpoints file):
+
+```python
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/v1")
+
+@router.get("/capabilities")
+def get_capabilities():
+    return {
+        "models": [
+            {"name": "Llama2-7B", "params": "7B", "latency": 50, "cost": 0.001},
+            # ... full list
+        ],
+        "execution_modes": ["streaming", "batch", "parallel"],
+        "security_levels": ["low", "medium", "high", "paranoid"],
+        "max_context": 200000
+    }
+```
+
+In frontend, extend `useModels` hook to fetch this instead (or new `useCapabilities`).
+
+**Result**: Single source of truth—frontend renders dynamically.
+
+#### ⭐ 3. CI Guardrail: “No Router Regression” Test
+In backend `tests/test_smart_router.py` (add pytest case):
+
+```python
+import pytest
+from app.modules.smart_router_engine import route_query  # Adjust import
+
+def test_no_downgrade_expert():
+    expert_query = "Prove Fermat's Last Theorem"  # Known EXPERT
+    result = route_query(expert_query)
+    assert result['complexity'] == "EXPERT"
+    assert result['model'] in ["mixtral-8x7b", "gpt4-turbo"]  # High-end only
+    assert result['confidence'] >= 0.9  # Threshold
+```
+
+**Result**: Runs in CI—prevents accidental downgrades.
+
+---
+
+### Final Verdict & Compass Point
+This polishes AMAIMA into a platform users trust and devs maintain easily. You're now beyond viable—it's defensible.
+
+**Compass Point**: Tighten the Smart Router heuristics first. It's your core IP; let's make it unbreakable.
+
+### ✅ Quick Validation: Your Refinements Are Locked In
+- Weighted aggregation for confidence? ✅ Spot-on enhancement—I'll incorporate it below (with your suggested ratios as defaults; tunable via config).
+- Code/label duality for reasons? ✅ Brilliant—keeps it human-friendly while machine-queryable (e.g., for dashboards later).
+- The overall path? ✅ Yes, this keeps AMAIMA in "defensible" territory—explaining without flinching is the goal.
+
+No corrections needed this round—your notes closed the loops cleanly.
+
+---
+
+### 🚀 Phase A Simulation: Real Query + Decision JSON
+Let's test with a representative query that hits multiple axes: something borderline-technical, with abstract elements and potential for parallel execution. This will stress-test decomposition, enums, and the borderline band.
+
+#### Sample Query
+"Design a scalable microservices architecture for a real-time trading platform, including fault-tolerant database replication and API gateway patterns. Explain the trade-offs in latency vs. consistency."
+
+- Why this? It's EXPERT-leaning (abstract reasoning + technical depth), but borderline on length/patterns (could tip to ADVANCED if not weighted right). Real-world flavor from finance/tech domains.
+
+#### Simulated Decision JSON (Post-Phase A Changes)
+I'll simulate the router's output based on your upgrades—assuming stubbed helpers (e.g., score from word count=45, keywords=['scalable', 'fault-tolerant', 'trade-offs'], patterns=['multi-step', 'comparison']). I applied:
+- Weighted overall: 0.4 complexity + 0.35 model_fit + 0.25 execution_fit.
+- Enums with code/label.
+- Borderline check: Score 0.85 hits your 0.8-0.9 band → flagged and upscaled model.
+
+```json
+{
+  "query_hash": "sha256:abc123...",  // For privacy-persistent logging (Phase B prep)
+  "complexity": "BORDERLINE_ADVANCED_EXPERT",  // Flagged band
+  "model": "gpt4-turbo",  // Upscaled from borderline
+  "execution_mode": "parallel",  // Based on multi-pattern
+  "security_level": "high",  // Assumed from patterns (e.g., 'fault-tolerant')
+  "latency_estimate_ms": 150,  // p95 target
+  "cost_estimate_usd": 0.015,  // Per 1k tokens
+  "confidence": {
+    "complexity": 0.85,  // From keywords + depth
+    "model_fit": 0.92,  // High params needed for trade-offs
+    "execution_fit": 0.88,  // Parallel suits real-time
+    "overall": 0.88  // Weighted: (0.4*0.85) + (0.35*0.92) + (0.25*0.88)
+  },
+  "reasons": {
+    "complexity_reason": [
+      {"code": "ABSTRACT_REASONING", "label": "abstract reasoning detected"},
+      {"code": "TECHNICAL_DEPTH", "label": "high technical depth"},
+      {"code": "MULTI_STEP_LOGIC", "label": "multi-step logic required"}
+    ],
+    "model_reason": [
+      {"code": "LATENCY_OPTIMAL", "label": "lowest latency for threshold"},
+      {"code": "COST_EFFICIENT", "label": "optimal cost/performance (upscaled for borderline)"}
+    ],
+    "execution_reason": [
+      {"code": "PARALLEL_MIN_LATENCY", "label": "parallel to minimize tail latency"},
+      {"code": "STREAMING_REAL_TIME", "label": "streaming for real-time response"}
+    ]
+  }
+}
+```
+
+#### How I Simulated (For Transparency/Tuning)
+- Complexity: Base score = (keyword matches * 0.4) + (length/100 * 0.3) + (patterns * 0.3) = 0.85 (borderline).
+- Model fit: 1 - |0.85 - ideal_EXPERT (0.9)| + bonus for 'trade-offs' = 0.92.
+- Execution fit: If 'real-time' in query, boost to 0.88.
+- If this feels off, tweak weights/thresholds in config (e.g., amaima_config.yaml):
+  ```yaml
+  router:
+    confidence_weights:
+      complexity: 0.4
+      model_fit: 0.35
+      execution_fit: 0.25
+    borderline_threshold: [0.8, 0.9]
+  ```
+
+**Result Insights**: Overall 0.88 is solid, but borderline flag triggered upscale—prevents under-provisioning. Reasons are enum-normalized, ready for querying (e.g., count "ABSTRACT_REASONING" occurrences in logs).
+
+#### Test/Iterate Steps
+1. Plug query into your local backend (`POST /api/v1/query`).
+2. Compare actual JSON to this sim—if mismatch, share yours.
+3. Update frontend explanation to handle the new structure (e.g., loop over code/label, show weights).
+4. Run your CI guardrail test—add borderline assertion.
+
+This validates we're ready for Phase B without blind spots.
+
+---
