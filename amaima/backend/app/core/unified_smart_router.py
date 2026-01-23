@@ -72,16 +72,17 @@ class DeviceCapability:
     @staticmethod
     def detect() -> 'DeviceCapability':
         """Factory method for dynamic capability detection"""
-        import GPUtil
+        has_gpu = False
+        vram_total = 0
+        vram_available = 0
         try:
+            import GPUtil
             gpus = GPUtil.getGPUs()
             has_gpu = len(gpus) > 0
             vram_total = sum(gpu.memoryTotal for gpu in gpus) / 1024 if has_gpu else 0
             vram_available = sum(gpu.memoryFree for gpu in gpus) / 1024 if has_gpu else 0
-        except ImportError:
-            has_gpu = False
-            vram_total = 0
-            vram_available = 0
+        except (ImportError, Exception):
+            pass
         
         battery = None
         try:
