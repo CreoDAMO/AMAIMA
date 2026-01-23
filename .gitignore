@@ -126,3 +126,36 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Node.js
+node_modules/
+.next/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js build output
+out/
+.next/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Lock files (keep for reproducibility)
+# package-lock.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+/tmp/
