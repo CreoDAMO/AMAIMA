@@ -71,4 +71,9 @@ amaima/
 - Configured Smart Router for query complexity analysis
 - Connected frontend to backend API
 - Both workflows running and verified working
-- Updated: January 23, 2026
+- Added favicon with AI-themed icon
+- Added sample query buttons for quick testing
+- Implemented query history with localStorage persistence
+- Added loading skeleton states for polished UX
+- Added collapsible Available Models display from /v1/models endpoint
+- Updated: January 24, 2026

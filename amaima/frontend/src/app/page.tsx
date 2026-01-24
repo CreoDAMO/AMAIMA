@@ -5,7 +5,7 @@ import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Serv
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = '';
 
 interface RoutingDecision {
   execution_mode: string;
@@ -115,8 +115,8 @@ export default function HomePage() {
   const fetchStats = useCallback(async () => {
     try {
       const [statsRes, healthRes] = await Promise.all([
-        fetch(`${API_URL}/v1/stats`),
-        fetch(`${API_URL}/health`)
+        fetch(`/api/v1/stats`),
+        fetch(`/api/health`)
       ]);
       
       if (statsRes.ok) {
@@ -133,7 +133,7 @@ export default function HomePage() {
   const fetchModels = useCallback(async () => {
     setModelsLoading(true);
     try {
-      const res = await fetch(`${API_URL}/v1/models`);
+      const res = await fetch(`/api/v1/models`);
       if (res.ok) {
         const data = await res.json();
         setModels(data.models || []);
@@ -160,7 +160,7 @@ export default function HomePage() {
     setError(null);
     
     try {
-      const res = await fetch(`${API_URL}/v1/query`, {
+      const res = await fetch(`/api/v1/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
