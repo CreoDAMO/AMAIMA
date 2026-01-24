@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, HardDrive, Server } from 'lucide-react';
+import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -39,6 +41,32 @@ interface HealthStatus {
   components: Record<string, any>;
 }
 
+interface ModelInfo {
+  id: string;
+  name: string;
+  params: string;
+  latency_ms: number;
+  cost_per_1k: number;
+  status: string;
+}
+
+interface HistoryEntry {
+  id: string;
+  query: string;
+  operation: string;
+  complexity: string;
+  model: string;
+  timestamp: string;
+}
+
+const SAMPLE_QUERIES = [
+  { text: 'Write a Python function to sort a list using quicksort', operation: 'code_generation', label: 'Python Code' },
+  { text: 'Explain quantum computing in simple terms for a beginner', operation: 'analysis', label: 'Explain Concept' },
+  { text: 'Translate "Hello, how are you today?" to Spanish, French, and Japanese', operation: 'translation', label: 'Translation' },
+  { text: 'Write a haiku about artificial intelligence and human creativity', operation: 'creative', label: 'Creative Writing' },
+  { text: 'What is the capital of France?', operation: 'general', label: 'Simple Question' },
+];
+
 export default function HomePage() {
   const [query, setQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +75,42 @@ export default function HomePage() {
   const [stats, setStats] = useState<SystemStats | null>(null);
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [operation, setOperation] = useState<string>('general');
+  const [models, setModels] = useState<ModelInfo[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(true);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showModels, setShowModels] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('amaima-query-history');
+    if (saved) {
+      try {
+        setHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load history:', e);
+      }
+    }
+  }, []);
+
+  const saveHistory = (entries: HistoryEntry[]) => {
+    const limited = entries.slice(0, 20);
+    setHistory(limited);
+    localStorage.setItem('amaima-query-history', JSON.stringify(limited));
+  };
+
+  const addToHistory = (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => {
+    const newEntry: HistoryEntry = {
+      ...entry,
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+    };
+    saveHistory([newEntry, ...history]);
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('amaima-query-history');
+  };
 
   const fetchStats = useCallback(async () => {
     try {
@@ -66,11 +130,27 @@ export default function HomePage() {
     }
   }, []);
 
+  const fetchModels = useCallback(async () => {
+    setModelsLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/v1/models`);
+      if (res.ok) {
+        const data = await res.json();
+        setModels(data.models || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch models:', err);
+    } finally {
+      setModelsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchStats();
+    fetchModels();
     const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
-  }, [fetchStats]);
+  }, [fetchStats, fetchModels]);
 
   const handleSubmit = async () => {
     if (!query.trim()) return;
@@ -96,12 +176,31 @@ export default function HomePage() {
       
       const data: QueryResponse = await res.json();
       setResponse(data);
+      
+      addToHistory({
+        query: query.slice(0, 100),
+        operation,
+        complexity: data.routing_decision.complexity,
+        model: data.model_used,
+      });
+      
       fetchStats();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit query');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSampleQuery = (sample: typeof SAMPLE_QUERIES[0]) => {
+    setQuery(sample.text);
+    setOperation(sample.operation);
+  };
+
+  const handleHistoryClick = (entry: HistoryEntry) => {
+    setQuery(entry.query);
+    setOperation(entry.operation);
+    setShowHistory(false);
   };
 
   const features = [
@@ -129,6 +228,25 @@ export default function HomePage() {
     };
     return colors[complexity] || 'bg-white/10 text-white border-white/20';
   };
+
+  const LoadingSkeleton = () => (
+    <div className="space-y-4 mt-6">
+      <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+        <Skeleton height={24} width={120} baseColor="#1e293b" highlightColor="#334155" className="mb-3" />
+        <Skeleton count={3} baseColor="#1e293b" highlightColor="#334155" />
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+          <Skeleton height={16} width={100} baseColor="#1e293b" highlightColor="#334155" className="mb-3" />
+          <Skeleton count={4} height={20} baseColor="#1e293b" highlightColor="#334155" />
+        </div>
+        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+          <Skeleton height={16} width={120} baseColor="#1e293b" highlightColor="#334155" className="mb-3" />
+          <Skeleton count={4} height={20} baseColor="#1e293b" highlightColor="#334155" />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -181,6 +299,21 @@ export default function HomePage() {
                   ))}
                 </div>
 
+                <div className="mb-4">
+                  <p className="text-sm text-slate-400 mb-2">Try these examples:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {SAMPLE_QUERIES.map((sample, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSampleQuery(sample)}
+                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
+                      >
+                        {sample.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -202,15 +335,59 @@ export default function HomePage() {
                     )}
                   </div>
 
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!query.trim() || isSubmitting}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                    Process Query
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowHistory(!showHistory)}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all"
+                    >
+                      <History className="h-4 w-4" />
+                      History ({history.length})
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      disabled={!query.trim() || isSubmitting}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                      Process Query
+                    </button>
+                  </div>
                 </div>
+
+                {showHistory && history.length > 0 && (
+                  <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-slate-400">Recent Queries</h4>
+                      <button
+                        onClick={clearHistory}
+                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        Clear
+                      </button>
+                    </div>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {history.map((entry) => (
+                        <button
+                          key={entry.id}
+                          onClick={() => handleHistoryClick(entry)}
+                          className="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all"
+                        >
+                          <p className="text-sm text-white truncate">{entry.query}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className={`px-1.5 py-0.5 rounded text-xs border ${getComplexityColor(entry.complexity)}`}>
+                              {entry.complexity}
+                            </span>
+                            <span className="text-xs text-slate-500">{entry.model}</span>
+                            <span className="text-xs text-slate-600">
+                              {new Date(entry.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {error && (
                   <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300">
@@ -218,7 +395,9 @@ export default function HomePage() {
                   </div>
                 )}
 
-                {response && (
+                {isSubmitting && <LoadingSkeleton />}
+
+                {response && !isSubmitting && (
                   <div className="space-y-4 mt-6">
                     <div className="p-4 rounded-lg bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between mb-3">
@@ -316,7 +495,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-white">System Status</h2>
           </div>
           
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-4 mb-8">
             <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -368,6 +547,53 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+            <button
+              onClick={() => setShowModels(!showModels)}
+              className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <Brain className="h-5 w-5 text-cyan-400" />
+                <h3 className="text-lg font-semibold text-white">Available Models</h3>
+                <span className="text-sm text-slate-400">({models.length} models)</span>
+              </div>
+              {showModels ? <ChevronUp className="h-5 w-5 text-slate-400" /> : <ChevronDown className="h-5 w-5 text-slate-400" />}
+            </button>
+            
+            {showModels && (
+              <div className="p-4 border-t border-white/10">
+                {modelsLoading ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="p-3 rounded-lg bg-white/5">
+                        <Skeleton height={20} width={120} baseColor="#1e293b" highlightColor="#334155" />
+                        <Skeleton height={14} count={2} baseColor="#1e293b" highlightColor="#334155" className="mt-2" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {models.map((model) => (
+                      <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-white">{model.name}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                            {model.status}
+                          </span>
+                        </div>
+                        <div className="text-xs text-slate-400 space-y-1">
+                          <p>Parameters: {model.params}</p>
+                          <p>Latency: ~{model.latency_ms}ms</p>
+                          <p>Cost: ${model.cost_per_1k}/1k tokens</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
