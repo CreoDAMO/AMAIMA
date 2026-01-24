@@ -255,6 +255,30 @@ async def list_models():
     }
 
 
+@app.get("/v1/capabilities")
+async def get_capabilities():
+    return {
+        "models": [
+            {"name": "NANO_1B", "params": "1B", "latency": 50, "cost": 0.0001},
+            {"name": "SMALL_3B", "params": "3B", "latency": 150, "cost": 0.0005},
+            {"name": "MEDIUM_7B", "params": "7B", "latency": 300, "cost": 0.001},
+            {"name": "LARGE_13B", "params": "13B", "latency": 600, "cost": 0.002},
+            {"name": "XL_34B", "params": "34B", "latency": 1200, "cost": 0.005}
+        ],
+        "execution_modes": ["batch_parallel", "parallel_min_latency", "streaming_real_time"],
+        "security_levels": ["low", "medium", "high", "paranoid"],
+        "complexity_levels": ["TRIVIAL", "SIMPLE", "MODERATE", "COMPLEX", "EXPERT", "BORDERLINE_ADVANCED_EXPERT"],
+        "max_context": 200000,
+        "tunable_params": {
+            "confidence_weights": {
+                "complexity": 0.4, 
+                "model_fit": 0.35, 
+                "execution_fit": 0.25
+            }
+        }
+    }
+
+
 @app.get("/v1/stats")
 async def get_statistics():
     return {
