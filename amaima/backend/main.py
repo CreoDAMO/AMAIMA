@@ -279,6 +279,32 @@ async def get_capabilities():
     }
 
 
+@app.post("/v1/simulate")
+async def simulate_query(request: QueryRequest):
+    try:
+        if not app_state.smart_router:
+            raise HTTPException(status_code=503, detail="Smart router not initialized")
+        
+        routing_decision = app_state.smart_router.route(
+            query=request.query,
+            operation=request.operation
+        )
+        
+        return {
+            "simulation_id": str(uuid.uuid4()),
+            "routing_decision": {
+                "execution_mode": routing_decision.execution_mode.value,
+                "model_size": routing_decision.model_size.name,
+                "complexity": routing_decision.complexity.name,
+                "confidence": routing_decision.confidence,
+                "reasoning": routing_decision.reasoning
+            },
+            "timestamp": datetime.now()
+        }
+    except Exception as e:
+        logger.error(f"Simulation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/v1/stats")
 async def get_statistics():
     return {
