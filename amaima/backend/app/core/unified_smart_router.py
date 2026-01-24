@@ -383,7 +383,22 @@ class SmartRouter:
         self._last_device_check = None
         self._last_connectivity_check = None
         
+        # Weighted Confidence Aggregation
+        self.confidence_weights = {
+            "complexity": 0.4,
+            "model_fit": 0.35,
+            "execution_fit": 0.25
+        }
+        
         logger.info("Smart Router initialized")
+    
+    def _calculate_overall_confidence(self, comp_conf: float, model_fit: float, exec_fit: float) -> float:
+        """Calculate weighted confidence aggregate"""
+        return (
+            comp_conf * self.confidence_weights.get("complexity", 0.4) +
+            model_fit * self.confidence_weights.get("model_fit", 0.35) +
+            exec_fit * self.confidence_weights.get("execution_fit", 0.25)
+        )
     
     def _get_device_capability(self) -> DeviceCapability:
         """Get cached device capabilities"""
