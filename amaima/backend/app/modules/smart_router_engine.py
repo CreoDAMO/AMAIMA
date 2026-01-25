@@ -1,10 +1,12 @@
 import yaml
 import hashlib
+import os
 from typing import Dict, Any, Tuple, List
 
 # Load configuration from YAML file
-with open("amaima/backend/amaima_config.yaml", "r") as f:
-    config = yaml.safe_load()
+config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "amaima_config.yaml")
+with open(config_path, "r") as f:
+    config = yaml.safe_load(f)
 
 router_config = config.get("router", {})
 

@@ -12,13 +12,16 @@
 - [x] Governance Diagram
 - [x] SOC/NIST Mapping
 - [x] Weighted Confidence Aggregation
-
-### Medium Priority
 - [x] Enhanced Smart Router
 - [x] Decision Telemetry Schema
+- [x] Grafana Dashboard
+- [x] OpenAPI Spec
+
+### Medium Priority
+(All completed)
 
 ### Lower Priority
-- [ ] Grafana Dashboard
+(All completed)
 
 ### Documentation
-- [ ] OpenAPI Spec
+(All completed)
