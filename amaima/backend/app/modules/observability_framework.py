@@ -357,3 +357,47 @@ def get_tracer(service_name: str = "amaima") -> DistributedTracer:
     if _global_tracer is None:
         _global_tracer = DistributedTracer(service_name)
     return _global_tracer
+
+async def log_decision_to_db(query: str, decision: dict):
+    """
+    Logs a routing decision to the database with correct session management.
+    """
+    from ..database import SessionLocal, DecisionTelemetry
+    import uuid
+    import hashlib
+    from datetime import datetime
+
+    db = SessionLocal()
+    try:
+        telemetry_entry = DecisionTelemetry(
+            decision_id=str(uuid.uuid4()),
+            query_hash=hashlib.sha256(query.encode()).hexdigest(),
+            timestamp=datetime.utcnow(),
+            complexity_level=decision.get("complexity_level"),
+            model=decision.get("model"),
+            execution_mode=decision.get("execution_mode"),
+            latency_estimate_ms=decision.get("latency_estimate_ms"),
+            cost_estimate_usd=decision.get("cost_estimate_usd"),
+            confidence=decision.get("confidence"),
+            reason_codes={
+                "complexity": [
+                    r["code"]
+                    for r in decision.get("reasons", {}).get("complexity_reason", [])
+                ],
+                "model": [
+                    r["code"] for r in decision.get("reasons", {}).get("model_reason", [])
+                ],
+                "execution": [
+                    r["code"]
+                    for r in decision.get("reasons", {}).get("execution_reason", [])
+                ],
+            },
+            version="1.0",
+        )
+        db.add(telemetry_entry)
+        db.commit()
+    except Exception as e:
+        get_logger().error(f"Failed to log decision telemetry to DB: {e}")
+        db.rollback()
+    finally:
+        db.close()

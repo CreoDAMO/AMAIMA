@@ -54,6 +54,11 @@ router:
     EXPERT: "gpt4-turbo"
   cache_ttl: 3600
   enable_predictive_preloading: true
+  confidence_weights:
+    complexity: 0.4
+    model_fit: 0.35
+    execution_fit: 0.25
+  borderline_threshold: [0.8, 0.9]
 
 # Progressive Model Loader Configuration
 model_loader:
