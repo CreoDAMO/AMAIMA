@@ -14,8 +14,8 @@
 - [x] Weighted Confidence Aggregation
 
 ### Medium Priority
-- [ ] Enhanced Smart Router
-- [ ] Decision Telemetry Schema
+- [x] Enhanced Smart Router
+- [x] Decision Telemetry Schema
 
 ### Lower Priority
 - [ ] Grafana Dashboard
