@@ -16,10 +16,13 @@ import uuid
 import os
 
 from app.core.unified_smart_router import SmartRouter, RoutingDecision
+from app.modules.smart_router_engine import route_query
+from app.modules.execution_engine import execute_model
+from app.security import get_api_key
+from fastapi import Depends
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class QueryRequest(BaseModel):
     query: str = Field(..., description="User query text")
@@ -37,6 +40,20 @@ class QueryResponse(BaseModel):
     confidence: float
     latency_ms: float
     timestamp: datetime
+
+class ExecuteResponse(BaseModel):
+    query_hash: str
+    complexity_level: str
+    model: str
+    execution_mode: str
+    confidence: Dict[str, float]
+    reasons: Dict[str, list]
+    simulated: bool
+    execution: Optional[str] = None
+    confidence_scope: Optional[str] = None
+    output: str
+    actual_latency_ms: int
+    actual_cost_usd: float
 
 
 class WorkflowStep(BaseModel):
@@ -106,6 +123,11 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
+    from app.database import init_db
+    from app.modules.observability_framework import get_metrics
+    init_db()
+    metrics = get_metrics()
+    metrics.start_metrics_server()
     app_state.initialize(darpa_enabled=False)
     logger.info("AMAIMA API server started")
 
@@ -138,43 +160,18 @@ async def health_check():
     )
 
 
-@app.post("/v1/query", response_model=QueryResponse)
-async def process_query(request: QueryRequest):
+@app.post("/v1/query", response_model=ExecuteResponse)
+async def process_query(request: QueryRequest, api_key: str = Depends(get_api_key)):
     try:
-        app_state.query_count += 1
-        start_time = datetime.now()
+        # Get routing decision
+        decision = route_query(request.query, simulate=False)
+
+        # Execute the query based on the decision
+        execution_result = await execute_model(decision)
+
+        # Combine results and return
+        response = {**decision, **execution_result}
         
-        if not app_state.smart_router:
-            raise HTTPException(status_code=503, detail="Smart router not initialized")
-        
-        routing_decision = app_state.smart_router.route(
-            query=request.query,
-            operation=request.operation
-        )
-        
-        response_text = f"AMAIMA Response: Analyzed query about '{request.query[:100]}{'...' if len(request.query) > 100 else ''}' with {routing_decision.complexity.name} complexity using {routing_decision.model_size.name} model."
-        
-        response = QueryResponse(
-            response_id=str(uuid.uuid4()),
-            response_text=response_text,
-            model_used=routing_decision.model_size.name,
-            routing_decision={
-                "execution_mode": routing_decision.execution_mode.value,
-                "model_size": routing_decision.model_size.name,
-                "complexity": routing_decision.complexity.name,
-                "security_level": routing_decision.security_level.name,
-                "confidence": routing_decision.confidence,
-                "estimated_latency_ms": routing_decision.estimated_latency_ms,
-                "estimated_cost": routing_decision.estimated_cost,
-                "fallback_chain": [m.value for m in routing_decision.fallback_chain],
-                "reasoning": routing_decision.reasoning
-            },
-            confidence=routing_decision.confidence,
-            latency_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            timestamp=datetime.now()
-        )
-        
-        logger.info(f"Query processed: {response.response_id}")
         return response
         
     except Exception as e:
@@ -280,27 +277,13 @@ async def get_capabilities():
 
 
 @app.post("/v1/simulate")
-async def simulate_query(request: QueryRequest):
+async def simulate_query_endpoint(request: QueryRequest):
+    """
+    Simulates a query routing decision without executing the query.
+    """
     try:
-        if not app_state.smart_router:
-            raise HTTPException(status_code=503, detail="Smart router not initialized")
-        
-        routing_decision = app_state.smart_router.route(
-            query=request.query,
-            operation=request.operation
-        )
-        
-        return {
-            "simulation_id": str(uuid.uuid4()),
-            "routing_decision": {
-                "execution_mode": routing_decision.execution_mode.value,
-                "model_size": routing_decision.model_size.name,
-                "complexity": routing_decision.complexity.name,
-                "confidence": routing_decision.confidence,
-                "reasoning": routing_decision.reasoning
-            },
-            "timestamp": datetime.now()
-        }
+        decision = route_query(request.query, simulate=True)
+        return decision
     except Exception as e:
         logger.error(f"Simulation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
