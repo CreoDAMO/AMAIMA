@@ -16,6 +16,9 @@
 - [x] Decision Telemetry Schema
 - [x] Grafana Dashboard
 - [x] OpenAPI Spec
+- [x] Production Safeguard Toggle
+- [x] Versioned Decision Schema
+- [x] Enterprise Deployment Guide
 
 ### Medium Priority
 (All completed)

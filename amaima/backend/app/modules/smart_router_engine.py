@@ -124,6 +124,10 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
         + (execution_fit_score * weights["execution_fit"])
     )
 
+    # Production Safeguard Toggle
+    execution_mode_env = os.getenv('AMAIMA_EXECUTION_MODE', 'decision-only')
+    execution_mode_active = execution_mode_env == 'execution-enabled'
+
     decision = {
         "query_hash": hashlib.sha256(query.encode()).hexdigest(),
         "complexity_level": complexity_level,
@@ -140,12 +144,15 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
             "model_reason": model_reasons,
             "execution_reason": execution_reasons,
         },
-        "simulated": simulate,
+        "simulated": simulate or not execution_mode_active,
+        "execution_mode_active": execution_mode_active,
+        "decision_schema_version": "1.0.0"
     }
 
-    if simulate:
+    if decision["simulated"]:
         decision["execution"] = "none"
         decision["confidence_scope"] = "explanatory"
+        decision["output"] = "Simulation only - no execution." if not execution_mode_active else None
     else:
         # Log the decision for non-simulation routes to the database
         from .observability_framework import log_decision_to_db
