@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: cd amaima/frontend && npm ci
       - name: Lint
-        run: cd amaima/frontend && npm run lint
+        run: cd amaima/frontend && npm run lint -- --dir .
       - name: Build
         run: cd amaima/frontend && npm run build
 ```
