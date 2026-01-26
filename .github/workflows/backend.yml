@@ -1,6 +1,4 @@
 name: Backend CI/CD
-permissions:
-  contents: read
 
 on:
   push:
@@ -9,6 +7,7 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'amaima/backend/**' ]
+  workflow_dispatch:
 
 jobs:
   test:
