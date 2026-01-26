@@ -30,10 +30,10 @@ jobs:
       - name: Install dependencies
         run: |
           cd amaima/frontend
-          npm install --save-dev eslint eslint-config-next
+          npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/parser
           npm ci
       - name: Lint
-        run: cd amaima/frontend && npx next lint --dir .
+        run: cd amaima/frontend && npx next lint
       - name: Build
         run: cd amaima/frontend && npm run build
 ```
