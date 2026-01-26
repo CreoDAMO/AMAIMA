@@ -8,6 +8,9 @@ on:
     branches: [ main ]  
     paths: [ 'amaima/backend/**' ]  
 
+permissions:
+  contents: read
+
 jobs:  
   test:  
     runs-on: ubuntu-latest  
