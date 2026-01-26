@@ -1,34 +1,37 @@
-name: Mobile CI/CD  
+name: Mobile CI/CD
 
-on:  
-  push:  
-    branches: [ main ]  
-    paths: [ 'mobile/**' ]  
-  pull_request:  
-    branches: [ main ]  
-    paths: [ 'mobile/**' ]  
+permissions:
+  contents: read
 
-jobs:  
-  build:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - uses: actions/checkout@v4  
-      - name: set up JDK 17  
-        uses: actions/setup-java@v4  
-        with:  
-          java-version: '17'  
-          distribution: 'temurin'  
-          cache: gradle  
-      - name: Build with Gradle  
-        run: |  
-          if [ -d "mobile" ]; then  
-            cd mobile  
-            if [ -f "gradlew" ]; then  
-              chmod +x gradlew  
-              ./gradlew assembleDebug  
-            fi  
-          fi  
-      - name: Verify APK output  
-        run: |  
-          cd mobile  
-          find . -name "*.apk" | grep assemble || (echo "APK not generated" && exit 1)
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'mobile/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'mobile/**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Build with Gradle
+        run: |
+          cd mobile
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Verify APK output
+        run: |
+          cd mobile
+          find . -name "*.apk" | grep -q . || (echo "APK not generated" && exit 1)
