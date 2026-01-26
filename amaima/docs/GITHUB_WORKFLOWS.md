@@ -14,6 +14,7 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'amaima/frontend/**' ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -46,6 +47,7 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'amaima/backend/**' ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -83,6 +85,7 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'mobile/**' ]
+  workflow_dispatch:
 
 jobs:
   build:
