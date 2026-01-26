@@ -33,7 +33,7 @@ jobs:
           npm install --save-dev eslint eslint-config-next
           npm ci
       - name: Lint
-        run: cd amaima/frontend && npm run lint -- --dir .
+        run: cd amaima/frontend && npx next lint --dir .
       - name: Build
         run: cd amaima/frontend && npm run build
 ```
