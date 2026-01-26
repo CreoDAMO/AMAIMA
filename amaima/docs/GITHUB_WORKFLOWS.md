@@ -28,7 +28,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: amaima/frontend/package-lock.json
       - name: Install dependencies
-        run: cd amaima/frontend && npm ci
+        run: |
+          cd amaima/frontend
+          npm install --save-dev eslint eslint-config-next
+          npm ci
       - name: Lint
         run: cd amaima/frontend && npm run lint -- --dir .
       - name: Build
