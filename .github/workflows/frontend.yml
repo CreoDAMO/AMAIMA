@@ -26,12 +26,18 @@ jobs:
           cache-dependency-path: amaima/frontend/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd amaima/frontend
-          npm ci  # Use npm ci for clean install
+        run: cd amaima/frontend && npm ci
 
       - name: Lint
-        run: cd amaima/frontend && npm run lint  # Assumes "lint": "next lint" in package.json
+        run: cd amaima/frontend && npm run lint
+
+      - name: Type Check
+        run: cd amaima/frontend && npx tsc --noEmit
 
       - name: Build
         run: cd amaima/frontend && npm run build
+
+      - name: Verify build output
+        run: |
+          cd amaima/frontend
+          test -d .next || (echo "Build output (.next) missing" && exit 1)
