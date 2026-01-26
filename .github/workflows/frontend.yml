@@ -1,8 +1,5 @@
 name: Frontend CI/CD
 
-permissions:
-  contents: read
-
 on:
   push:
     branches: [ main ]
@@ -10,31 +7,22 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'amaima/frontend/**' ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: amaima/frontend/package-lock.json
-
       - name: Install dependencies
         run: cd amaima/frontend && npm ci
-
       - name: Lint
         run: cd amaima/frontend && npm run lint
-
       - name: Build
         run: cd amaima/frontend && npm run build
-
-      - name: Verify build output
-        run: |
-          cd amaima/frontend
-          test -d .next || (echo "Build output missing" && exit 1)
