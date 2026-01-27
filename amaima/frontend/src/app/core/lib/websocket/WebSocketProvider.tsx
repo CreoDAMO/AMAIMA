@@ -79,7 +79,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         break;
       }
     }
-  }, [setSystemStatus, updateModelStatus, updateQueryStatus, appendResponseChunk]);
+  }, [updateQueryStatus, appendResponseChunk, setSystemStatus, updateModelStatus, setConnectionQuality]);
 
   const connect = useCallback(() => {
     if (!token) return;
@@ -163,7 +163,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       console.error('Failed to create WebSocket:', error);
       setConnectionQuality('disconnected');
     }
-  }, [token, setConnected, setConnectionQuality, setSystemStatus, updateModelStatus, processMessage]);
+  }, [token, WS_URL, setConnected, setConnectionQuality, processMessage]);
 
   const sendMessage = useCallback((message: any) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

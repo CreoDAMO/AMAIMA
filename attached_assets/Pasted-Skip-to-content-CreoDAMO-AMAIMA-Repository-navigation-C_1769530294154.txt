@@ -1,0 +1,70 @@
+Skip to content
+CreoDAMO
+AMAIMA
+Repository navigation
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+1
+ (1)
+Insights
+Settings
+Frontend CI/CD
+Saved progress at the end of the loop #21
+All jobs
+Run details
+Annotations
+1 error
+build
+failed 1 minute ago in 26s
+Search logs
+1s
+1s
+1s
+17s
+2s
+Run cd amaima/frontend && npm run lint
+  cd amaima/frontend && npm run lint
+  shell: /usr/bin/bash -e {0}
+
+> amaima-frontend@5.0.0 lint
+> next lint
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+
+./src/app/core/components/query/QueryWithFile.tsx
+111:14  Error: 'Badge' is not defined.  react/jsx-no-undef
+119:10  Error: 'Button' is not defined.  react/jsx-no-undef
+126:16  Error: 'Loader2' is not defined.  react/jsx-no-undef
+135:12  Error: 'Badge' is not defined.  react/jsx-no-undef
+136:14  Error: 'Wifi' is not defined.  react/jsx-no-undef
+143:10  Error: 'Card' is not defined.  react/jsx-no-undef
+144:12  Error: 'CardHeader' is not defined.  react/jsx-no-undef
+145:14  Error: 'CardTitle' is not defined.  react/jsx-no-undef
+147:16  Error: 'Badge' is not defined.  react/jsx-no-undef
+150:12  Error: 'CardContent' is not defined.  react/jsx-no-undef
+152:16  Error: 'ReactMarkdown' is not defined.  react/jsx-no-undef
+
+./src/app/core/lib/auth/auth-provider.tsx
+29:6  Warning: React Hook useEffect has a missing dependency: 'initializeAuth'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/core/lib/websocket/WebSocketProvider.tsx
+82:6  Warning: React Hook useCallback has a missing dependency: 'setConnectionQuality'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+166:6  Warning: React Hook useCallback has a missing dependency: 'WS_URL'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+Error: Process completed with exit code 1.
+0s
+0s
+0s
+0s
+0s
+1s

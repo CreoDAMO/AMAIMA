@@ -2,10 +2,39 @@
 
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FileUpload } from '@/components/shared/FileUpload';
 import { useAuth } from '@/hooks/useAuth';
 import { useWebSocket } from '@/lib/websocket/useWebSocketQuery';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Loader2, Wifi } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { toast } from 'sonner';
+
+interface QueryResult {
+  responseText: string;
+  isStreaming: boolean;
+  model_used: string;
+  latency_ms: number;
+  confidence: number;
+  file_references?: any[];
+  supports_streaming?: boolean;
+}
+
+interface FileMetadata {
+  file_id: string;
+  name: string;
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const fileUploader = {
+  uploadFile: async (file: File, onProgress: (p: { progress: number }) => void) => {
+    // Mock uploader if not provided
+    return { file_id: 'mock-id', name: file.name };
+  }
+};
 
 interface QueryWithFileProps {
   onQueryComplete?: (result: QueryResult) => void;

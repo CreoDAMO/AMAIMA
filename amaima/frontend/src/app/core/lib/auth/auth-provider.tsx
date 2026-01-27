@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Initialize authentication state on mount
   useEffect(() => {
     initializeAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function initializeAuth() {
