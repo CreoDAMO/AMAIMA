@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/core/types';
-import { useAuthStore } from '@/core/lib/stores/useAuthStore';
+import { ApiResponse } from '../../types';
+import { useAuthStore } from '../stores/useAuthStore';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 

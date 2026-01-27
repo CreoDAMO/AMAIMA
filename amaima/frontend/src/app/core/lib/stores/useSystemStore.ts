@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { SystemStatusData, ModelStatus } from '@/core/types';
+import { SystemStatusData, ModelStatus } from '../../types';
 
 interface SystemStore {
   systemStatus: SystemStatusData | null;

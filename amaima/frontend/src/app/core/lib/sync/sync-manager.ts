@@ -1,8 +1,8 @@
 // src/app/core/lib/sync/sync-manager.ts
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import { queryClient } from '@/core/lib/query/client';
-import { secureStorage } from '@/core/lib/utils/secure-storage';
+import { queryClient } from '../query/client';
+import { secureStorage } from '../utils/secure-storage';
 
 interface PendingOperation {
   id: string;
