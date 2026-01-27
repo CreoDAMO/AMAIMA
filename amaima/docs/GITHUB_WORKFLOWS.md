@@ -30,7 +30,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd amaima/frontend
-          npm install --save-dev @next/eslint-plugin-next
           npm ci
       - name: Lint
         run: cd amaima/frontend && npm run lint
