@@ -98,6 +98,8 @@ export interface ApiResponse<T> {
 export interface ApiError {
   code: string;
   message: string;
+  path?: string;
+  requestId?: string;
   details?: Record<string, any>;
 }
 
