@@ -1,10 +1,10 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
-import { useAuthStore } from '@/lib/stores/useAuthStore';
-import { useSystemStore } from '@/lib/stores/useSystemStore';
-import { useQueryStore } from '@/lib/stores/useQueryStore';
-import { WebSocketMessage, WebSocketMessageType } from '@/types';
+import { useAuthStore } from '../stores/useAuthStore';
+import { useSystemStore } from '../stores/useSystemStore';
+import { useQueryStore } from '../stores/useQueryStore';
+import { WebSocketMessage, WebSocketMessageType } from '../../types';
 
 interface WebSocketContextType {
   isConnected: boolean;
