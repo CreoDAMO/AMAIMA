@@ -17,7 +17,7 @@ export class ApiError extends Error {
   }
 
   static isApiError(error: any): error is ApiError {
-    return error instanceof ApiError;
+    return error instanceof ApiError || (error && typeof error === 'object' && 'code' in error && 'message' in error);
   }
 }
 

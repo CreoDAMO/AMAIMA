@@ -91,11 +91,11 @@ export interface NotificationPreferences {
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
-  error?: ApiError;
+  error?: ApiErrorInterface;
   meta?: ResponseMeta;
 }
 
-export interface ApiError {
+export interface ApiErrorInterface {
   code: string;
   message: string;
   path?: string;
