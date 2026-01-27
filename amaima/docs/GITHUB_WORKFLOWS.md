@@ -33,7 +33,7 @@ jobs:
           npm install --save-dev @next/eslint-plugin-next
           npm ci
       - name: Lint
-        run: cd amaima/frontend && npm run lint -- --no-interactive
+        run: cd amaima/frontend && npm run lint
       - name: Type Check
         run: cd amaima/frontend && npx tsc --noEmit
       - name: Build
