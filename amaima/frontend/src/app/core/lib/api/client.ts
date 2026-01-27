@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 class ApiClient {
   private baseUrl: string;
-  private defaultHeaders: HeadersInit;
+  private defaultHeaders: any;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
@@ -14,8 +14,9 @@ class ApiClient {
     };
   }
 
-  private getAuthHeaders(): HeadersInit {
-    const { token } = useAuthStore.getState();
+  private getAuthHeaders(): any {
+    const state = useAuthStore.getState() as any;
+    const token = state?.token;
     return token
       ? { ...this.defaultHeaders, Authorization: `Bearer ${token}` }
       : this.defaultHeaders;
@@ -92,17 +93,11 @@ class ApiClient {
   }
 
   setAuthToken(token: string) {
-    this.defaultHeaders = {
-      ...this.defaultHeaders,
-      Authorization: `Bearer ${token}`,
-    };
+    this.defaultHeaders.Authorization = `Bearer ${token}`;
   }
 
   clearAuthToken() {
-    this.defaultHeaders = {
-      ...this.defaultHeaders,
-      Authorization: undefined,
-    };
+    delete this.defaultHeaders.Authorization;
   }
 }
 

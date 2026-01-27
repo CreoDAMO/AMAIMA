@@ -160,11 +160,12 @@ class FileUploader {
 
   validateFile(file: File, options: UploadValidationOptions): ValidationResult {
     const errors: string[] = [];
+    const maxSize = options.maxSize || 50 * 1024 * 1024;
 
     // Check file size
-    if (file.size > options.maxSize) {
+    if (file.size > maxSize) {
       errors.push(
-        `File too large. Maximum size is ${(options.maxSize / (1024 * 1024)).toFixed(0)}MB`
+        `File too large. Maximum size is ${(maxSize / (1024 * 1024)).toFixed(0)}MB`
       );
     }
 

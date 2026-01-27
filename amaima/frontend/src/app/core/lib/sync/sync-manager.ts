@@ -245,7 +245,7 @@ class SyncManager {
       data,
       timestamp: Date.now(),
       ttl,
-    });
+    } as any);
   }
 
   async getCachedData<T>(key: string): Promise<T | null> {

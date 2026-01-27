@@ -3,7 +3,7 @@ import { complexityEstimator } from '@/lib/ml/complexity-estimator';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export function useComplexityEstimation(query: string) {
-  const [result, setResult] = useState<ReturnType<typeof complexityEstimator.estimate> | null>(null);
+  const [result, setResult] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);

@@ -13,8 +13,9 @@ interface WebSocketConfig {
 
 interface WebSocketMessage {
   type: string;
-  data: Record<string, unknown>;
+  data: any;
   timestamp: string;
+  [key: string]: any;
 }
 
 export class WebSocketManager extends EventEmitter {
@@ -149,14 +150,14 @@ export class WebSocketManager extends EventEmitter {
   }
 
   private scheduleReconnect(): void {
-    if (this.reconnectAttempts >= this.config.maxReconnectAttempts!) {
+    if (this.reconnectAttempts >= (this.config.maxReconnectAttempts || 5)) {
       console.error('Max reconnect attempts reached');
       this.emit('reconnect_failed');
       return;
     }
 
     this.reconnectAttempts++;
-    const delay = this.config.reconnectBaseDelay! * Math.pow(2, this.reconnectAttempts - 1);
+    const delay = (this.config.reconnectBaseDelay || 1000) * Math.pow(2, this.reconnectAttempts - 1);
     
     console.log(`Scheduling reconnect in ${delay}ms (attempt ${this.reconnectAttempts})`);
     
@@ -178,11 +179,10 @@ export class WebSocketManager extends EventEmitter {
     }
   }
 
-  send(message: Record<string, unknown>): void {
+  send(message: Record<string, any>): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
-      // Queue message for when connection is restored
       this.messageQueue.push(message as WebSocketMessage);
     }
   }

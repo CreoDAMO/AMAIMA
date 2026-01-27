@@ -78,6 +78,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         }
         break;
       }
+      default:
+        break;
     }
   }, [updateQueryStatus, appendResponseChunk, setSystemStatus, updateModelStatus, setConnectionQuality]);
 
