@@ -20,7 +20,8 @@ export function QueryInput() {
   const [isPending, startTransition] = useTransition();
   const { isConnected } = useWebSocket();
   const submitMutation = useSubmitQuery();
-  const { result: complexity, isLoading: isEstimating } = useComplexityEstimation(query);
+  const { result: complexityResult, isLoading: isEstimating } = useComplexityEstimation(query);
+  const complexity = (complexityResult as any)?.complexity ? (complexityResult as any) : null;
 
   const operationIcons: Record<QueryOperation, React.ReactNode> = {
     general: <Brain className="h-4 w-4" />,

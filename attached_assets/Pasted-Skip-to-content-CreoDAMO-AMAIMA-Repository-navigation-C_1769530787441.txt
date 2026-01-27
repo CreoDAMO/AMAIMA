@@ -1,0 +1,110 @@
+Skip to content
+CreoDAMO
+AMAIMA
+Repository navigation
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+1
+ (1)
+Insights
+Settings
+Frontend CI/CD
+Fix syntax error in test file for submitting user requests #23
+All jobs
+Run details
+build
+failed now in 32s
+Search logs
+1s
+1s
+3s
+17s
+3s
+Run cd amaima/frontend && npm run lint
+  cd amaima/frontend && npm run lint
+  shell: /usr/bin/bash -e {0}
+
+> amaima-frontend@5.0.0 lint
+> next lint
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✔ No ESLint warnings or errors
+4s
+Run cd amaima/frontend && npx tsc --noEmit
+  cd amaima/frontend && npx tsc --noEmit
+  shell: /usr/bin/bash -e {0}
+Error: src/app/core/components/dashboard/SystemMonitor.tsx(78,28): error TS2304: Cannot find name 'cn'.
+Error: src/app/core/components/dashboard/SystemMonitor.tsx(143,26): error TS2304: Cannot find name 'cn'.
+Error: src/app/core/components/query/CodeBlock.tsx(3,44): error TS2307: Cannot find module 'react-syntax-highlighter' or its corresponding type declarations.
+Error: src/app/core/components/query/CodeBlock.tsx(4,25): error TS2307: Cannot find module 'react-syntax-highlighter/dist/esm/styles/prism' or its corresponding type declarations.
+Error: src/app/core/components/query/QueryInput.tsx(107,63): error TS2339: Property 'complexity' does not exist on type 'Promise<ComplexityResult>'.
+Error: src/app/core/components/query/QueryInput.tsx(108,31): error TS2339: Property 'complexity' does not exist on type 'Promise<ComplexityResult>'.
+Error: src/app/core/components/query/QueryInput.tsx(111,32): error TS2339: Property 'confidence' does not exist on type 'Promise<ComplexityResult>'.
+Error: src/app/core/components/query/QueryInput.tsx(115,32): error TS2339: Property 'estimatedTokens' does not exist on type 'Promise<ComplexityResult>'.
+Error: src/app/core/components/query/QueryInput.tsx(117,54): error TS2339: Property 'suggestedModel' does not exist on type 'Promise<ComplexityResult>'.
+Error: src/app/core/components/query/QueryWithFile.tsx(6,28): error TS2307: Cannot find module '@/components/shared/FileUpload' or its corresponding type declarations.
+Error: src/app/core/components/query/QueryWithFile.tsx(7,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+Error: src/app/core/components/query/QueryWithFile.tsx(8,30): error TS2307: Cannot find module '@/lib/websocket/useWebSocketQuery' or its corresponding type declarations.
+Error: src/app/core/components/query/QueryWithFile.tsx(13,27): error TS2307: Cannot find module 'react-markdown' or its corresponding type declarations.
+Error: src/app/core/components/query/StreamingResponse.tsx(7,26): error TS2307: Cannot find module '@/components/ui/skeleton' or its corresponding type declarations.
+Error: src/app/core/components/query/StreamingResponse.tsx(10,22): error TS2307: Cannot find module 'react-markdown' or its corresponding type declarations.
+Error: src/app/core/components/ui/button.tsx(2,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+Error: src/app/core/hooks/useMLInference.ts(30,19): error TS2345: Argument of type 'ComplexityResult' is not assignable to parameter of type 'SetStateAction<Promise<ComplexityResult> | null>'.
+Error: src/app/core/lib/api/client.ts(104,7): error TS2322: Type 'undefined' is not assignable to type 'string'.
+Error: src/app/core/lib/api/error-handler.ts(3,11): error TS2395: Individual declarations in merged declaration 'ApiError' must be all exported or all local.
+Error: src/app/core/lib/api/error-handler.ts(27,14): error TS2395: Individual declarations in merged declaration 'ApiError' must be all exported or all local.
+Error: src/app/core/lib/api/error-handler.ts(85,5): error TS2304: Cannot find name 'authStore'.
+Error: src/app/core/lib/api/error-handler.ts(90,5): error TS2304: Cannot find name 'router'.
+Error: src/app/core/lib/api/error-handler.ts(106,5): error TS2304: Cannot find name 'toast'.
+Error: src/app/core/lib/api/error-handler.ts(111,5): error TS2304: Cannot find name 'toast'.
+Error: src/app/core/lib/api/error-handler.ts(153,24): error TS2339: Property 'path' does not exist on type 'ApiError'.
+Error: src/app/core/lib/api/error-handler.ts(154,29): error TS2339: Property 'requestId' does not exist on type 'ApiError'.
+Error: src/app/core/lib/auth/auth-provider.tsx(11,9): error TS2304: Cannot find name 'User'.
+Error: src/app/core/lib/auth/auth-provider.tsx(22,36): error TS2304: Cannot find name 'User'.
+Error: src/app/core/lib/auth/auth-provider.tsx(43,34): error TS2345: Argument of type '{}' is not assignable to parameter of type 'string'.
+Error: src/app/core/lib/auth/auth-provider.tsx(58,24): error TS2339: Property 'user' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(70,52): error TS2339: Property 'access_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(71,53): error TS2339: Property 'refresh_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(73,37): error TS2339: Property 'access_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(74,22): error TS2339: Property 'user' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(105,54): error TS2339: Property 'access_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(106,55): error TS2339: Property 'refresh_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/auth/auth-provider.tsx(108,39): error TS2339: Property 'access_token' does not exist on type 'ApiResponse<unknown>'.
+Error: src/app/core/lib/ml/complexity-estimator.ts(1,21): error TS2307: Cannot find module '@tensorflow/tfjs' or its corresponding type declarations.
+Error: src/app/core/lib/ml/complexity-estimator.ts(71,53): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'number'.
+Error: src/app/core/lib/sync/sync-manager.ts(3,48): error TS2307: Cannot find module 'idb' or its corresponding type declarations.
+Error: src/app/core/lib/sync/sync-manager.ts(4,29): error TS2307: Cannot find module '@/lib/query/client' or its corresponding type declarations.
+Error: src/app/core/lib/sync/sync-manager.ts(39,15): error TS7006: Parameter 'db' implicitly has an 'any' type.
+Error: src/app/core/lib/sync/sync-manager.ts(292,12): error TS2304: Cannot find name 'secureStorage'.
+Error: src/app/core/lib/upload/file-uploader.ts(165,21): error TS18048: 'options.maxSize' is possibly 'undefined'.
+Error: src/app/core/lib/upload/file-uploader.ts(167,45): error TS18048: 'options.maxSize' is possibly 'undefined'.
+Error: src/app/core/lib/utils/secure-storage.ts(1,22): error TS2307: Cannot find module 'crypto-js' or its corresponding type declarations.
+Error: src/app/core/lib/utils/validation.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+Error: src/app/core/lib/utils/validation.ts(32,12): error TS7006: Parameter 'data' implicitly has an 'any' type.
+Error: src/app/core/lib/websocket/WebSocketProvider.tsx(22,29): error TS2451: Cannot redeclare block-scoped variable 'setConnectionQuality'.
+Error: src/app/core/lib/websocket/WebSocketProvider.tsx(33,61): error TS2451: Cannot redeclare block-scoped variable 'setConnectionQuality'.
+Error: src/app/core/lib/websocket/WebSocketProvider.tsx(65,12): error TS2678: Type '"model_status"' is not comparable to type 'WebSocketMessageType'.
+Error: src/app/core/lib/websocket/websocket-manager.ts(176,19): error TS2345: Argument of type 'WebSocketMessage' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'WebSocketMessage'.
+Error: src/app/core/lib/websocket/websocket-manager.ts(186,30): error TS2352: Conversion of type 'Record<string, unknown>' to type 'WebSocketMessage' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Record<string, unknown>' is missing the following properties from type 'WebSocketMessage': type, data, timestamp
+Error: tests/integration.spec.ts(3,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+Error: tests/integration.spec.ts(6,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+Error: tests/integration.spec.ts(12,65): error TS7031: Binding element 'page' implicitly has an 'any' type.
+Error: tests/integration.spec.ts(43,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+Error: tests/integration.spec.ts(68,47): error TS7031: Binding element 'page' implicitly has an 'any' type.
+Error: Process completed with exit code 2.
+0s
+0s
+0s
+0s
+0s
