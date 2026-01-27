@@ -86,7 +86,7 @@ test.describe('Complete User Flow', () => {
       'textarea[placeholder*="Ask"]',
       'Summarize the key points from the uploaded document'
     );
-    await page.click('button:has-text("Submit"));
+    await page.click('button:has-text("Submit")');
 
     // Verify response
     await expect(page.locator('text=Key Points')).toBeVisible({ timeout: 60000 });
