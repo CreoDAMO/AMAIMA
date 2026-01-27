@@ -1,5 +1,5 @@
-import { apiClient } from './client';
-import { Query, QuerySubmitRequest, ApiResponse } from '../../types';
+import { apiClient } from '@/core/lib/api/client';
+import { Query, QuerySubmitRequest, ApiResponse } from '@/core/types';
 
 export const queriesApi = {
   submit: async (data: QuerySubmitRequest): Promise<ApiResponse<Query>> => {

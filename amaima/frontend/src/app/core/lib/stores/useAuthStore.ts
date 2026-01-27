@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { User, AuthState } from '@/types';
-import { secureStorage } from '@/lib/utils/secure-storage';
+import { User, AuthState } from '@/core/types';
+import { secureStorage } from '@/core/lib/utils/secure-storage';
 
 interface AuthStore extends AuthState {
   login: (email: string, password: string) => Promise<void>;

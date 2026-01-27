@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { complexityEstimator } from '@/lib/ml/complexity-estimator';
-import { useDebounce } from '@/hooks/useDebounce';
+import { complexityEstimator } from '@/core/lib/ml/complexity-estimator';
+import { useDebounce } from '@/core/hooks/useDebounce';
 
 export function useComplexityEstimation(query: string) {
   const [result, setResult] = useState<any | null>(null);

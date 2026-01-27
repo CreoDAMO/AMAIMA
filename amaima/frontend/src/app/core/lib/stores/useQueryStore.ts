@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Query, QueryStatus } from '@/types';
+import { Query, QueryStatus } from '@/core/types';
 
 interface QueryStore {
   queries: Query[];

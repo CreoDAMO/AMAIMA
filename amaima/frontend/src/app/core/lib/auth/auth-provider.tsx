@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { secureStorage } from '@/lib/utils/secure-storage';
-import { apiClient } from '@/lib/api/client';
-import { User, ApiResponse } from '@/types';
+import { secureStorage } from '@/core/lib/utils/secure-storage';
+import { apiClient } from '@/core/lib/api/client';
+import { User, ApiResponse } from '@/core/types';
 
 interface AuthContextType {
   user: User | null;

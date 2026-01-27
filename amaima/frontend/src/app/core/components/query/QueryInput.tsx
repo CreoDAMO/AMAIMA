@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/core/components/ui/card';
+import { Button } from '@/core/components/ui/button';
+import { Textarea } from '@/core/components/ui/textarea';
+import { Badge } from '@/core/components/ui/badge';
 import { Loader2, Send, Sparkles, Zap, Brain, Code } from 'lucide-react';
-import { complexityEstimator } from '@/lib/ml/complexity-estimator';
-import { useWebSocket } from '@/lib/websocket/WebSocketProvider';
-import { useSubmitQuery } from '@/hooks/useQuery';
-import { useComplexityEstimation } from '@/hooks/useMLInference';
-import { cn } from '@/lib/utils/cn';
-import { QueryOperation } from '@/types';
+import { complexityEstimator } from '@/core/lib/ml/complexity-estimator';
+import { useWebSocket } from '@/core/lib/websocket/WebSocketProvider';
+import { useSubmitQuery } from '@/core/hooks/useQuery';
+import { useComplexityEstimation } from '@/core/hooks/useMLInference';
+import { cn } from '@/core/lib/utils/cn';
+import { QueryOperation } from '@/core/types';
 import { toast } from 'sonner';
 
 export function QueryInput() {
