@@ -30,12 +30,18 @@ jobs:
       - name: Install dependencies
         run: |
           cd amaima/frontend
-          npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/parser
+          npm install --save-dev @next/eslint-plugin-next
           npm ci
       - name: Lint
-        run: cd amaima/frontend && npx next lint
+        run: cd amaima/frontend && npm run lint -- --no-interactive
+      - name: Type Check
+        run: cd amaima/frontend && npx tsc --noEmit
       - name: Build
         run: cd amaima/frontend && npm run build
+      - name: Verify build output
+        run: |
+          cd amaima/frontend
+          test -d .next || (echo "Build output (.next) missing" && exit 1)
 ```
 
 ## 2. Backend Workflow (`.github/workflows/backend.yml`)

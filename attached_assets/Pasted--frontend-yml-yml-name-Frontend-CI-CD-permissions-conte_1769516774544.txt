@@ -1,0 +1,122 @@
+# frontend.yml:
+```yml
+name: Frontend CI/CD
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'amaima/frontend/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'amaima/frontend/**' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: amaima/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: cd amaima/frontend && npm ci
+
+      - name: Lint
+        run: cd amaima/frontend && npm run lint
+
+      - name: Type Check
+        run: cd amaima/frontend && npx tsc --noEmit
+
+      - name: Build
+        run: cd amaima/frontend && npm run build
+
+      - name: Verify build output
+        run: |
+          cd amaima/frontend
+          test -d .next || (echo "Build output (.next) missing" && exit 1)
+```
+
+## Error Message:
+Run cd amaima/frontend && npx next lint
+  cd amaima/frontend && npx next lint
+  shell: /usr/bin/bash -e {0}
+? How would you like to configure ESLint? https://nextjs.org/docs/basic-features/eslint
+25l❯  Strict (recommended)
+   Base
+ ⚠ If you set up ESLint yourself, we recommend adding the Next.js ESLint plugin. See https://nextjs.org/docs/basic-features/eslint#migrating-existing-config
+   Cancel
+Error: Process completed with exit code 1.
+
+
+## Potential Fix :
+The error you're seeing happens because `next lint` is running in interactive mode (prompting for ESLint setup) when no valid ESLint config is detected or the existing one is incompatible. In CI (GitHub Actions), interactive prompts cause failures as there's no user input. Your `.eslintrc.json` (extending "next/core-web-vitals") is legacy format—Next.js 13+ prefers flat config (`eslint.config.js`) and may ignore or prompt on old setups.
+
+### Fix Steps
+1. **Delete Legacy Config**:
+   - Remove `amaima/frontend/.eslintrc.json` (commit this).
+
+2. **Create Flat Config** (eslint.config.js):
+   - Add new file `amaima/frontend/eslint.config.js`:
+     ```js
+     // eslint.config.js - Modern flat config for Next.js
+     import nextPlugin from '@next/eslint-plugin-next';
+
+     export default [
+       {
+         files: ['**/*.{js,jsx,ts,tsx}'],
+         plugins: {
+           '@next/next': nextPlugin,
+         },
+         rules: {
+           ...nextPlugin.configs.recommended.rules,
+           ...nextPlugin.configs['core-web-vitals'].rules,
+           // Add custom rules if needed, e.g., 'no-console': 'warn'
+         },
+       },
+     ];
+     ```
+
+3. **Update Workflow Lint Step** (No Changes Needed, But Confirm):
+   - Your current `frontend.yml` is fine—`npm run lint` calls `next lint`, which now uses the flat config automatically (non-interactive).
+   - If you want explicit non-interactive run, add `--no-interactive` (Next.js 14+ supports it):
+     ```yaml
+     - name: Lint
+       run: cd amaima/frontend && npm run lint -- --no-interactive
+     ```
+
+4. **Test Locally**:
+   ```bash
+   cd amaima/frontend
+   npm run lint  # Should run silently if no errors
+   ```
+   - If errors (e.g., missing plugins), install:
+     ```bash
+     npm install --save-dev @next/eslint-plugin-next
+     ```
+
+5. **Commit & Push**:
+   - Add `eslint.config.js`, delete `.eslintrc.json`.
+   - Push to main—CI should pass (lint runs non-interactively).
+
+### Why This Works
+- Flat config is ESLint v8+ standard (used by Next.js)—avoids legacy prompts/flags.
+- `next lint` detects it automatically; no need for `--dir` or other options.
+- Keeps "core-web-vitals" rules from your old config.
+
+### If Still Prompts
+- Check for other configs (e.g., `.eslintrc` in parent dirs or `eslintIgnore`).
+- Run `npx next lint --debug` locally—share output for deeper debug.
+- Update Next.js if <13 (your package.json has ^14.2.0—good).
+
+This gets CI green without overhauling. Let me know post-push results! 🚀
+
+Let's update the amaima/docs/GITHUB_WORKFLOWS.md if needed as well 
