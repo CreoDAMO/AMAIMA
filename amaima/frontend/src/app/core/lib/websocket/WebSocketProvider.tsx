@@ -19,7 +19,7 @@ const WebSocketContext = createContext<WebSocketContextType | null>(null);
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
-  const [connectionQuality, setConnectionQuality] = useState<
+  const [connectionQuality, setLocalConnectionQuality] = useState<
     'excellent' | 'good' | 'poor' | 'disconnected'
   >('disconnected');
   
@@ -30,13 +30,18 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const messageQueueRef = useRef<any[]>([]);
   
   const { token } = useAuthStore();
-  const { setSystemStatus, updateModelStatus, setConnected, setConnectionQuality } = useSystemStore();
+  const { setSystemStatus, updateModelStatus, setConnected, setConnectionQuality: setGlobalConnectionQuality } = useSystemStore();
   const { updateQueryStatus, appendResponseChunk } = useQueryStore();
 
   const MAX_RECONNECT_ATTEMPTS = 5;
   const BASE_RECONNECT_DELAY = 1000;
   const PING_INTERVAL = 30000;
   const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000';
+
+  const updateConnectionQuality = useCallback((quality: 'excellent' | 'good' | 'poor' | 'disconnected') => {
+    setLocalConnectionQuality(quality);
+    setGlobalConnectionQuality(quality);
+  }, [setGlobalConnectionQuality]);
 
   const processMessage = useCallback((message: WebSocketMessage) => {
     switch (message.type) {
@@ -70,18 +75,18 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       case 'pong': {
         const latency = Date.now() - parseInt(message.timestamp);
         if (latency < 100) {
-          setConnectionQuality('excellent');
+          updateConnectionQuality('excellent');
         } else if (latency < 300) {
-          setConnectionQuality('good');
+          updateConnectionQuality('good');
         } else {
-          setConnectionQuality('poor');
+          updateConnectionQuality('poor');
         }
         break;
       }
       default:
         break;
     }
-  }, [updateQueryStatus, appendResponseChunk, setSystemStatus, updateModelStatus, setConnectionQuality]);
+  }, [updateQueryStatus, appendResponseChunk, setSystemStatus, updateModelStatus, updateConnectionQuality]);
 
   const connect = useCallback(() => {
     if (!token) return;
@@ -95,7 +100,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         console.log('WebSocket connected');
         setIsConnected(true);
         setConnected(true);
-        setConnectionQuality('excellent');
+        updateConnectionQuality('excellent');
         reconnectAttempts.current = 0;
 
         // Send authentication
@@ -137,14 +142,14 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
       wsRef.current.onerror = (error) => {
         console.error('WebSocket error:', error);
-        setConnectionQuality('poor');
+        updateConnectionQuality('poor');
       };
 
       wsRef.current.onclose = (event) => {
         console.log('WebSocket disconnected:', event.code, event.reason);
         setIsConnected(false);
         setConnected(false);
-        setConnectionQuality('disconnected');
+        updateConnectionQuality('disconnected');
 
         if (pingIntervalRef.current) {
           clearInterval(pingIntervalRef.current);
@@ -163,9 +168,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
-      setConnectionQuality('disconnected');
+      updateConnectionQuality('disconnected');
     }
-  }, [token, WS_URL, setConnected, setConnectionQuality, processMessage]);
+  }, [token, WS_URL, setConnected, updateConnectionQuality, processMessage]);
 
   const sendMessage = useCallback((message: any) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

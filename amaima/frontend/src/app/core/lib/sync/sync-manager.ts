@@ -2,6 +2,7 @@
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { queryClient } from '@/lib/query/client';
+import { secureStorage } from '@/lib/utils/secure-storage';
 
 interface PendingOperation {
   id: string;
