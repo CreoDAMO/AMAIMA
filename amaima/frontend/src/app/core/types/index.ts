@@ -126,6 +126,7 @@ export type WebSocketMessageType =
   | 'query_update'
   | 'workflow_update'
   | 'system_status'
+  | 'model_status'
   | 'auth_confirm'
   | 'ping'
   | 'pong';

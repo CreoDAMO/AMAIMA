@@ -9,11 +9,16 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Loader2, Wifi } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
+import { WebSocketMessage } from '@/types';
 
 // Mock components and hooks that are missing or causing issues
 const FileUpload = ({ onUpload }: any) => null;
 const useAuth = () => ({ accessToken: '' });
-const useWebSocket = () => ({ isConnected: false, lastMessage: null, submitQuery: (q: string, o: string) => {} });
+const useWebSocket = () => ({
+  isConnected: false,
+  lastMessage: null as WebSocketMessage | null,
+  submitQuery: (q: string, o: string) => {}
+});
 
 interface QueryResult {
   responseText: string;
