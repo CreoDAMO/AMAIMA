@@ -1,4 +1,6 @@
 name: Frontend CI/CD
+permissions:
+  contents: read
 
 on:
   push:
