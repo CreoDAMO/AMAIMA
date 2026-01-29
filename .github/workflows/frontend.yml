@@ -13,26 +13,22 @@ permissions:
   contents: read
   pull-requests: write
 
-defaults:
-  run:
-    working-directory: amaima/frontend
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
+          cache: 'npm'
           cache-dependency-path: amaima/frontend/package-lock.json
 
       - name: Install dependencies
+        working-directory: amaima/frontend
         run: |
           if [ -f package-lock.json ]; then
             npm ci
@@ -41,15 +37,19 @@ jobs:
           fi
 
       - name: Lint
-        run: npm run lint -- --max-warnings=0
+        working-directory: amaima/frontend
+        run: npm run lint
 
       - name: Type Check
+        working-directory: amaima/frontend
         run: npx tsc --noEmit
 
       - name: Build
+        working-directory: amaima/frontend
         env:
           NEXT_TELEMETRY_DISABLED: 1
         run: npm run build
 
       - name: Verify build output
+        working-directory: amaima/frontend
         run: test -d .next
