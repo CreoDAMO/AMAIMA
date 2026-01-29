@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useWebSocket } from '@/lib/websocket/WebSocketProvider';
-import { cn } from '@/lib/utils/cn';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { useWebSocket } from '../../lib/websocket/WebSocketProvider';
+import { cn } from '../../lib/utils/cn';
 import {
   LineChart,
   Line,
@@ -18,7 +18,7 @@ import {
 } from 'recharts';
 import { Activity, Cpu, HardDrive, Zap, Server, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { formatRelativeTime } from '@/lib/utils/format';
+import { formatRelativeTime } from '../../lib/utils/format';
 
 interface SystemMetrics {
   timestamp: number;

@@ -1,6 +1,6 @@
 // frontend/lib/upload/file-uploader.ts
 
-import { secureStorage } from '@/lib/utils/secure-storage';
+import { secureStorage } from '../utils/secure-storage';
 
 interface UploadProgress {
   fileId: string;

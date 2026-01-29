@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { queriesApi } from '@/lib/api/queries';
-import { useQueryStore } from '@/lib/stores/useQueryStore';
-import { useWebSocket } from '@/lib/websocket/WebSocketProvider';
+import { queriesApi } from '../lib/api/queries';
+import { useQueryStore } from '../lib/stores/useQueryStore';
+import { useWebSocket } from '../lib/websocket/WebSocketProvider';
 import { useCallback } from 'react';
-import { QuerySubmitRequest, Query } from '@/types';
+import { QuerySubmitRequest, Query } from '../types';
 import { toast } from 'sonner';
 
 export function useSubmitQuery() {
