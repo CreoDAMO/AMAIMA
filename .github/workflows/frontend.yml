@@ -1,0 +1,48 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'amaima/frontend/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'amaima/frontend/**' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: amaima/frontend/package-lock.json
+      - name: Install dependencies
+        run: |
+          cd amaima/frontend
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Lint
+        run: cd amaima/frontend && npm run lint
+      - name: Type Check
+        run: cd amaima/frontend && npx tsc --noEmit
+      - name: Build
+        run: |
+          cd amaima/frontend
+          npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+      - name: Verify build output
+        run: |
+          cd amaima/frontend
+          test -d .next || (echo "Build output (.next) missing" && exit 1)
