@@ -16,17 +16,14 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: amaima/frontend/package-lock.json
-
       - name: Install dependencies
         working-directory: amaima/frontend
         run: |
@@ -35,21 +32,18 @@ jobs:
           else
             npm install
           fi
-
       - name: Lint
         working-directory: amaima/frontend
         run: npm run lint
-
       - name: Type Check
         working-directory: amaima/frontend
         run: npx tsc --noEmit
-
       - name: Build
         working-directory: amaima/frontend
+        run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-        run: npm run build
-
       - name: Verify build output
-        working-directory: amaima/frontend
-        run: test -d .next
+        run: |
+          cd amaima/frontend
+          test -d .next || (echo "Build output (.next) missing" && exit 1)
