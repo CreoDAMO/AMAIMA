@@ -32,23 +32,22 @@ jobs:
           cache: 'npm'
           cache-dependency-path: amaima/frontend/package-lock.json
       - name: Install dependencies
+        working-directory: amaima/frontend
         run: |
-          cd amaima/frontend
           if [ -f package-lock.json ]; then
             npm ci
           else
             npm install
           fi
       - name: Lint
-        run: |
-          cd amaima/frontend
-          npx next lint
+        working-directory: amaima/frontend
+        run: npm run lint
       - name: Type Check
-        run: cd amaima/frontend && npx tsc --noEmit
+        working-directory: amaima/frontend
+        run: npx tsc --noEmit
       - name: Build
-        run: |
-          cd amaima/frontend
-          npm run build
+        working-directory: amaima/frontend
+        run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
       - name: Verify build output
