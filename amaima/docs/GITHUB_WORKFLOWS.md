@@ -16,6 +16,10 @@ on:
     paths: [ 'amaima/frontend/**' ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
