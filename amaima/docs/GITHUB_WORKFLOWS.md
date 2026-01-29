@@ -42,7 +42,7 @@ jobs:
       - name: Lint
         run: |
           cd amaima/frontend
-          npm run lint -- --dir .
+          npm run lint -- -d .
       - name: Type Check
         run: cd amaima/frontend && npx tsc --noEmit
       - name: Build
