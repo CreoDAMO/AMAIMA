@@ -1,0 +1,275 @@
+AMAIMA FILE PATHS
+
+Links & Paths:
+
+https://github.com/CreoDAMO/AMAIMA/tree/main
+
+.github/workflows
+
+Path: .github/workflows/backend.yml
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/.github/workflows/backend.yml
+
+Path: .github/workflows/frontend.yml
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/.github/workflows/frontend.yml
+
+Path: .github/workflows/mobile.yml
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/.github/workflows/frontend.yml
+
+amaima
+
+Path: amaima/backend
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend
+
+Path: amaima/backend/app
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/app
+
+Path: amaima/backend/app/core
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/app/core
+
+Path: amaima/backend/app/core/init.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/core/init.py
+
+Path: amaima/backend/app/core/production_api_server.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/core/production_api_server.py
+
+Path: amaima/backend/app/core/progressive_model_loader.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/core/progressive_model_loader.py
+
+Path: amaima/backend/app/core/unified_smart_router.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/core/unified_smart_router.py
+
+Path: amaima/backend/app/modules
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/app/modules
+
+Path: amaima/backend/app/modules/execution_engine.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/modules/execution_engine.py
+
+Path: amaima/backend/app/modules/multi_layer_verification_engine.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/modules/multi_layer_verification_engine.py
+
+Path: amaima/backend/app/modules/observability_framework.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/modules/observability_framework.py
+
+Path: amaima/backend/app/modules/smart_router_engine.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/modules/smart_router_engine.py
+
+Path: amaima/backend/app/init.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/init.py
+
+Path: amaima/backend/app/database.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/database.py
+
+Path: amaima/backend/app/security.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/app/security.py
+
+Path: amaima/backend/auth
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/auth
+
+Path: amaima/backend/auth/token_validation.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/auth/token_validation.py
+
+Path: amaima/backend/middleware
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/middleware
+
+Path: amaima/backend/middleware/error_handler.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/middleware/error_handler.py
+
+Path: amaima/backend/routers
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/backend/routers
+
+Path: amaima/backend/routers/query_router.py
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/backend/routers/query_router.py
+
+Path: amaima/config
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/config
+
+Path: amaima/config/backend
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/config/backend
+
+Path: amaima/config/backend/amaima_config.yaml
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/config/backend/amaima_config.yaml
+
+Path: amaima/config/frontend
+
+amaima/config/frontend/next.config.js
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/config/frontend/next.config.js
+
+Path: amaima/docs
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/docs
+
+Path: amaima/frontend
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend
+
+Path: amaima/frontend/src
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src
+
+Path: amaima/frontend/src/app
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app
+
+Path: amaima/frontend/src/app/api
+
+https://github.com/CreoDAMyyO/AMAIMA/tree/main/amaima/frontend/src/app/api
+
+Path: amaima/frontend/src/app/api/health
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/api/health
+
+Path: amaima/frontend/src/app/api/health/route.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/api/health/route.ts
+
+Path: amaima/frontend/src/app/api/v1
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/api/v1
+
+Path: amaima/frontend/src/app/api/v1/models
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/api/v1/models
+
+Path: amaima/frontend/src/app/api/v1/models/route.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/api/v1/models/route.ts
+
+Path: amaima/frontend/src/app/api/v1/query
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/api/v1/query
+
+Path: amaima/frontend/src/app/api/v1/query/route.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/api/v1/query/route.ts
+
+Path: amaima/frontend/src/app/api/v1/stats
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/api/v1/stats
+
+Path: amaima/frontend/src/app/api/v1/stats/route.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/api/v1/stats/route.ts
+
+Path: amaima/frontend/src/app/core
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core
+
+Path: amaima/frontend/src/app/core/components
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/components
+
+Path: amaima/frontend/src/app/core/components/dashboard
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/components/dashboard
+
+Path: amaima/frontend/src/app/core/components/dashboard/SystemMonitor.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/dashboard/SystemMonitor.tsx
+
+Path: amaima/frontend/src/app/core/components/query
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/components/query
+
+Path: amaima/frontend/src/app/core/components/query/CodeBlock.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/query/CodeBlock.tsx
+
+Path: amaima/frontend/src/app/core/components/query/QueryInput.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/query/QueryInput.tsx
+
+Path: amaima/frontend/src/app/core/components/query/QueryWithFile.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/query/QueryWithFile.tsx
+
+Path: amaima/frontend/src/app/core/components/query/StreamingResponse.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/query/StreamingResponse.tsx
+
+Path: amaima/frontend/src/app/core/components/shared
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/components/shared
+
+Path: amaima/frontend/src/app/core/components/shared/FileUpload.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/shared/FileUpload.tsx
+
+Path:
+
+amaima/frontend/src/app/core/components/shared/Providers.tsx
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/shared/Providers.tsx
+
+Path: amaima/frontend/src/app/core/components/ui
+
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/components/ui
+
+Path: amaima/frontend/src/app/core/components/ui/badge.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/ui/badge.tsx
+
+Path: amaima/frontend/src/app/core/components/ui/button.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/ui/button.tsx
+
+Path: amaima/frontend/src/app/core/components/ui/card.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/ui/card.tsx
+
+Path: amaima/frontend/src/app/core/components/ui/skeleton.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/ui/skeleton.tsx
+
+Path: amaima/frontend/src/app/core/components/ui/textarea.tsx
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/components/ui/textarea.tsx
+
+Path:
+
+amaima/frontend/src/app/core/hooks
+https://github.com/CreoDAMO/AMAIMA/tree/main/amaima/frontend/src/app/core/hooks
+
+Path:
+
+amaima/frontend/src/app/core/hooks/useAuth.ts
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/hooks/useAuth.ts
+
+Path: amaima/frontend/src/app/core/hooks/useDebounce.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/hooks/useDebounce.ts
+
+Path: amaima/frontend/src/app/core/hooks/useMLInference.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/hooks/useMLInference.ts
+
+Path: amaima/frontend/src/app/core/hooks/useQuery.ts
+
+https://github.com/CreoDAMO/AMAIMA/blob/main/amaima/frontend/src/app/core/hooks/useQuery.ts
+
+This isn't all the Paths, but these are correct Paths
