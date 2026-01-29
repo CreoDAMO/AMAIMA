@@ -40,7 +40,9 @@ jobs:
             npm install
           fi
       - name: Lint
-        run: cd amaima/frontend && npm run lint
+        run: |
+          cd amaima/frontend
+          npm run lint -- --dir .
       - name: Type Check
         run: cd amaima/frontend && npx tsc --noEmit
       - name: Build
