@@ -8,11 +8,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'mobile/**'
+      - 'amaima/mobile/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'mobile/**'
+      - 'amaima/mobile/**'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: mobile
+        working-directory: amaima/mobile
 
     steps:
       - name: Checkout repository
@@ -32,15 +32,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          # ✅ cache field REMOVED (this is the fix)
 
-      - name: Cache Gradle files
+      - name: Cache Gradle
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/**/*.gradle*', 'amaima/mobile/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
@@ -63,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: amaima-debug-apk
-          path: mobile/**/build/outputs/**/*.apk
+          path: amaima/mobile/**/build/outputs/**/*.apk
