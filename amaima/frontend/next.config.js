@@ -61,8 +61,10 @@ const nextConfig = {
     
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion'],
+        turbo: {
+            enabled: false,
+        },
     },
-    turbopack: {},
 };
 
 module.exports = nextConfig;

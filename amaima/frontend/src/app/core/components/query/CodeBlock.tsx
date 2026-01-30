@@ -2,10 +2,10 @@
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Button } from '../ui/button';
+import { Button } from '@/app/core/components/ui/button';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
-import { cn } from '../../lib/utils/cn';
+import { cn } from '@/app/core/lib/utils/cn';
 
 interface CodeBlockProps {
   code: string;

@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useWebSocket } from '../../lib/websocket/WebSocketProvider';
-import { Card } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Skeleton } from '../ui/skeleton';
+import { useWebSocket } from '@/app/core/lib/websocket/WebSocketProvider';
+import { Card } from '@/app/core/components/ui/card';
+import { Badge } from '@/app/core/components/ui/badge';
+import { Skeleton } from '@/app/core/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, Clock, Copy, Share2, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Markdown from 'react-markdown';
 import { CodeBlock } from './CodeBlock';
-import { Query } from '../../types';
+import { Query } from '@/app/core/types';
 
 interface StreamingResponseProps {
   queryId: string;

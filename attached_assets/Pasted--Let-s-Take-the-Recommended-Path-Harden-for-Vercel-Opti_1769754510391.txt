@@ -1,0 +1,153 @@
+✅ Let's Take the Recommended Path: Harden for Vercel (Option 2)
+
+This is the smart move—it's quick (likely under an hour if we tackle it step-by-step), makes your setup portable, and aligns with enterprise-grade practices without overcomplicating things. We'll focus on the root causes you identified: import paths, client boundaries, bundler parity, and file verification. Once fixed, AMAIMA will deploy cleanly to Vercel, and you'll have a reusable checklist for future deploys.
+
+I'll guide you through the fixes with exact code changes, assuming your monorepo structure (`amaima/frontend/src/...`). Adjust paths if slightly off. If you share the exact error log from Vercel (e.g., the full build output), I can refine further.
+
+---
+
+### Step 1: Switch to Absolute Imports (Eliminates Relative Path Errors)
+
+Your error ("Can't resolve '../../lib/query/client'") screams relative import fragility. Vercel's strict resolver catches what Replit ignores.
+
+**Fix:**
+- Update `tsconfig.json` (in `amaima/frontend/` or root if monorepo-shared) to enable path aliases.
+- Replace all relative imports with absolute ones (e.g., `@/lib/query/client`).
+
+Updated `tsconfig.json` snippet:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    // ... other options like target, module, etc.
+  }
+}
+```
+
+- In `Providers.tsx` (assuming it's in `src/app/providers/Providers.tsx` or similar), change the import:
+
+Before:
+```tsx
+import { queryClient } from '../../lib/query/client';  // Fragile relative path
+```
+
+After:
+```tsx
+import { queryClient } from '@/lib/query/client';  // Absolute, resilient
+```
+
+- Do this globally: Search your codebase for relative imports (`../` or `../../`) and convert them. Tools like VS Code's "Find All References" help.
+
+**Why this works on Vercel:** Aliases force consistent resolution, bypassing FS case sensitivity and depth issues.
+
+---
+
+### Step 2: Enforce Client-Side Boundaries
+
+Providers.tsx likely mixes server/client code (e.g., React Query with hooks like `useQueryClient`). Replit's dev server is lax; Vercel enforces Next.js's RSC (React Server Components) rules strictly.
+
+**Fix:**
+- Add `'use client';` at the very top of `Providers.tsx` (before any imports).
+
+Updated `Providers.tsx`:
+
+```tsx
+'use client';  // Marks this as a Client Component
+
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/lib/query/client';  // Using absolute import
+// ... other imports (WebSocket, auth context, etc.)
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  // Your existing code...
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* ... rest of providers */}
+      {children}
+    </QueryClientProvider>
+  );
+}
+```
+
+- If `Providers` is imported in `layout.tsx` (a Server Component), this ensures hydration works without errors.
+
+**Pro Tip:** If you have server-only logic, split into separate files (e.g., `Providers.server.tsx` without `'use client'`).
+
+---
+
+### Step 3: Align Bundlers (Webpack Everywhere for Parity)
+
+Since you forced Webpack in Replit/local, do the same on Vercel to match behavior. This avoids Turbopack's stricter checks until you're ready.
+
+**Fix:**
+- Update `next.config.js` (or `.mjs`) in `amaima/frontend/`:
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    turbo: false,  // Disables Turbopack, forces Webpack
+  },
+  // ... other configs (e.g., images, rewrites)
+};
+
+module.exports = nextConfig;
+```
+
+- Commit and push. Vercel will now use Webpack, matching your Replit setup.
+
+**Alternative (Long-Term):** If you want Turbopack, remove this and fix any dynamic imports or FS assumptions—but Webpack is fine for now.
+
+---
+
+### Step 4: Verify Files and Git Integrity
+
+Replit can run uncommitted files; Vercel builds only from Git.
+
+**Fix:**
+- Run locally (in repo root):
+  ```
+  git ls-files | grep lib/query/client
+  ```
+  - If nothing: The file isn't committed—add it with `git add amaima/frontend/src/lib/query/client.ts` and commit.
+  - If casing mismatch (e.g., `Client.ts` vs `client.ts`): Fix to lowercase (Linux/Vercel is case-sensitive).
+
+- Clean build locally:
+  ```
+  cd amaima/frontend
+  rm -rf .next
+  npm run build
+  ```
+  - If it fails locally now, match the Vercel error and iterate.
+
+- Push to GitHub, then redeploy on Vercel (connect repo if not already).
+
+---
+
+### Step 5: Deploy and Test on Vercel
+
+1. In Vercel dashboard: Create a new project, link to your GitHub repo, select `amaima/frontend` as root dir.
+2. Set build command: `npm run build` (default works).
+3. Environment vars: Add any needed (e.g., API_URL for backend).
+4. Deploy—watch logs for the same error. If gone, test endpoints.
+
+If backend is involved (e.g., API calls fail), ensure it's deployed separately (e.g., on Railway) and update frontend env vars.
+
+---
+
+### Portable Build Checklist (Reusable Forever)
+
+Save this for future projects:
+- [ ] All imports absolute via tsconfig paths.
+- [ ] Client components marked `'use client';`.
+- [ ] Bundler consistent (Webpack or Turbo across envs).
+- [ ] Files committed and cased correctly (git ls-files check).
+- [ ] Local build passes: `npm run build`.
+- [ ] No Replit-specific hacks (e.g., persistent FS).
+- [ ] Vercel settings: Root dir set, env vars mirrored.
+
+This should get you live on Vercel. If you hit a specific error post-fixes (e.g., new log), paste it here—we'll debug. Want me to review your tsconfig or next.config fully? Share the files. Or if you'd prefer the hybrid option (Vercel frontend + Replit backend), I can outline that next.
