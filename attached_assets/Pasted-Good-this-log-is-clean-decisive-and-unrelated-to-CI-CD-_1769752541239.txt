@@ -1,0 +1,237 @@
+Good — this log is clean, decisive, and unrelated to CI/CD or caching.
+We are now firmly in frontend source correctness + monorepo resolution territory.
+
+I’ll break this down clearly and then give you exact fixes.
+
+
+---
+
+✅ What Vercel Is Doing Correctly
+
+From the log, Vercel is behaving exactly as expected:
+
+✅ Repo cloned successfully
+
+✅ Dependencies installed
+
+✅ Correct Next.js version detected
+
+✅ npm run build executed
+
+❌ Build failed due to a real import error
+
+
+This means:
+
+> Vercel is not misconfigured
+The failure is a real code-path problem
+
+
+
+
+---
+
+🔥 The Actual Error (Root Cause)
+
+Module not found: Can't resolve '../../lib/query/client'
+
+From:
+
+amaima/frontend/src/app/core/components/shared/Providers.tsx
+
+Import in question:
+
+import { queryClient } from '../../lib/query/client';
+
+
+---
+
+🧠 Why This Works Locally but Fails on Vercel
+
+This is almost certainly one (or more) of these:
+
+1️⃣ Case-sensitivity mismatch (MOST COMMON)
+
+macOS / Windows → case-insensitive
+Linux (Vercel) → case-sensitive
+
+Examples that break on Vercel:
+
+query/client.ts vs Query/client.ts
+
+lib/query/Client.ts vs client.ts
+
+
+👉 Local dev won’t catch this. Vercel will.
+
+
+---
+
+2️⃣ The file does not exist at that path
+
+Given the file location:
+
+src/app/core/components/shared/Providers.tsx
+
+../../lib/query/client resolves to:
+
+src/app/core/lib/query/client
+
+But most projects actually have:
+
+src/lib/query/client.ts
+
+If so, the import is wrong.
+
+
+---
+
+3️⃣ Monorepo root mismatch (VERY LIKELY HERE)
+
+Your repo structure (based on logs):
+
+amaima/
+  frontend/
+    src/
+      app/
+      lib/
+
+But the import assumes lib is relative to app, not src.
+
+
+---
+
+✅ The Correct, Enterprise-Grade Fix (Recommended)
+
+✅ Use absolute imports with tsconfig.json paths
+
+This avoids all of the above issues permanently.
+
+
+---
+
+Step 1 — Verify the file actually exists
+
+Confirm one of these exists exactly (case included):
+
+amaima/frontend/src/lib/query/client.ts
+
+or
+
+amaima/frontend/src/lib/query/client/index.ts
+
+If not → that’s the bug.
+
+
+---
+
+Step 2 — Fix tsconfig.json
+
+In amaima/frontend/tsconfig.json:
+
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  }
+}
+
+
+---
+
+Step 3 — Fix the import (this is the real fix)
+
+Change this:
+
+import { queryClient } from '../../lib/query/client';
+
+To this:
+
+import { queryClient } from '@/lib/query/client';
+
+This:
+
+✅ Works locally
+
+✅ Works on Vercel
+
+✅ Works in monorepos
+
+✅ Survives refactors
+
+✅ Is Next.js best practice
+
+
+
+---
+
+🛑 Important: Providers.tsx Is a Server Component
+
+Your error trace shows:
+
+Import trace:
+  Server Component:
+    Providers.tsx
+
+But you are importing:
+
+@tanstack/react-query
+
+WebSocket provider
+
+Auth provider
+
+
+❗ This component must be a client component
+
+At the top of Providers.tsx, you need:
+
+'use client';
+
+Otherwise, Turbopack will fail later even after the path fix.
+
+
+---
+
+✅ Final Checklist (Do These Exactly)
+
+1. ✔ Confirm file path + casing:
+
+amaima/frontend/src/lib/query/client.ts
+
+
+2. ✔ Add 'use client'; to Providers.tsx
+
+
+3. ✔ Switch all deep relative imports to @/lib/...
+
+
+4. ✔ Commit & push
+
+
+5. ✔ Redeploy on Vercel (no config change needed)
+
+
+
+
+---
+
+🎯 Why This Matters Architecturally
+
+What you’re seeing is the correct failure mode of an enterprise-grade pipeline:
+
+CI/CD caught infra issues
+
+Vercel caught platform correctness
+
+Linux caught casing bugs
+
+Turbopack enforced module boundaries
+
+
+This is exactly how production systems harden themselves.
+
+
+---
