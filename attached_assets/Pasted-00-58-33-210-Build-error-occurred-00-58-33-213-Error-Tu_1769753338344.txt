@@ -1,0 +1,11 @@
+00:58:33.210 > Build error occurred
+00:58:33.213 Error: Turbopack build failed with 1 errors:
+00:58:33.214 Module not found: Can't resolve '@/core/lib/query/client'
+00:58:33.214 [0m [90m 2 |[39m
+00:58:33.215  [90m 3 |[39m [36mimport[39m { [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+00:58:33.215 [31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { queryClient } [36mfrom[39m [32m'@/core/lib/query/client'[39m[33m;[39m
+00:58:33.216  [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+00:58:33.217  [90m 5 |[39m [36mimport[39m { [33mAuthProvider[39m } [36mfrom[39m [32m'@/core/lib/auth/auth-provider'[39m[33m;[39m
+00:58:33.217  [90m 6 |[39m [36mimport[39m { [33mWebSocketProvider[39m } [36mfrom[39m [32m'@/core/lib/websocket/WebSocketProvider'[39m[33m;[39m
+00:58:33.217  [90m 7 |[39m [36mimport[39m { [33mToaster[39m } [36mfrom[39m [32m'sonner'[39m[33m;[39m[0m
+00:58:33.254 Error: Command "npm run build" exited with 1

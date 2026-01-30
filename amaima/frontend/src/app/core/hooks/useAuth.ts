@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/core/lib/stores/useAuthStore';
+import { useAuthStore } from '@/app/core/lib/stores/useAuthStore';
 
 export function useAuth() {
   const { user, isAuthenticated, isLoading, login, logout } = useAuthStore();

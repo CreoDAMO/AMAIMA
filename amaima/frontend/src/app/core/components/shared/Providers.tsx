@@ -1,9 +1,9 @@
 'use client';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@/core/lib/query/client';
-import { AuthProvider } from '@/core/lib/auth/auth-provider';
-import { WebSocketProvider } from '@/core/lib/websocket/WebSocketProvider';
+import { queryClient } from '@/app/core/lib/query/client';
+import { AuthProvider } from '@/app/core/lib/auth/auth-provider';
+import { WebSocketProvider } from '@/app/core/lib/websocket/WebSocketProvider';
 import { Toaster } from 'sonner';
 
 export function Providers({ children }: { children: React.ReactNode }) {
