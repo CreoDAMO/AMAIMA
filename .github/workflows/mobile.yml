@@ -8,11 +8,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'amaima/mobile/**'
+      - 'mobile/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'amaima/mobile/**'
+      - 'mobile/**'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: amaima/mobile/android
+        working-directory: mobile
 
     steps:
       - name: Checkout repository
@@ -32,14 +32,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          # ❌ disable built-in gradle cache
+          cache: none
 
-      - name: Cache Gradle
+      - name: Cache Gradle files
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/android/**/*.gradle*', 'amaima/mobile/android/**/gradle-wrapper.properties') }}
+          key: gradle-\( {{ runner.os }}- \){{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
@@ -62,4 +64,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: amaima-debug-apk
-          path: amaima/mobile/android/**/build/outputs/**/*.apk
+          path: mobile/**/build/outputs/**/*.apk
