@@ -61,10 +61,10 @@ const nextConfig = {
     
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion'],
+        turbo: {
+            enabled: false,
+        },
     },
-    // Explicitly disable Turbopack for production builds if needed, 
-    // though next build uses webpack by default in many cases.
-    // Forcing webpack behavior:
     webpack: (config, { isServer }) => {
         if (!isServer) {
             config.resolve.fallback = {
@@ -76,6 +76,7 @@ const nextConfig = {
         
         return config;
     },
+    turbopack: {},
 };
 
 module.exports = nextConfig;
