@@ -32,7 +32,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          # ✅ cache field OMITTED entirely (this disables built-in caching without error)
 
       - name: Cache Gradle files
         uses: actions/cache@v4
