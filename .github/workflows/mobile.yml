@@ -21,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: amaima/mobile
+        working-directory: amaima/mobile/android
 
     steps:
       - name: Checkout repository
@@ -39,7 +39,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/**/*.gradle*', 'amaima/mobile/**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/android/**/*.gradle*', 'amaima/mobile/android/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
@@ -62,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: amaima-debug-apk
-          path: amaima/mobile/**/build/outputs/**/*.apk
+          path: amaima/mobile/android/**/build/outputs/**/*.apk
