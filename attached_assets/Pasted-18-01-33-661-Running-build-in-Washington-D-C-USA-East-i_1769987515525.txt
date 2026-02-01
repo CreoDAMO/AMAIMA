@@ -1,0 +1,268 @@
+18:01:33.661 Running build in Washington, D.C., USA (East) – iad1
+18:01:33.662 Build machine configuration: 2 cores, 8 GB
+18:01:33.795 Cloning github.com/CreoDAMO/AMAIMA (Branch: main, Commit: 51fcbd4)
+18:01:33.796 Previous build caches not available.
+18:01:34.565 Cloning completed: 769.000ms
+18:01:35.096 Running "vercel build"
+18:01:36.338 Vercel CLI 50.9.6
+18:01:36.655 Installing dependencies...
+18:01:40.225 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+18:01:42.611 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+18:01:42.674 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+18:01:47.408 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+18:01:56.886
+18:01:56.887 added 591 packages in 20s
+18:01:56.888
+18:01:56.888 237 packages are looking for funding
+18:01:56.888   run npm fund for details
+18:01:56.936 Detected Next.js version: 16.1.6
+18:01:56.942 Running "npm run build"
+18:01:57.043
+18:01:57.043 > amaima-frontend@5.0.0 build
+18:01:57.043 > next build
+18:01:57.043
+18:01:57.629 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+18:01:57.630 This information is used to shape Next.js' roadmap and prioritize features.
+18:01:57.630 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+18:01:57.630 https://nextjs.org/telemetry
+18:01:57.630
+18:01:57.649 ▲ Next.js 16.1.6 (Turbopack)
+18:01:57.649 - Experiments (use with caution):
+18:01:57.651   · optimizePackageImports
+18:01:57.651
+18:01:57.681   Creating an optimized production build ...
+18:02:04.521
+18:02:04.522 > Build error occurred
+18:02:04.525 Error: Turbopack build failed with 1 errors:
+18:02:04.525 ./amaima/frontend/src/app/core/components/shared/Providers.tsx:4:1
+18:02:04.525 Module not found: Can't resolve '@/app/core/lib/query/client'
+18:02:04.525 [0m [90m 2 |[39m
+18:02:04.526  [90m 3 |[39m [36mimport[39m { [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+18:02:04.526 [31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { queryClient } [36mfrom[39m [32m'@/app/core/lib/query/client'[39m[33m;[39m
+18:02:04.526  [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+18:02:04.526  [90m 5 |[39m [36mimport[39m { [33mAuthProvider[39m } [36mfrom[39m [32m'@/app/core/lib/auth/auth-provider'[39m[33m;[39m
+18:02:04.526  [90m 6 |[39m [36mimport[39m { [33mWebSocketProvider[39m } [36mfrom[39m [32m'@/app/core/lib/websocket/WebSocketProvider'[39m[33m;[39m
+18:02:04.527  [90m 7 |[39m [36mimport[39m { [33mToaster[39m } [36mfrom[39m [32m'sonner'[39m[33m;[39m[0m
+18:02:04.527
+18:02:04.527 Import map: aliased to relative './src/app/core/lib/query/client' inside of [project]/amaima/frontend
+18:02:04.527
+18:02:04.527
+18:02:04.527 Import trace:
+18:02:04.527   Server Component:
+18:02:04.527     ./amaima/frontend/src/app/core/components/shared/Providers.tsx
+18:02:04.527     ./amaima/frontend/src/app/layout.tsx
+18:02:04.527
+18:02:04.527 https://nextjs.org/docs/messages/module-not-found
+18:02:04.527
+18:02:04.527
+18:02:04.527     at <unknown> (./amaima/frontend/src/app/core/components/shared/Providers.tsx:4:1)
+18:02:04.527     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+18:02:04.576 Error: Command "npm run build" exited with 1
+
+Perfect — this log finally tells us exactly what’s wrong. And the good news is:
+👉 This is no longer a Vercel problem.
+👉 This is a single, precise alias + path mismatch.
+
+Let’s pin it down cleanly.
+
+
+---
+
+🔍 What Vercel Is Telling You (Very Precisely)
+
+This line is the key:
+
+Module not found: Can't resolve '@/app/core/lib/query/client'
+Import map: aliased to relative './src/app/core/lib/query/client'
+
+That means:
+
+@/ is correctly mapped to src/ ✅
+
+Vercel is expanding this import:
+
+
+@/app/core/lib/query/client
+
+into:
+
+src/app/core/lib/query/client
+
+But that file does not exist at that path — at least not with that exact casing and structure.
+
+
+---
+
+🧠 Why Replit “Worked” but Vercel Fails
+
+Replit is forgiving because:
+
+It runs in a dev-oriented FS environment
+
+It often tolerates:
+
+Case mismatches
+
+Implicit index files
+
+Cached module resolution
+
+
+
+Vercel:
+
+Uses a clean Linux FS
+
+Has zero tolerance for:
+
+Wrong directory depth
+
+Wrong casing
+
+Phantom paths
+
+
+
+So this is a filesystem truth mismatch, not a build system issue.
+
+
+---
+
+✅ The Exact Root Cause
+
+You have one of these situations (almost certainly):
+
+Case A — The file actually lives here:
+
+src/lib/query/client.ts
+
+But you’re importing:
+
+@/app/core/lib/query/client
+
+❌ Extra app/core in the import.
+
+
+---
+
+Case B — The file lives here:
+
+src/app/core/lib/query/Client.ts
+
+But you’re importing:
+
+client
+
+❌ Case mismatch (Client.ts vs client.ts).
+
+
+---
+
+Case C — The file is index.ts
+
+src/app/core/lib/query/index.ts
+
+But you’re importing:
+
+@/app/core/lib/query/client
+
+❌ No client.ts exists.
+
+
+---
+
+🛠️ The Correct Fix (Choose ONE, Don’t Mix)
+
+✅ Recommended (Cleanest, Most Scalable)
+
+Standardize everything under src/ and remove ambiguity.
+
+1️⃣ Ensure the file exists exactly as:
+
+src/app/core/lib/query/client.ts
+
+Lowercase. Exact path.
+
+2️⃣ Export explicitly:
+
+// client.ts
+import { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient();
+
+3️⃣ Import it like this (what you already did):
+
+import { queryClient } from '@/app/core/lib/query/client';
+
+That will pass every environment.
+
+
+---
+
+❌ What NOT to Do
+
+Don’t rely on index.ts unless intentional
+
+Don’t mix Client.ts / client.ts
+
+Don’t move files to “make it build” — align imports to reality
+
+
+
+---
+
+🔎 One Command to Prove It Locally
+
+Run this from amaima/frontend:
+
+ls src/app/core/lib/query
+
+You should see:
+
+client.ts
+
+If not — that’s the bug.
+
+
+---
+
+🧪 Why This Error Is Actually a Win
+
+This is the best possible failure you could have at this stage:
+
+❌ Not architecture
+
+❌ Not Next.js config
+
+❌ Not Vercel
+
+❌ Not Turbopack vs Webpack
+
+❌ Not CI/CD
+
+
+✅ A single deterministic import path mismatch
+
+Once fixed, the build will go green immediately.
+
+
+---
+
+Final State After Fix
+
+When this is corrected, AMAIMA will be:
+
+✅ Replit dev
+✅ Local prod build
+✅ Vercel prod build
+✅ Monorepo-safe
+✅ Alias-safe
+✅ Linux-safe
+
+You’re literally one file path away.
+
+If you want, paste the output of:
+
+tree src/app/core/lib/query
+
+and I’ll tell you the exact import line to use — zero guesswork.
