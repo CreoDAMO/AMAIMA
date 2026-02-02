@@ -1,0 +1,11 @@
+21:59:14.981 > Build error occurred
+21:59:14.984 Error: Turbopack build failed with 1 errors:
+21:59:14.985 Module not found: Can't resolve '@/app/core/lib/query/query-client'
+21:59:14.985 [0m [90m 2 |[39m
+21:59:14.985  [90m 3 |[39m [36mimport[39m { [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+21:59:14.985 [31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { queryClient } [36mfrom[39m [32m'@/app/core/lib/query/query-client'[39m[33m;[39m
+21:59:14.986  [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+21:59:14.986  [90m 5 |[39m [36mimport[39m { [33mAuthProvider[39m } [36mfrom[39m [32m'@/app/core/lib/auth/auth-provider'[39m[33m;[39m
+21:59:14.986  [90m 6 |[39m [36mimport[39m { [33mWebSocketProvider[39m } [36mfrom[39m [32m'@/app/core/lib/websocket/WebSocketProvider'[39m[33m;[39m
+21:59:14.986  [90m 7 |[39m [36mimport[39m { [33mToaster[39m } [36mfrom[39m [32m'sonner'[39m[33m;[39m[0m
+21:59:15.025 Error: Command "npm run build" exited with 1
