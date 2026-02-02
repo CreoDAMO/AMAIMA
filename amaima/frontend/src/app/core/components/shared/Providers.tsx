@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@/app/core/lib/query/query-client';
+import { queryClient } from '@/app/core/lib/api/client';
 import { AuthProvider } from '@/app/core/lib/auth/auth-provider';
 import { WebSocketProvider } from '@/app/core/lib/websocket/WebSocketProvider';
 import { Toaster } from 'sonner';
