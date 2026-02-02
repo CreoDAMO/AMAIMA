@@ -1,0 +1,174 @@
+Good — this log finally tells us the real problem.
+This is no longer “Vercel being weird” or “Turbopack strictness”.
+
+This is a plain, objective path mismatch.
+
+Let’s pin it down precisely and fix it once.
+
+
+---
+
+🔍 What the error is ACTUALLY saying
+
+> Module not found: Can't resolve @/app/core/lib/query/client
+
+
+
+Then Next.js helpfully adds:
+
+> Import map: aliased to relative ./src/app/core/lib/query/client
+
+
+
+So Vercel + Turbopack are doing their job correctly:
+
+@/ → src/
+
+It is literally looking for this file:
+
+
+amaima/frontend/src/app/core/lib/query/client.ts
+amaima/frontend/src/app/core/lib/query/client.tsx
+amaima/frontend/src/app/core/lib/query/client/index.ts
+
+And it does not exist.
+
+That’s it. No mystery left.
+
+
+---
+
+🧠 Why this slipped through locally
+
+Replit + dev mode can mask this because:
+
+Filesystem is more forgiving
+
+You previously used relative imports (../../lib/query/client)
+
+You moved or renamed folders during refactors
+
+Local dev doesn’t always traverse the same import graph as next build
+
+
+Turbopack only cares about reality on disk.
+
+
+---
+
+✅ Step 1: Confirm the REAL location of queryClient
+
+From your earlier snippet, you already showed this file exists:
+
+src/app/core/lib/api/queries.ts
+
+Which imports:
+
+import { apiClient } from './client';
+
+That tells us something critical:
+
+👉 Your query client is not in lib/query/
+👉 It is in lib/api/
+
+So the real file is almost certainly:
+
+src/app/core/lib/api/client.ts
+
+and NOT:
+
+src/app/core/lib/query/client.ts ❌
+
+
+---
+
+❌ The incorrect import (current)
+
+import { queryClient } from '@/app/core/lib/query/client';
+
+This path does not exist.
+
+
+---
+
+✅ The correct import (fix)
+
+In Providers.tsx, change it to:
+
+import { queryClient } from '@/app/core/lib/api/client';
+
+That aligns with your actual directory structure.
+
+
+---
+
+🧩 Why this error survived previous fixes
+
+You did two good things:
+
+✅ Converted to aliases
+
+✅ Hardened client/server boundaries
+
+
+But aliases don’t fix wrong paths — they just make wrong paths easier to spot.
+
+Now we’ve spotted it.
+
+
+---
+
+🛡️ Optional (but recommended) sanity check
+
+From repo root, this command should succeed:
+
+ls src/app/core/lib/api/client.ts
+
+If that file exists, the import above is 100% correct.
+
+
+---
+
+✅ Expected result after this change
+
+Providers.tsx resolves cleanly
+
+Turbopack import graph completes
+
+next build passes
+
+Vercel deploys successfully
+
+
+No config changes. No flags. No CI tweaks.
+
+
+---
+
+🧠 Final takeaway (important)
+
+This was not a Vercel problem.
+This was not a Next.js 16 problem.
+This was not Turbopack being strict.
+
+This was a refactor drift:
+
+> import path ≠ actual file system
+
+
+
+Now it’s aligned.
+
+
+---
+
+If you want, next we can:
+
+run a one-pass audit to ensure every alias maps to a real file
+
+collapse lib/api vs lib/query into a single canonical structure
+
+add a CI guard so this never ships broken again
+
+
+You’re one commit away from green.
