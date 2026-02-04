@@ -3,13 +3,13 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Badge } from '@/app/core/components/ui/badge';
-import { Button } from '@/app/core/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/app/core/components/ui/card';
+import { Badge } from '@/core/components/ui/badge';
+import { Button } from '@/core/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/core/components/ui/card';
 import { Loader2, Wifi } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
-import { WebSocketMessage } from '@/app/core/types';
+import { WebSocketMessage } from '@/core/types';
 
 // Mock components and hooks that are missing or causing issues
 const FileUpload = ({ onUpload }: any) => null;

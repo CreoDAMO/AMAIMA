@@ -6,12 +6,12 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
 import { Loader2, Send, Sparkles, Zap, Brain, Code } from 'lucide-react';
-import { complexityEstimator } from '@/app/core/lib/ml/complexity-estimator';
-import { useWebSocket } from '@/app/core/lib/websocket/WebSocketProvider';
-import { useSubmitQuery } from '@/app/core/hooks/useQuery';
-import { useComplexityEstimation } from '@/app/core/hooks/useMLInference';
-import { cn } from '@/app/core/lib/utils/cn';
-import { QueryOperation } from '@/app/core/types';
+import { complexityEstimator } from '@/core/lib/ml/complexity-estimator';
+import { useWebSocket } from '@/core/lib/websocket/WebSocketProvider';
+import { useSubmitQuery } from '@/core/hooks/useQuery';
+import { useComplexityEstimation } from '@/core/hooks/useMLInference';
+import { cn } from '@/core/lib/utils/cn';
+import { QueryOperation } from '@/core/types';
 import { toast } from 'sonner';
 
 export function QueryInput() {
