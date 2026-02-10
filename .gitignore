@@ -14,7 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Python distribution lib (not frontend src/app/core/lib/)
+/lib/
 lib64/
 parts/
 sdist/

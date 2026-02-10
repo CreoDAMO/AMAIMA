@@ -1,0 +1,62 @@
+15:23:00.416 Running build in Washington, D.C., USA (East) – iad1
+15:23:00.417 Build machine configuration: 2 cores, 8 GB
+15:23:00.521 Cloning github.com/CreoDAMO/AMAIMA (Branch: main, Commit: 9f9576a)
+15:23:00.523 Previous build caches not available.
+15:23:01.077 Cloning completed: 556.000ms
+15:23:01.634 Running "vercel build"
+15:23:02.871 Vercel CLI 50.13.2
+15:23:03.180 Running "install" command: `npm install`...
+15:23:06.033 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+15:23:08.677 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+15:23:08.693 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+15:23:13.191 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+15:23:22.072 
+15:23:22.074 added 591 packages, and audited 592 packages in 19s
+15:23:22.074 
+15:23:22.075 237 packages are looking for funding
+15:23:22.075   run `npm fund` for details
+15:23:22.075 
+15:23:22.075 found 0 vulnerabilities
+15:23:22.154 Detected Next.js version: 16.1.6
+15:23:22.155 Running "npm run build"
+15:23:22.254 
+15:23:22.254 > amaima-frontend@5.0.0 build
+15:23:22.255 > next build
+15:23:22.255 
+15:23:22.822 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+15:23:22.823 This information is used to shape Next.js' roadmap and prioritize features.
+15:23:22.823 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+15:23:22.823 https://nextjs.org/telemetry
+15:23:22.823 
+15:23:22.841 ▲ Next.js 16.1.6 (Turbopack)
+15:23:22.842 - Experiments (use with caution):
+15:23:22.842   · optimizePackageImports
+15:23:22.842 
+15:23:22.870   Creating an optimized production build ...
+15:23:29.088 
+15:23:29.088 > Build error occurred
+15:23:29.091 Error: Turbopack build failed with 1 errors:
+15:23:29.092 ./amaima/frontend/src/app/core/components/shared/Providers.tsx:4:1
+15:23:29.093 Module not found: Can't resolve '@/core/lib/query/client'
+15:23:29.093 [0m [90m 2 |[39m
+15:23:29.094  [90m 3 |[39m [36mimport[39m { [33mQueryClientProvider[39m } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+15:23:29.094 [31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { queryClient } [36mfrom[39m [32m'@/core/lib/query/client'[39m[33m;[39m
+15:23:29.094  [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+15:23:29.095  [90m 5 |[39m [36mimport[39m { [33mAuthProvider[39m } [36mfrom[39m [32m'@/core/lib/auth/auth-provider'[39m[33m;[39m
+15:23:29.096  [90m 6 |[39m [36mimport[39m { [33mWebSocketProvider[39m } [36mfrom[39m [32m'@/core/lib/websocket/WebSocketProvider'[39m[33m;[39m
+15:23:29.096  [90m 7 |[39m [36mimport[39m { [33mToaster[39m } [36mfrom[39m [32m'sonner'[39m[33m;[39m[0m
+15:23:29.097 
+15:23:29.097 Import map: aliased to relative './src/app/core/lib/query/client' inside of [project]/amaima/frontend
+15:23:29.097 
+15:23:29.097 
+15:23:29.098 Import trace:
+15:23:29.098   Server Component:
+15:23:29.098     ./amaima/frontend/src/app/core/components/shared/Providers.tsx
+15:23:29.098     ./amaima/frontend/src/app/layout.tsx
+15:23:29.099 
+15:23:29.099 https://nextjs.org/docs/messages/module-not-found
+15:23:29.099 
+15:23:29.100 
+15:23:29.100     at <unknown> (./amaima/frontend/src/app/core/components/shared/Providers.tsx:4:1)
+15:23:29.100     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+15:23:29.142 Error: Command "npm run build" exited with 1
