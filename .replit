@@ -63,3 +63,4 @@ build = ["bash", "-c", "cd amaima/frontend && npm run build"]
 
 [userenv.shared]
 NEXT_PUBLIC_API_URL = "http://localhost:8000"
+AMAIMA_EXECUTION_MODE = "execution-enabled"
