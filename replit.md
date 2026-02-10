@@ -77,3 +77,4 @@ amaima/
 - Added loading skeleton states for polished UX
 - Added collapsible Available Models display from /v1/models endpoint
 - Updated: January 24, 2026
+- February 10, 2026: Migrated project to new Replit environment. Installed all backend Python packages and frontend Node.js dependencies. Fixed missing query client module and tsconfig path aliases. Updated Next.js dev origins config.

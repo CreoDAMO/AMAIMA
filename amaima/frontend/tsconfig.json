@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@/core/*": [
+        "src/app/core/*"
       ]
     },
     "target": "ES2017"

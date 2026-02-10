@@ -3,11 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     poweredByHeader: false,
     
-    allowedDevOrigins: [
-        'https://44a1d514-2a8f-40f9-aa0d-80b18eac2070-00-3dk80d89fmri4.janeway.replit.dev',
-        '127.0.0.1',
-        'localhost',
-    ],
+    allowedDevOrigins: ['*'],
     
     env: {
         NEXT_PUBLIC_APP_NAME: 'AMAIMA',
@@ -61,17 +57,6 @@ const nextConfig = {
     
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion'],
-    },
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                path: false,
-            };
-        }
-        
-        return config;
     },
     turbopack: {},
 };
