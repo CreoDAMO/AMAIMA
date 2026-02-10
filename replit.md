@@ -106,3 +106,4 @@ amaima/
 - Updated: January 24, 2026
 - February 10, 2026: Migrated project to new Replit environment. Installed all backend Python packages and frontend Node.js dependencies. Fixed missing query client module and tsconfig path aliases. Updated Next.js dev origins config.
 - February 10, 2026: Integrated NVIDIA NIM for real AI inference. Added vercel.json for Vercel deployment. Updated model mappings from placeholders to real NVIDIA NIM models (Llama 3.1, Mixtral, Gemma 2). Updated execution engine to call NVIDIA NIM API.
+- February 10, 2026: Fixed .gitignore `lib/` pattern that was blocking frontend src/app/core/lib/ files from being tracked in git (root cause of Vercel build failure). Created docs/fixed-mobile-workflow.md with corrected GitHub Actions cache key syntax.
