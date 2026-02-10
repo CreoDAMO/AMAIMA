@@ -45,13 +45,14 @@ router:
     - MODERATE
     - COMPLEX
     - EXPERT
-  default_model: "llama2-7b"
+  default_model: "meta/llama-3.1-8b-instruct"
   model_mapping:
-    TRIVIAL: "llama2-7b"
-    SIMPLE: "llama2-13b"
-    MODERATE: "llama2-70b"
-    COMPLEX: "mixtral-8x7b"
-    EXPERT: "gpt4-turbo"
+    TRIVIAL: "meta/llama-3.1-8b-instruct"
+    SIMPLE: "meta/llama-3.1-8b-instruct"
+    MODERATE: "meta/llama-3.1-70b-instruct"
+    ADVANCED: "meta/llama-3.1-70b-instruct"
+    COMPLEX: "mistralai/mixtral-8x7b-instruct-v0.1"
+    EXPERT: "meta/llama-3.1-405b-instruct"
   cache_ttl: 3600
   enable_predictive_preloading: true
   confidence_weights:

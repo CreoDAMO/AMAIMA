@@ -163,15 +163,16 @@ async def health_check():
 @app.post("/v1/query", response_model=ExecuteResponse)
 async def process_query(request: QueryRequest, api_key: str = Depends(get_api_key)):
     try:
-        # Get routing decision
         decision = route_query(request.query, simulate=False)
 
-        # Execute the query based on the decision
+        decision["_original_query"] = request.query
+
         execution_result = await execute_model(decision)
 
-        # Combine results and return
+        decision.pop("_original_query", None)
         response = {**decision, **execution_result}
         
+        app_state.query_count += 1
         return response
         
     except Exception as e:
@@ -240,32 +241,35 @@ async def submit_feedback(request: FeedbackRequest):
 
 @app.get("/v1/models")
 async def list_models():
+    from app.modules.nvidia_nim_client import list_available_models, is_configured, get_model_for_complexity
+    models = list_available_models()
+    default = get_model_for_complexity("MODERATE")
     return {
-        "available_models": [
-            {"name": "NANO_1B", "parameters": "1B", "status": "available"},
-            {"name": "SMALL_3B", "parameters": "3B", "status": "available"},
-            {"name": "MEDIUM_7B", "parameters": "7B", "status": "available"},
-            {"name": "LARGE_13B", "parameters": "13B", "status": "available"},
-            {"name": "XL_34B", "parameters": "34B", "status": "available"},
-        ],
-        "default_model": "MEDIUM_7B"
+        "available_models": models,
+        "default_model": default,
+        "nvidia_nim_configured": is_configured(),
     }
 
 
 @app.get("/v1/capabilities")
 async def get_capabilities():
+    from app.modules.nvidia_nim_client import list_available_models, NVIDIA_MODELS, is_configured
+    models_info = []
+    for model_id, info in NVIDIA_MODELS.items():
+        models_info.append({
+            "id": model_id,
+            "name": info["name"],
+            "params": info["parameters"],
+            "context_window": info["context_window"],
+            "cost_per_1k_tokens": info["cost_per_1k_tokens"],
+        })
     return {
-        "models": [
-            {"name": "NANO_1B", "params": "1B", "latency": 50, "cost": 0.0001},
-            {"name": "SMALL_3B", "params": "3B", "latency": 150, "cost": 0.0005},
-            {"name": "MEDIUM_7B", "params": "7B", "latency": 300, "cost": 0.001},
-            {"name": "LARGE_13B", "params": "13B", "latency": 600, "cost": 0.002},
-            {"name": "XL_34B", "params": "34B", "latency": 1200, "cost": 0.005}
-        ],
+        "models": models_info,
+        "nvidia_nim_configured": is_configured(),
         "execution_modes": ["batch_parallel", "parallel_min_latency", "streaming_real_time"],
         "security_levels": ["low", "medium", "high", "paranoid"],
         "complexity_levels": ["TRIVIAL", "SIMPLE", "MODERATE", "COMPLEX", "EXPERT", "BORDERLINE_ADVANCED_EXPERT"],
-        "max_context": 200000,
+        "max_context": 128000,
         "tunable_params": {
             "confidence_weights": {
                 "complexity": 0.4, 
