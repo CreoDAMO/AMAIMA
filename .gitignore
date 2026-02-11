@@ -158,5 +158,9 @@ next-env.d.ts
 .DS_Store
 Thumbs.db
 
+# Android Keystore
+*.keystore
+*.jks
+
 # Temp files
 /tmp/
