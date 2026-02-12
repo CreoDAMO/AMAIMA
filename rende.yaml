@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: amaima
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: API_SECRET_KEY
+        sync: false
+      - key: AMAIMA_EXECUTION_MODE
+        value: execution-enabled
+      - key: PORT
+        value: "5000"
+      - key: BACKEND_URL
+        value: http://localhost:8000
