@@ -4,7 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["libiconv", "libxcrypt", "libyaml", "postgresql", "jdk17_headless"]
+packages = ["jdk17_headless", "libiconv", "libxcrypt", "libyaml", "postgresql"]
 
 [workflows]
 runButton = "Project"
