@@ -52,7 +52,7 @@ async def create_webhook(
             webhook_id, api_key_id, org_id, url, events_list, secret, True, 0
         )
         
-        logger.info(f"Created webhook {webhook_id} for API key {api_key_id}")
+        logger.info(f"Created webhook {webhook_id}")
         
         return {
             "id": webhook_id,
