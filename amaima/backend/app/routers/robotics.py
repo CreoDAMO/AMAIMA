@@ -38,7 +38,7 @@ async def navigate_robot(request: NavigateRequest):
         return result
     except Exception as e:
         logger.error(f"Navigation failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during navigation.")
 
 
 @router.post("/plan")
@@ -49,7 +49,7 @@ async def plan_action(request: PlanRequest):
         return result
     except Exception as e:
         logger.error(f"Action planning failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during robotics planning.")
 
 
 @router.post("/simulate")
@@ -60,7 +60,7 @@ async def simulate(request: SimulateRequest):
         return result
     except Exception as e:
         logger.error(f"Simulation failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during simulation.")
 
 
 @router.post("/vision-action")
@@ -71,7 +71,7 @@ async def vision_guided(request: VisionActionRequest):
         return result
     except Exception as e:
         logger.error(f"Vision-guided action failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during vision-guided action.")
 
 
 @router.get("/capabilities")

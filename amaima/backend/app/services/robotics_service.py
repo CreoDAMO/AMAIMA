@@ -98,8 +98,8 @@ Available actions: {', '.join([a.value for a in RobotAction])}"""
         logger.error(f"Robot planning failed: {e}")
         return {
             "service": "robotics",
-            "error": str(e),
-            "response": f"Robotics planning unavailable: {str(e)}",
+            "error": "internal_error",
+            "response": "Robotics planning unavailable due to an internal error.",
             "latency_ms": round((time.time() - start_time) * 1000, 2),
         }
 
