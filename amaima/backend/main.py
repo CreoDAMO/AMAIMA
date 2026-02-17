@@ -1073,7 +1073,7 @@ async def _trigger_mau_threshold_webhook(api_key_id: str, current_usage: int, li
     try:
         from app.webhooks import check_usage_alerts
         await check_usage_alerts(api_key_id, current_usage, limit)
-        logger.info(f"MAU threshold webhook triggered for key={api_key_id} at {current_usage}/{limit}")
+        logger.info(f"MAU threshold webhook triggered at {current_usage}/{limit}")
     except Exception as e:
         logger.debug(f"MAU webhook skipped: {e}")
 
