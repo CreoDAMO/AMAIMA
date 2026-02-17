@@ -61,6 +61,8 @@ jobs:
 
 ```yaml
 name: Backend CI/CD
+permissions:
+  contents: read
 
 on:
   push:
@@ -74,6 +76,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ""
+      API_SECRET_KEY: "test_secret_key_for_ci"
+      NVIDIA_NIM_API_KEY: "test_nim_key_for_ci"
+      PYTHONPATH: "."
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -81,18 +88,16 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+          cache-dependency-path: amaima/backend/requirements.txt
       - name: Install dependencies
         run: |
           cd amaima/backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest httpx
       - name: Run tests
         run: |
           cd amaima/backend
-          # Only run pytest if tests are found, otherwise exit gracefully
-          pytest --collect-only || exit 0
-          pytest
+          pytest tests/ -v --tb=short
 ```
 
 ## 3. Mobile Workflow (`.github/workflows/mobile.yml`)
