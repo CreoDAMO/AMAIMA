@@ -44,9 +44,12 @@ interface HealthStatus {
 interface ModelInfo {
   id: string;
   name: string;
-  params: string;
-  latency_ms: number;
-  cost_per_1k: number;
+  params?: string;
+  parameters?: string;
+  provider?: string;
+  context_window?: number;
+  latency_ms?: number;
+  cost_per_1k?: number;
   status: string;
 }
 
@@ -137,7 +140,7 @@ export default function HomePage() {
       const res = await fetch(`/api/v1/models`);
       if (res.ok) {
         const data = await res.json();
-        setModels(data.models || []);
+        setModels(data.available_models || data.models || []);
       }
     } catch (err) {
       console.error('Failed to fetch models:', err);
@@ -633,14 +636,14 @@ export default function HomePage() {
                       <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-semibold text-white">{model.name}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                          <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
                             {model.status}
                           </span>
                         </div>
                         <div className="text-xs text-slate-400 space-y-1">
-                          <p>Parameters: {model.params}</p>
-                          <p>Latency: ~{model.latency_ms}ms</p>
-                          <p>Cost: ${model.cost_per_1k}/1k tokens</p>
+                          <p>Parameters: {model.parameters || model.params || 'N/A'}</p>
+                          {model.context_window && <p>Context: {(model.context_window / 1000).toFixed(0)}k tokens</p>}
+                          {model.provider && <p>Provider: {model.provider}</p>}
                         </div>
                       </div>
                     ))}
