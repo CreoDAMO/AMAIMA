@@ -281,10 +281,10 @@ async def check_usage_alerts(
         for webhook in webhooks:
             await trigger_webhook(webhook["id"], event_type, payload)
             
-        logger.info(f"Checked usage alerts for {api_key_id}: {usage_percentage}%")
+        logger.info(f"Checked usage alerts: {usage_percentage}%")
         
     except Exception as e:
-        logger.error(f"Error checking usage alerts for {api_key_id}: {e}")
+        logger.error(f"Error checking usage alerts: {e}")
 
 
 # ============================================================================
