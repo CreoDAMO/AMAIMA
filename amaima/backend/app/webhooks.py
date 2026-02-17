@@ -376,7 +376,7 @@ async def list_routing_rules(api_key_id: str) -> List[Dict[str, Any]]:
         )
         return [dict(r) for r in rows]
     except Exception as e:
-        logger.error(f"Failed to list routing rules for {api_key_id}: {e}")
+        logger.error(f"Failed to list routing rules: {e}")
         return []
 
 
