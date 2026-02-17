@@ -222,7 +222,7 @@ export default function BillingPage() {
     }
   };
 
-  const usagePercent = usage && usage.queries_limit > 0
+  const usagePercent = usage && usage.queries_limit > 0 && usage.queries_used != null
     ? Math.min(100, (usage.queries_used / usage.queries_limit) * 100)
     : 0;
 
@@ -272,7 +272,7 @@ export default function BillingPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Queries Used</span>
                 <span className="font-medium">
-                  {usage.queries_used.toLocaleString()} / {usage.queries_limit === -1 ? 'Unlimited' : usage.queries_limit.toLocaleString()}
+                  {(usage.queries_used ?? 0).toLocaleString()} / {usage.queries_limit === -1 ? 'Unlimited' : (usage.queries_limit ?? 0).toLocaleString()}
                 </span>
               </div>
               {usage.queries_limit > 0 && (
@@ -287,7 +287,7 @@ export default function BillingPage() {
               )}
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Tokens Used</span>
-                <span className="font-medium">{usage.tokens_used.toLocaleString()}</span>
+                <span className="font-medium">{(usage.tokens_used ?? 0).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Current Tier</span>

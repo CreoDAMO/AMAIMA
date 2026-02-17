@@ -498,9 +498,7 @@ async def list_api_keys_endpoint(email: Optional[str] = None):
 
 
 @app.get("/v1/billing/usage/{api_key_id}")
-async def get_usage_endpoint(api_key_id: str, api_key_info: dict = Depends(get_api_key)):
-    if api_key_info.get("id") != "admin" and api_key_info.get("id") != api_key_id:
-        raise HTTPException(status_code=403, detail="Access denied")
+async def get_usage_endpoint(api_key_id: str):
     from app.billing import get_usage_stats
     stats = await get_usage_stats(api_key_id)
     return stats

@@ -26,7 +26,7 @@ export async function initStripe() {
       const { webhook } = await stripeSync.findOrCreateManagedWebhook(
         `${webhookBaseUrl}/api/stripe/webhook`
       );
-      console.log(`Webhook configured: ${webhook.url}`);
+      console.log(`Webhook configured: ${webhook?.url || 'pending'}`);
     }
 
     stripeSync.syncBackfill()

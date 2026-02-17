@@ -3,7 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     poweredByHeader: false,
     
-    allowedDevOrigins: ['*'],
+    allowedDevOrigins: ['*.replit.dev', '*.spock.replit.dev', '*.repl.co'],
     
     env: {
         NEXT_PUBLIC_APP_NAME: 'AMAIMA',
