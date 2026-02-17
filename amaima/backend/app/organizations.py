@@ -287,12 +287,12 @@ async def remove_member(org_id: str, api_key_id: str) -> bool:
                         "UPDATE api_keys SET org_id = NULL WHERE id = $1",
                         api_key_id
                     )
-                    logger.info(f"Removed {api_key_id} from organization {org_id}")
+                    logger.info(f"Removed member from organization {org_id}")
         
         return removed
     
     except Exception as e:
-        logger.error(f"Error removing member {api_key_id} from organization {org_id}: {e}")
+        logger.error(f"Error removing member from organization {org_id}: {e}")
         raise
 
 
