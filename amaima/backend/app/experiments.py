@@ -34,7 +34,7 @@ async def create_experiment(
             experiment_id, name, description, model_a, model_b, traffic_split, "draft", api_key_id,
             0, 0, 0
         )
-        logger.info(f"Created experiment {experiment_id} for api_key {api_key_id}")
+        logger.info(f"Created experiment {experiment_id}")
         return dict(row)
     except Exception as e:
         logger.error(f"Error creating experiment: {e}")
@@ -54,7 +54,7 @@ async def list_experiments(api_key_id: str) -> List[Dict[str, Any]]:
                ORDER BY created_at DESC""",
             api_key_id
         )
-        logger.info(f"Listed {len(rows)} experiments for api_key {api_key_id}")
+        logger.info(f"Listed {len(rows)} experiments")
         return [dict(r) for r in rows]
     except Exception as e:
         logger.error(f"Error listing experiments: {e}")
