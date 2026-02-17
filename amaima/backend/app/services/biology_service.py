@@ -103,8 +103,8 @@ async def bionemo_inference(
         return {
             "service": "biology",
             "model": model,
-            "response": f"Biology service unavailable: {str(e)}. Ensure NVIDIA_API_KEY is set.",
-            "error": str(e),
+            "response": "Biology service unavailable. Please try again later.",
+            "error": "Service error",
             "latency_ms": round((time.time() - start_time) * 1000, 2),
         }
 
