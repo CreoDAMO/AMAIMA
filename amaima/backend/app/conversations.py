@@ -380,7 +380,7 @@ async def search_conversations(api_key_id: str, query: str) -> List[Dict[str, An
         ]
 
         logger.info(
-            f"Found {len(conversations)} conversations matching '{query}' for api_key_id {api_key_id}"
+            "Found %d conversations matching search query", len(conversations)
         )
 
         return conversations
