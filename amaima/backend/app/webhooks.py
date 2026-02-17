@@ -512,24 +512,25 @@ async def delete_routing_rule(rule_id: str) -> bool:
 # HELPER FUNCTIONS
 # ============================================================================
 
-def _generate_signature(payload: Dict[str, Any], secret: str) -> str:
+def _generate_signature(payload: Dict[str, Any], signing_key: str) -> str:
     """
-    Generate a webhook signature for verification.
+    Generate an HMAC-SHA512 webhook signature for payload verification.
+    This is NOT password hashing - it is message authentication (MAC).
     
     Args:
         payload: The payload dictionary
-        secret: The webhook secret
+        signing_key: The webhook signing key for HMAC
     
     Returns:
-        Hex-encoded signature
+        Hex-encoded HMAC signature
     """
     payload_json = json.dumps(payload, sort_keys=True)
-    signature = hmac.new(
-        secret.encode(),
+    mac = hmac.new(
+        signing_key.encode(),
         payload_json.encode(),
         hashlib.sha512
     ).hexdigest()
-    return signature
+    return mac
 
 
 async def _increment_webhook_failure(webhook_id: str) -> None:
