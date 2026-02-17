@@ -434,7 +434,7 @@ async def get_matching_rule(
         return None
         
     except Exception as e:
-        logger.error(f"Error getting matching rule for {api_key_id}: {e}")
+        logger.error(f"Error getting matching rule for API key <redacted>: {e}")
         return None
 
 
