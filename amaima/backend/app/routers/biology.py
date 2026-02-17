@@ -18,7 +18,7 @@ async def drug_discovery(
         return result
     except Exception as e:
         logger.error(f"Drug discovery failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Drug discovery failed due to an internal error.")
 
 
 @router.post("/protein")
@@ -32,7 +32,7 @@ async def analyze_protein(
         return result
     except Exception as e:
         logger.error(f"Protein analysis failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Protein analysis failed due to an internal error.")
 
 
 @router.post("/optimize")
@@ -46,7 +46,7 @@ async def optimize_molecule(
         return result
     except Exception as e:
         logger.error(f"Molecule optimization failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Molecule optimization failed due to an internal error.")
 
 
 @router.post("/query")
@@ -60,7 +60,7 @@ async def biology_query(
         return result
     except Exception as e:
         logger.error(f"Biology query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Biology query failed due to an internal error.")
 
 
 @router.get("/capabilities")
