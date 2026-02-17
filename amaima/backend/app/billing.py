@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+API_KEY_HASH_SALT = b"amaima_api_key_salt_v1"
+API_KEY_HASH_ITERATIONS = 200_000
+
 TIER_LIMITS = {
     "community": {
         "queries_per_month": 1000,
@@ -39,7 +42,13 @@ async def get_pool() -> asyncpg.Pool:
 
 
 def hash_api_key(key: str) -> str:
-    return hashlib.sha256(key.encode()).hexdigest()
+    dk = hashlib.pbkdf2_hmac(
+        "sha256",
+        key.encode("utf-8"),
+        API_KEY_HASH_SALT,
+        API_KEY_HASH_ITERATIONS,
+    )
+    return dk.hex()
 
 
 async def create_api_key(email: Optional[str] = None, tier: str = "community") -> Dict[str, Any]:
