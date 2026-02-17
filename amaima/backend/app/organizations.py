@@ -62,7 +62,7 @@ async def create_organization(name: str, owner_api_key_id: str) -> Dict[str, Any
                     org_id, owner_api_key_id
                 )
         
-        logger.info(f"Created organization {org_id} with name '{name}' and owner {owner_api_key_id}")
+        logger.info(f"Created organization {org_id} with name '{name}'")
         return dict(org) if org else {}
     
     except asyncpg.UniqueViolationError:
