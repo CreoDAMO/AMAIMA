@@ -22,8 +22,11 @@ try:
 except ImportError:
     logger.info("PyBullet not available; simulation handled via cloud APIs")
 
-from app.modules.nvidia_nim_client import chat_completion, get_api_key
+from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 from app.services.vision_service import cosmos_inference
+
+ROBOTICS_PRIMARY_MODEL = "nvidia/isaac-gr00t-n1.6"
+ROBOTICS_AV_MODEL = "nvidia/alpamayo-1"
 
 
 class RobotAction(str, Enum):
@@ -61,9 +64,11 @@ As a robotics AI planner, provide:
 Format each action as: ACTION: <action_type> | PARAMS: <parameters> | REASON: <reasoning>
 Available actions: {', '.join([a.value for a in RobotAction])}"""
 
+    target_model = ROBOTICS_AV_MODEL if "autonomous" in query.lower() or "vehicle" in query.lower() or "driving" in query.lower() else ROBOTICS_PRIMARY_MODEL
+
     try:
         result = await chat_completion(
-            model="meta/llama-3.1-70b-instruct",
+            model=target_model,
             messages=[
                 {"role": "system", "content": "You are an advanced robotics planning AI. You generate precise, safe action plans for autonomous robots using physics-aware reasoning."},
                 {"role": "user", "content": planning_prompt},
@@ -189,7 +194,7 @@ async def simulate_action(action: str, environment: str = "indoor") -> Dict[str,
             logger.warning(f"PyBullet sim failed: {e}")
 
     sim_result = await chat_completion(
-        model="meta/llama-3.1-8b-instruct",
+        model=ROBOTICS_PRIMARY_MODEL,
         messages=[
             {"role": "system", "content": "You are a physics simulation engine. Predict the outcome of the given robot action in the specified environment."},
             {"role": "user", "content": f"Simulate action '{action}' in environment '{environment}'. Predict outcome, collisions, energy usage, and success probability."},
@@ -210,6 +215,7 @@ async def simulate_action(action: str, environment: str = "indoor") -> Dict[str,
 
 
 ROBOTICS_CAPABILITIES = {
+    "models": [ROBOTICS_PRIMARY_MODEL, ROBOTICS_AV_MODEL],
     "ros2_available": HAS_ROS2,
     "pybullet_available": HAS_PYBULLET,
     "cloud_simulation": True,
@@ -221,6 +227,12 @@ ROBOTICS_CAPABILITIES = {
         "simulation",
         "swarm_coordination",
         "safety_assessment",
+        "autonomous_driving",
+        "humanoid_control",
     ],
     "actions": [a.value for a in RobotAction],
+    "model_details": {
+        ROBOTICS_PRIMARY_MODEL: "Humanoid robot control and manipulation (Isaac GR00T N1.6)",
+        ROBOTICS_AV_MODEL: "Autonomous vehicle reasoning and path planning (Alpamayo 1)",
+    },
 }

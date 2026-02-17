@@ -91,24 +91,35 @@ def _calculate_complexity(query: str) -> Tuple[float, str, List[Dict[str, str]]]
 
 def _select_model(
     complexity_level: str,
+    domain: str = "general",
+    domain_confidence: float = 0.0,
 ) -> Tuple[float, str, List[Dict[str, str]]]:
     """
-    Selects the best model based on the complexity level.
+    Selects the best model based on complexity level and detected domain.
+    Domain-specific queries route to specialized models when confidence is high enough.
     """
+    from app.modules.nvidia_nim_client import DOMAIN_TO_MODELS
+
     model_mapping = router_config.get("model_mapping", {})
     base_level = complexity_level.replace("BORDERLINE_", "")
-    model = model_mapping.get(base_level, router_config.get("default_model"))
-    score = 0.9  # Placeholder score
-    reasons = [
-        {"code": "COST_EFFICIENT", "label": "Optimal cost/performance selected"}
-    ]
+    reasons = []
 
-    # Upscale model for borderline cases
+    if domain != "general" and domain_confidence >= 0.3:
+        domain_models = DOMAIN_TO_MODELS.get(domain, {})
+        model = domain_models.get("primary", model_mapping.get(base_level, router_config.get("default_model")))
+        score = 0.95
+        reasons.append({"code": "DOMAIN_ROUTED", "label": f"Routed to specialized {domain} model: {model}"})
+    else:
+        model = model_mapping.get(base_level, router_config.get("default_model"))
+        score = 0.9
+        reasons.append({"code": "COST_EFFICIENT", "label": "Optimal cost/performance selected"})
+
     if "BORDERLINE" in complexity_level:
         current_index = list(model_mapping.keys()).index(base_level)
         if current_index + 1 < len(model_mapping):
             next_level = list(model_mapping.keys())[current_index + 1]
-            model = model_mapping[next_level]
+            if domain == "general" or domain_confidence < 0.3:
+                model = model_mapping[next_level]
             reasons.append(
                 {"code": "BORDERLINE_UPSCALE", "label": "Upscaled model due to borderline complexity"}
             )
@@ -159,8 +170,11 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
     # 1. Calculate Complexity
     complexity_score, complexity_level, complexity_reasons = _calculate_complexity(query)
 
-    # 2. Select Model
-    model_fit_score, model, model_reasons = _select_model(complexity_level)
+    # 2. Detect Domain
+    domain, domain_confidence = detect_domain(query)
+
+    # 3. Select Model (domain-aware)
+    model_fit_score, model, model_reasons = _select_model(complexity_level, domain, domain_confidence)
 
     # 3. Determine Execution Fit
     execution_fit_score, execution_mode, execution_reasons = calculate_execution_fit(
@@ -178,8 +192,6 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
     # Production Safeguard Toggle
     execution_mode_env = os.getenv('AMAIMA_EXECUTION_MODE', 'decision-only')
     execution_mode_active = execution_mode_env == 'execution-enabled'
-
-    domain, domain_confidence = detect_domain(query)
 
     decision = {
         "query_hash": hashlib.sha256(query.encode()).hexdigest(),

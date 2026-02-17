@@ -12,9 +12,11 @@ except ImportError:
     HAS_OPENAI_SDK = False
     logger.info("OpenAI SDK not available; using httpx for NIM calls")
 
-from app.modules.nvidia_nim_client import chat_completion, get_api_key
+from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 
-COSMOS_MODEL = "nvidia/cosmos-reason2-8b"
+COSMOS_MODEL = "nvidia/cosmos-reason2-7b"
+COSMOS_VL_MODEL = "nvidia/llama-3.1-nemotron-nano-vl-8b"
+COSMOS_PREDICT_MODEL = "nvidia/cosmos-predict2-14b"
 COSMOS_NIM_URL = os.getenv("COSMOS_NIM_URL", "https://integrate.api.nvidia.com/v1")
 
 
@@ -119,7 +121,7 @@ Provide step-by-step embodied reasoning considering:
 
 
 VISION_CAPABILITIES = {
-    "models": [COSMOS_MODEL],
+    "models": [COSMOS_MODEL, COSMOS_VL_MODEL, COSMOS_PREDICT_MODEL],
     "supported_media": ["image/jpeg", "image/png", "video/mp4"],
     "max_video_length_seconds": 60,
     "features": [
@@ -129,6 +131,13 @@ VISION_CAPABILITIES = {
         "scene_understanding",
         "action_planning",
         "safety_assessment",
+        "video_prediction",
+        "multimodal_reasoning",
     ],
     "output_format": "structured (<think>/<answer>)",
+    "model_details": {
+        COSMOS_MODEL: "Primary vision-language reasoning (Cosmos Reason 2)",
+        COSMOS_VL_MODEL: "Multimodal understanding (Nemotron VL)",
+        COSMOS_PREDICT_MODEL: "Future state prediction and video generation (Cosmos Predict 2.5)",
+    },
 }

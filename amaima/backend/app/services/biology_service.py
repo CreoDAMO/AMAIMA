@@ -12,9 +12,10 @@ except ImportError:
     HAS_RDKIT = False
     logger.info("RDKit not available locally; molecule validation will use cloud API")
 
-from app.modules.nvidia_nim_client import chat_completion, get_api_key
+from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 
 BIONEMO_MODEL = "nvidia/bionemo-megamolbart"
+BIONEMO_PROTEIN_MODEL = "nvidia/bionemo-esm2"
 BIONEMO_NIM_URL = os.getenv("BIONEMO_NIM_URL", "https://integrate.api.nvidia.com/v1")
 
 BIOLOGY_MODELS = {
@@ -65,9 +66,11 @@ async def bionemo_inference(
         {"role": "user", "content": query},
     ]
 
+    target_model = BIONEMO_PROTEIN_MODEL if task_type == "protein_analysis" else model
+
     try:
         result = await chat_completion(
-            model="meta/llama-3.1-70b-instruct",
+            model=target_model,
             messages=messages,
             temperature=0.3,
             max_tokens=2048,
@@ -87,7 +90,7 @@ async def bionemo_inference(
 
         return {
             "service": "biology",
-            "model": model,
+            "model": target_model,
             "task_type": task_type,
             "response": response_text,
             "validated_molecules": validated_molecules if validated_molecules else None,

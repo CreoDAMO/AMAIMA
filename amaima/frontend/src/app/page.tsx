@@ -48,6 +48,9 @@ interface ModelInfo {
   parameters?: string;
   provider?: string;
   context_window?: number;
+  domain?: string;
+  category?: string;
+  description?: string;
   latency_ms?: number;
   cost_per_1k?: number;
   status: string;
@@ -632,21 +635,41 @@ export default function HomePage() {
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {models.map((model) => (
-                      <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-white">{model.name}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                            {model.status}
-                          </span>
+                    {models.map((model) => {
+                      const domainColors: Record<string, string> = {
+                        general: 'bg-blue-500/20 text-blue-300',
+                        vision: 'bg-purple-500/20 text-purple-300',
+                        biology: 'bg-green-500/20 text-green-300',
+                        robotics: 'bg-orange-500/20 text-orange-300',
+                      };
+                      const domainColor = domainColors[model.domain || 'general'] || domainColors.general;
+                      return (
+                        <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-semibold text-white text-sm">{model.name}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                              {model.status}
+                            </span>
+                          </div>
+                          <div className="flex gap-1.5 mb-2">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${domainColor}`}>
+                              {model.domain || 'general'}
+                            </span>
+                            {model.category && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-slate-300">
+                                {model.category}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400 space-y-1">
+                            <p>Parameters: {model.parameters || model.params || 'N/A'}</p>
+                            {model.context_window && <p>Context: {(model.context_window / 1000).toFixed(0)}k tokens</p>}
+                            {model.provider && <p>Provider: {model.provider}</p>}
+                            {model.description && <p className="text-slate-500 mt-1">{model.description}</p>}
+                          </div>
                         </div>
-                        <div className="text-xs text-slate-400 space-y-1">
-                          <p>Parameters: {model.parameters || model.params || 'N/A'}</p>
-                          {model.context_window && <p>Context: {(model.context_window / 1000).toFixed(0)}k tokens</p>}
-                          {model.provider && <p>Provider: {model.provider}</p>}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

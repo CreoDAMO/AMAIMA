@@ -99,11 +99,34 @@ The routing engine analyzes queries and determines:
 - **Execution Mode**: streaming, batch, parallel
 - **Performance Estimates**: Latency and cost predictions
 
-### Model Mapping (NVIDIA NIM)
-- TRIVIAL/SIMPLE -> meta/llama-3.1-8b-instruct
-- MODERATE -> meta/llama-3.1-70b-instruct
-- COMPLEX -> mistralai/mixtral-8x7b-instruct-v0.1
-- EXPERT -> meta/llama-3.1-405b-instruct
+### Model Registry (14 NVIDIA NIM Models)
+
+#### General Language Models
+- meta/llama-3.1-8b-instruct (TRIVIAL/SIMPLE complexity)
+- meta/llama-3.1-70b-instruct (MODERATE/ADVANCED complexity)
+- meta/llama-3.1-405b-instruct (EXPERT complexity)
+- mistralai/mixtral-8x7b-instruct-v0.1 (COMPLEX, cost-efficient MoE)
+- google/gemma-2-9b-it (lightweight/edge)
+- nvidia/nemotron-nano-9b-v2 (edge deployment, agentic AI)
+
+#### Vision/Multimodal Models
+- nvidia/cosmos-reason2-7b (primary vision-language reasoning, embodied AI)
+- nvidia/cosmos-predict2-14b (video generation, future state prediction)
+- nvidia/llama-3.1-nemotron-nano-vl-8b (multimodal understanding)
+
+#### Biology/Drug Discovery Models
+- nvidia/bionemo-megamolbart (molecular generation, drug discovery)
+- nvidia/bionemo-esm2 (protein structure prediction)
+
+#### Robotics Models
+- nvidia/isaac-gr00t-n1.6 (humanoid robot control, VLA)
+- nvidia/alpamayo-1 (autonomous vehicle reasoning, VLA)
+
+### Domain-Aware Routing
+- Biology queries (drug/protein/molecule keywords) -> nvidia/bionemo-megamolbart
+- Vision queries (image/video/scene keywords) -> nvidia/cosmos-reason2-7b
+- Robotics queries (robot/navigate/grasp keywords) -> nvidia/isaac-gr00t-n1.6
+- General queries -> complexity-based model selection (Llama/Mixtral/Gemma)
 
 ## File Structure
 ```
@@ -179,3 +202,4 @@ amaima/
 - February 10, 2026: Integrated NVIDIA NIM for real AI inference. Added vercel.json for Vercel deployment. Updated model mappings to real NVIDIA NIM models.
 - February 11, 2026: Created comprehensive backend deployment guide.
 - February 17, 2026: Major integration update - Added Vision (Cosmos R2), Biology (BioNeMo), and Robotics (ROS2/Isaac) services with cloud-first NIM APIs. Created multi-agent crew orchestration (research, drug discovery, navigation, manipulation, swarm). Enhanced smart router with domain-aware keyword classification. Added plugin manager. Created frontend API proxy routes and updated UI with 7 operation types and domain-specific sample queries.
+- February 17, 2026: Expanded model registry from 5 to 14 models. Added Cosmos Reason2 7B, Cosmos Predict 2.5 14B, Nemotron Nano 9B v2, Nemotron Nano VL 8B, BioNeMo MegaMolBART, BioNeMo ESM-2, Isaac GR00T N1.6, and Alpamayo 1. Implemented domain-aware model routing (biology/vision/robotics queries auto-route to specialized models). Updated frontend with domain badges, categories, and model descriptions.
