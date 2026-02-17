@@ -686,9 +686,14 @@ export default function HomePage() {
               <span className="font-semibold text-white">AMAIMA</span>
               <span className="text-xs text-slate-500">v{health?.version || '5.0.0'}</span>
             </div>
-            <p className="text-sm text-slate-400">
-              Production-Ready AI Query Platform
-            </p>
+            <div className="flex items-center gap-4">
+              <a href="/billing" className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+                Billing & API Keys
+              </a>
+              <p className="text-sm text-slate-400">
+                Production-Ready AI Query Platform
+              </p>
+            </div>
           </div>
         </div>
       </footer>

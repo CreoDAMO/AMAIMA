@@ -18,7 +18,7 @@ import os
 from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
 from app.modules.execution_engine import execute_model
-from app.security import get_api_key
+from app.security import get_api_key, enforce_tier_limit
 from app.routers import biology as biology_router
 from app.routers import robotics as robotics_router
 from app.routers import vision as vision_router
@@ -171,20 +171,38 @@ async def health_check():
 
 
 @app.post("/v1/query", response_model=ExecuteResponse)
-async def process_query(request: QueryRequest, api_key: str = Depends(get_api_key)):
+async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_api_key)):
     try:
+        await enforce_tier_limit(api_key_info)
+
+        start_time_ms = datetime.now()
         decision = route_query(request.query, simulate=False)
-
         decision["_original_query"] = request.query
-
         execution_result = await execute_model(decision)
-
         decision.pop("_original_query", None)
         response = {**decision, **execution_result}
         
         app_state.query_count += 1
+
+        latency = int((datetime.now() - start_time_ms).total_seconds() * 1000)
+        tokens_est = len(response.get("output", "")) // 4
+
+        try:
+            from app.billing import record_usage
+            await record_usage(
+                api_key_id=api_key_info.get("id", "admin"),
+                endpoint="/v1/query",
+                model_used=response.get("model", ""),
+                tokens_estimated=tokens_est,
+                latency_ms=latency,
+            )
+        except Exception as usage_err:
+            logger.warning(f"Usage tracking failed: {usage_err}")
+
         return response
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Query processing failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -451,6 +469,83 @@ async def websocket_system_status(websocket: WebSocket):
             
     except WebSocketDisconnect:
         logger.info("System status WebSocket disconnected")
+
+
+class CreateApiKeyRequest(BaseModel):
+    email: Optional[str] = None
+    tier: str = Field(default="community", description="Tier: community, production, enterprise")
+
+
+class UpdateTierRequest(BaseModel):
+    api_key_id: str
+    tier: str
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None
+
+
+@app.post("/v1/billing/api-keys")
+async def create_api_key_endpoint(request: CreateApiKeyRequest):
+    from app.billing import create_api_key
+    result = await create_api_key(email=request.email, tier="community")
+    return result
+
+
+@app.get("/v1/billing/api-keys")
+async def list_api_keys_endpoint(email: Optional[str] = None):
+    from app.billing import list_api_keys
+    keys = await list_api_keys(email=email)
+    return {"api_keys": keys}
+
+
+@app.get("/v1/billing/usage/{api_key_id}")
+async def get_usage_endpoint(api_key_id: str, api_key_info: dict = Depends(get_api_key)):
+    if api_key_info.get("id") != "admin" and api_key_info.get("id") != api_key_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    from app.billing import get_usage_stats
+    stats = await get_usage_stats(api_key_id)
+    return stats
+
+
+@app.get("/v1/billing/usage-by-key")
+async def get_usage_by_key(api_key_info: dict = Depends(get_api_key)):
+    from app.billing import get_usage_stats
+    stats = await get_usage_stats(api_key_info["id"])
+    return stats
+
+
+@app.post("/v1/billing/update-tier")
+async def update_tier_endpoint(request: UpdateTierRequest, api_key_info: dict = Depends(get_api_key)):
+    if api_key_info.get("id") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    from app.billing import update_api_key_tier
+    await update_api_key_tier(
+        api_key_id=request.api_key_id,
+        tier=request.tier,
+        stripe_customer_id=request.stripe_customer_id,
+        stripe_subscription_id=request.stripe_subscription_id,
+    )
+    return {"status": "updated", "api_key_id": request.api_key_id, "tier": request.tier}
+
+
+@app.post("/v1/billing/webhook-tier-update")
+async def webhook_tier_update(request: UpdateTierRequest):
+    webhook_secret = os.getenv("WEBHOOK_INTERNAL_SECRET", "")
+    if not webhook_secret:
+        raise HTTPException(status_code=403, detail="Webhook not configured")
+    from app.billing import update_api_key_tier
+    await update_api_key_tier(
+        api_key_id=request.api_key_id,
+        tier=request.tier,
+        stripe_customer_id=request.stripe_customer_id,
+        stripe_subscription_id=request.stripe_subscription_id,
+    )
+    return {"status": "updated"}
+
+
+@app.get("/v1/billing/tiers")
+async def list_tiers():
+    from app.billing import TIER_LIMITS
+    return {"tiers": TIER_LIMITS}
 
 
 if __name__ == "__main__":

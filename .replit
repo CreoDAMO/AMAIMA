@@ -1,6 +1,7 @@
-modules = ["python-3.11", "nodejs-20"]
+modules = ["python-3.11", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
+integrations = ["stripe:2.0.0"]
 
 [nix]
 channel = "stable-25_05"
