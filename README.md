@@ -1,16 +1,16 @@
-# AMAIMA System README
+# AMAIMA
 
-**Advanced Multimodal AI Model Architecture - Enterprise-Grade AI Orchestration Platform**
+**Advanced Model-Aware AI Management Interface**
 
 <div align="center">
 
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=yellow)](https://www.python.org/downloads/)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=yellow)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-109989?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Next.js 15](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![React 19](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![Kotlin 1.9](https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Next.js 16](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![NVIDIA NIM](https://img.shields.io/badge/NVIDIA_NIM-76B900?style=for-the-badge&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: AMAIMA v1.0](https://img.shields.io/badge/License-AMAIMA%20v1.0-blueviolet?style=for-the-badge)](LICENSE)
-[![Backend CI/CD](https://github.com/CreoDAMO/AMAIMA/actions/workflows/backend.yml/badge.svg)](https://github.com/CreoDAMO/AMAIMA/actions/workflows/backend.yml)
 
 </div>
 
@@ -18,41 +18,221 @@
 
 ## Overview
 
-AMAIMA delivers a next-generation AI infrastructure that intelligently routes queries across multiple model architectures for optimal resource utilization, cost efficiency, and response quality. The platform integrates three key components:
+AMAIMA is an enterprise-grade AI orchestration platform that intelligently routes queries across 14 NVIDIA NIM models for optimal cost, speed, and quality. It combines a smart routing engine with specialized domain services for biology/drug discovery, robotics, and vision/multimodal reasoning.
 
-- **Python Backend Infrastructure** — Enterprise-grade AI orchestration with 18 consolidated modules
-- **Web Frontend Application** — Modern React/Next.js interface with real-time streaming
-- **Android Mobile Client** — Native application featuring offline-first architecture
+### What It Does
 
-The Smart Router Engine drives core innovation by analyzing query complexity with client-side ML and historical patterns to select models from 1B to 200B parameters. This method cuts costs up to 40% versus always-cloud strategies while hitting sub-200ms response times for 95% of queries.
-
-<div align="center">
-<img src="docs/images/architecture-overview.png" alt="AMAIMA Architecture Overview" width="800"/>
-</div>
+- **Smart Query Routing** - Analyzes query complexity (TRIVIAL to EXPERT) and automatically selects the best model
+- **Domain-Specific AI** - Dedicated services for biology (BioNeMo), robotics (Isaac/GR00T), and vision (Cosmos R2)
+- **Multi-Agent Crews** - Orchestrated agent teams for research, drug discovery, protein analysis, navigation, and manipulation
+- **Monetization Built-In** - Three-tier subscription system with Stripe billing, API key management, and usage tracking
+- **Cloud-First** - No GPU required; all inference runs through NVIDIA NIM cloud APIs
 
 ---
 
-## Key Features
+## Architecture
 
-### Intelligent Query Routing
+```
+                    +------------------+
+                    |   Next.js 16     |
+                    |   Frontend       |
+                    |   (port 5000)    |
+                    +--------+---------+
+                             |
+                    API Routes (proxy)
+                             |
+                    +--------+---------+
+                    |   FastAPI        |
+                    |   Backend        |
+                    |   (port 8000)    |
+                    +--------+---------+
+                             |
+              +--------------+--------------+
+              |              |              |
+     +--------+--+  +--------+--+  +--------+--+
+     | Smart     |  | Domain    |  | Billing   |
+     | Router    |  | Services  |  | Service   |
+     | Engine    |  |           |  |           |
+     +-----------+  +-----------+  +-----------+
+                         |
+         +---------------+---------------+
+         |               |               |
+    +----+----+    +-----+-----+   +-----+-----+
+    | Biology |    | Robotics  |   | Vision    |
+    | BioNeMo |    | Isaac/    |   | Cosmos R2 |
+    |         |    | GR00T     |   |           |
+    +---------+    +-----------+   +-----------+
+                         |
+                 +-------+-------+
+                 | NVIDIA NIM    |
+                 | Cloud APIs    |
+                 +---------------+
+```
 
-A 5-level taxonomy—TRIVIAL, SIMPLE, STANDARD, ADVANCED, EXPERT—routes queries to optimal models. Classification factors include device capabilities, network conditions, security needs, and query history. Routing completes in under 50ms for seamless selection.
+---
 
-### Progressive Model Loading
+## Model Registry (14 Models)
 
-TensorRT quantization (INT8/FP16/BF16) reduces memory up to 4x. The loader uses lazy loading and smart caching to achieve under 2-second cold starts for common models. LRU eviction keeps peak memory below 50GB in high-traffic scenarios.
+### General Language Models
+| Model | Parameters | Best For | Cost/1K Tokens |
+|-------|-----------|----------|----------------|
+| meta/llama-3.1-8b-instruct | 8B | Simple queries, chat | $0.0001 |
+| meta/llama-3.1-70b-instruct | 70B | Complex reasoning | $0.00088 |
+| meta/llama-3.1-405b-instruct | 405B | Expert-level tasks | $0.005 |
+| mistralai/mixtral-8x7b-instruct-v0.1 | 46.7B MoE | Cost-efficient complex | $0.0006 |
+| google/gemma-2-9b-it | 9B | Lightweight/edge | $0.0001 |
+| nvidia/nemotron-nano-9b-v2 | 9B | Edge/agentic AI | $0.0001 |
 
-### Multi-Platform Consistency
+### Vision/Multimodal Models
+| Model | Parameters | Best For |
+|-------|-----------|----------|
+| nvidia/cosmos-reason2-7b | 7B | Vision-language reasoning, embodied AI |
+| nvidia/cosmos-predict2-14b | 14B | Video generation, future prediction |
+| nvidia/llama-3.1-nemotron-nano-vl-8b | 8B | Multimodal understanding |
 
-Identical API contracts, data models, authentication, and error handling across platforms minimize context switching for developers and deliver uniform user experiences.
+### Biology/Drug Discovery Models
+| Model | Best For |
+|-------|----------|
+| nvidia/bionemo-megamolbart | Molecular generation, drug discovery |
+| nvidia/bionemo-esm2 | Protein structure prediction |
 
-### Defense-Grade Security
+### Robotics Models
+| Model | Best For |
+|-------|----------|
+| nvidia/isaac-gr00t-n1.6 | Humanoid robot control (VLA) |
+| nvidia/alpamayo-1 | Autonomous vehicle reasoning (VLA) |
 
-DARPA AIxCC scanning with auto-patching supports NIST 800-53 and FedRAMP compliance. Multi-factor auth, AES-256 encryption, and certificate pinning protect against attacks.
+---
 
-### Offline-First Mobile Architecture
+## Smart Router
 
-The Android client enables full offline operation via local TensorFlow Lite inference, Room caching, and WorkManager sync. Users submit queries and run workflows offline, with automatic reconnection sync.
+The routing engine classifies queries across five complexity levels and routes to the optimal model:
+
+| Level | Description | Routed To |
+|-------|-------------|-----------|
+| TRIVIAL | Simple factual queries | Llama 8B / Gemma 9B |
+| SIMPLE | Basic explanations | Llama 8B |
+| MODERATE | Multi-step reasoning | Llama 70B |
+| COMPLEX | Domain expertise needed | Mixtral 8x7B / 70B |
+| EXPERT | Specialized analysis | Llama 405B |
+
+### Domain-Aware Routing
+- **Biology** keywords (drug, protein, molecule) -> BioNeMo MegaMolBART
+- **Vision** keywords (image, video, scene) -> Cosmos Reason2 7B
+- **Robotics** keywords (robot, navigate, grasp) -> Isaac GR00T N1.6
+- **General** queries -> Complexity-based model selection
+
+---
+
+## Domain Services
+
+### Biology (BioNeMo)
+- Drug discovery pipeline with molecule generation
+- Protein sequence analysis and structure prediction
+- Molecule optimization with SMILES validation
+- General biology/chemistry queries
+
+### Robotics (Isaac/GR00T)
+- Robot navigation and path planning
+- Action planning with step-by-step execution
+- Vision-guided robot actions
+- Physics simulation
+
+### Vision (Cosmos R2)
+- Image and video analysis
+- Scene understanding and spatial reasoning
+- Embodied reasoning for robotics applications
+- Future state prediction
+
+---
+
+## Multi-Agent Crews
+
+| Crew | Agents | Purpose |
+|------|--------|---------|
+| Research | Researcher, Analyst, Writer | General research with analysis |
+| Drug Discovery | Chemist, Pharmacologist, Toxicologist | Drug candidate evaluation |
+| Protein Analysis | Bioinformatician, Structural Biologist | Protein structure/function |
+| Navigation | Planner, Mapper, Controller | Robot path planning |
+| Manipulation | Grasp Planner, Motion Controller | Object manipulation |
+| Swarm | Coordinator, Communicator | Multi-robot coordination |
+
+---
+
+## Monetization
+
+### Subscription Tiers
+
+| Tier | Price | Queries/Month | Features |
+|------|-------|---------------|----------|
+| Community | Free | 1,000 | All 14 models, basic routing |
+| Production | $49/mo | 10,000 | Priority routing, all domain services |
+| Enterprise | $499/mo | Unlimited | Custom SLA, dedicated support, analytics |
+
+### How It Works
+1. Users generate API keys from the `/billing` dashboard
+2. Each query is tracked against the key's monthly quota
+3. Stripe handles subscription upgrades via checkout
+4. Webhooks automatically update tier when subscriptions change
+5. Tier limits are enforced before query execution
+
+---
+
+## API Reference
+
+### Core Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check with component status |
+| GET | `/v1/stats` | System statistics |
+| POST | `/v1/query` | Submit query for intelligent routing |
+| GET | `/v1/models` | List available models |
+| GET | `/v1/capabilities` | System capabilities |
+| POST | `/v1/simulate` | Simulate routing without execution |
+
+### Biology
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/biology/discover` | Drug discovery pipeline |
+| POST | `/v1/biology/protein` | Protein analysis |
+| POST | `/v1/biology/optimize` | Molecule optimization |
+| POST | `/v1/biology/query` | General biology query |
+
+### Robotics
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/robotics/navigate` | Navigation commands |
+| POST | `/v1/robotics/plan` | Action planning |
+| POST | `/v1/robotics/simulate` | Action simulation |
+| POST | `/v1/robotics/vision-action` | Vision-guided actions |
+
+### Vision
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/vision/reason` | Vision reasoning |
+| POST | `/v1/vision/analyze-image` | Image analysis |
+| POST | `/v1/vision/embodied-reasoning` | Embodied reasoning |
+
+### Agents
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/agents/run` | Run agent crew |
+| GET | `/v1/agents/types` | List crew types |
+
+### Billing
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/billing/api-keys` | Create API key |
+| GET | `/v1/billing/api-keys` | List API keys |
+| GET | `/v1/billing/usage/{id}` | Usage stats for key |
+| GET | `/v1/billing/tiers` | Available tiers |
+| POST | `/v1/billing/update-tier` | Update tier (admin) |
+
+### Plugins
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/v1/plugins` | List plugins |
+| GET | `/v1/plugins/{id}/capabilities` | Plugin capabilities |
 
 ---
 
@@ -60,449 +240,148 @@ The Android client enables full offline operation via local TensorFlow Lite infe
 
 ```
 amaima/
-├── backend/                    # Python FastAPI backend
+├── backend/                         # FastAPI backend (Python 3.11)
+│   ├── main.py                      # Application entry point
+│   ├── amaima_config.yaml           # Configuration
 │   ├── app/
-│   │   ├── api/               # REST endpoints and WebSocket handlers
-│   │   ├── core/              # Configuration, security, and utilities
-│   │   ├── models/            # Pydantic models and DTOs
-│   │   ├── services/          # Business logic and ML orchestration
-│   │   └── modules/           # 18 consolidated backend modules
-│   ├── tests/                 # Unit and integration tests
-│   ├── Dockerfile             # Container definition
-│   └── pyproject.toml         # Poetry dependencies
+│   │   ├── core/
+│   │   │   └── unified_smart_router.py  # Smart routing engine
+│   │   ├── modules/
+│   │   │   ├── nvidia_nim_client.py     # NVIDIA NIM API client
+│   │   │   ├── execution_engine.py      # Model execution
+│   │   │   ├── smart_router_engine.py   # Query routing + domain detection
+│   │   │   └── plugin_manager.py        # Plugin system
+│   │   ├── services/
+│   │   │   ├── vision_service.py        # Cosmos R2 vision
+│   │   │   ├── biology_service.py       # BioNeMo drug discovery
+│   │   │   └── robotics_service.py      # Isaac/GR00T robotics
+│   │   ├── agents/
+│   │   │   ├── crew_manager.py          # Multi-agent framework
+│   │   │   ├── biology_crew.py          # Biology agent crews
+│   │   │   └── robotics_crew.py         # Robotics agent crews
+│   │   ├── billing.py                   # Billing & usage tracking
+│   │   └── security.py                 # API key authentication
+│   └── app/routers/                     # FastAPI routers
 │
-├── frontend/                   # Next.js 15 web application
-│   ├── src/
-│   │   ├── app/               # Next.js App Router pages
-│   │   ├── components/        # React components and UI kit
-│   │   ├── hooks/             # Custom React hooks
-│   │   ├── lib/               # Utilities and API clients
-│   │   ├── store/             # Zustand state management
-│   │   └── styles/            # Global styles and themes
-│   ├── public/                # Static assets
-│   ├── Dockerfile             # Container definition
-│   └── package.json           # npm dependencies
+├── frontend/                        # Next.js 16 frontend
+│   ├── src/app/
+│   │   ├── page.tsx                     # Main dashboard
+│   │   ├── billing/page.tsx             # Billing & API keys
+│   │   └── api/                         # API route proxies
+│   │       ├── v1/                      # Backend proxy routes
+│   │       └── stripe/                  # Stripe integration
+│   ├── src/lib/
+│   │   ├── stripeClient.ts              # Stripe client
+│   │   └── stripeInit.ts                # Stripe initialization
+│   ├── scripts/seed-products.ts         # Stripe product seeding
+│   └── vercel.json                      # Vercel deployment config
 │
-├── mobile/                     # Android Kotlin application
-│   ├── app/
-│   │   ├── data/              # Repository pattern, Room database
-│   │   ├── domain/            # Use cases and business logic
-│   │   ├── presentation/      # Jetpack Compose UI layer
-│   │   └── infrastructure/    # TensorFlow Lite, auth, networking
-│   ├── gradle/                # Build configuration
-│   └── build.gradle.kts       # Gradle dependencies
-│
-├── docs/                       # Documentation and guides
-├── docker-compose.yml         # Local development orchestration
-├── Makefile                   # Development commands
-└── README.md                  # This file
+├── docs/                            # Documentation
+├── mobile/                          # Android client (spec only)
+└── monitoring/                      # Grafana dashboards
 ```
 
 ---
 
-## Prerequisites
+## Running Locally
 
-### System Requirements
+### Prerequisites
+- Python 3.11+
+- Node.js 20+
+- PostgreSQL database
+- NVIDIA NIM API key
 
-| Component | Minimum      | Recommended     |
-|-----------|--------------|-----------------|
-| CPU       | 8 cores      | 16 cores        |
-| Memory    | 16GB         | 64GB            |
-| Storage   | 50GB SSD     | 200GB NVMe      |
-| GPU (optional) | NVIDIA RTX 3080 | NVIDIA A100 |
-| OS        | Ubuntu 22.04 LTS / macOS 14+ / Windows 11 | Same |
+### Environment Variables
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NVIDIA_API_KEY` | Yes | NVIDIA NIM API key for inference |
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `BACKEND_URL` | No | Backend URL for frontend proxy (default: http://localhost:8000) |
+| `API_SECRET_KEY` | No | Admin API key for backend |
+| `STRIPE_SECRET_KEY` | No | Stripe secret key for billing |
+| `STRIPE_WEBHOOK_SECRET` | No | Stripe webhook signing secret |
 
-### Required Accounts and APIs
-
-- **Docker Hub Account** — For base images and container pushes
-- **Nvidia NIM API Access** — For inference acceleration (optional; local models supported)
-- **GitHub Account** — For repository and CI/CD
-
-### Software Dependencies
-
-| Tool              | Version | Purpose                  |
-|-------------------|---------|--------------------------|
-| Docker            | 24.0+   | Container runtime/builds |
-| Docker Compose    | 2.20+   | Multi-container orchestration |
-| Python            | 3.10+   | Backend development      |
-| Node.js           | 20.x    | Frontend development     |
-| JDK               | 17      | Android development      |
-| kubectl           | 1.28+   | Kubernetes deployment    |
-| terraform         | 1.6+    | Infrastructure provisioning |
-
----
-
-## Quick Start
-
-### 1. Clone the Repository
-
+### Start Backend
 ```bash
-git clone https://github.com/your-org/AMAIMA.git
-cd amaima
+cd amaima/backend
+pip install -r requirements.txt  # or use pip install
+python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 2. Configure Environment Variables
-
+### Start Frontend
 ```bash
-cp .env.example .env
-# Edit .env with your keys and settings
-```
-
-### 3. Launch Development Environment
-
-```bash
-docker-compose up -d
-```
-
-Or run components separately:
-
-```bash
-# Backend
-cd backend
-make install
-make dev
-
-# Frontend
-cd frontend
+cd amaima/frontend
 npm install
 npm run dev
-
-# Mobile
-cd mobile
-# Open in Android Studio
 ```
 
-### 4. Access Interfaces
-
-| Service     | URL                          | Credentials |
-|-------------|------------------------------|-------------|
-| Backend API | http://localhost:8000/api/docs | None (dev)  |
-| Frontend    | http://localhost:3000        | None (dev)  |
-| Prometheus  | http://localhost:9090        | None        |
-| Grafana     | http://localhost:3001        | admin/admin |
-
----
-
-## Backend Development
-
-### Installation
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-```
-
-### Run Server
-
-```bash
-make dev
-# or
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Commands
-
-```bash
-make test      # Tests
-make lint      # Linting
-make format    # Formatting
-make type-check # Type checking
-make docs      # OpenAPI docs
-```
-
-### Environment Variables (.env)
-
-```env
-APP_ENV=development
-DEBUG=true
-SECRET_KEY=your-secret-key
-
-NVIDIA_API_KEY=your-key
-DATABASE_URL=postgresql://user:pass@localhost:5432/amaima
-REDIS_URL=redis://localhost:6379
-
-ALLOWED_ORIGINS=http://localhost:3000
-JWT_SECRET_KEY=your-jwt-secret
-JWT_EXPIRATION_MINUTES=15
-REFRESH_TOKEN_DAYS=30
-
-DEFAULT_MODEL_SIZE=nano
-TENSORRT_ENABLED=true
-QUANTIZATION_MODE=fp16
-```
-
----
-
-## Frontend Development
-
-### Installation
-
-```bash
-cd frontend
-npm install
-npm install @tensorflow/tfjs @tensorflow-models/universal-sentence-encoder framer-motion zustand
-```
-
-### Run Server
-
-```bash
-npm run dev
-# Build preview
-npm run build && npm run start
-```
-
-### Commands
-
-```bash
-npm test            # Unit
-npm run test:e2e    # E2E
-npm run lint
-npm run type-check
-npm run test:visual
-```
-
-### Environment Variables (.env.local)
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
-
-NEXT_PUBLIC_ENABLE_ANALYTICS=true
-NEXT_PUBLIC_ENABLE_OFFLINE_MODE=true
-
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret
-```
-
----
-
-## Mobile Development
-
-### Setup
-
-```bash
-cd mobile
-# Open in Android Studio Ladybug+
-```
-
-Configure SDK:
-- Platform 34
-- Build-Tools 34.0.0
-
-### Build
-
-```bash
-./gradlew assembleDebug   # Debug
-./gradlew assembleRelease # Release
-./gradlew bundleRelease   # Bundle
-```
-
-### Configuration (res/values/config.xml)
-
-```xml
-<resources>
-    <string name="api_base_url">https://api.amaima.example.com</string>
-    <string name="ws_base_url">wss://api.amaima.example.com/ws</string>
-    <string name="ml_model_cache_size_mb">500</string>
-    <string name="offline_enabled">true</string>
-    <bool name="biometric_enabled">true</bool>
-    <bool name="certificate_pinning_enabled">true</bool>
-</resources>
-```
-
-### TFLite Models
-
-Place in `app/src/main/assets/models/`:
-- complexity_estimation.tflite
-- sentiment_analysis.tflite
-- keyword_extraction.tflite
-
----
-
-## Model Specifications
-
-| Size   | Parameters | Use Case                  | Cost/1K Tokens |
-|--------|------------|---------------------------|----------------|
-| NANO   | 1B         | Simple queries            | $0.0003        |
-| MICRO  | 3B         | Standard conversations    | $0.0005        |
-| MINI   | 7B         | Code/analysis             | $0.0007        |
-| MEDIUM | 13B        | Complex reasoning         | $0.0009        |
-| LARGE  | 33B        | Advanced tasks            | $0.0012        |
-| ULTRA  | 200B       | Expert responses          | $0.0015        |
-
-### Quantization Modes
-
-| Mode | Reduction | Accuracy Impact | GPUs          |
-|------|-----------|-----------------|---------------|
-| FP32 | Baseline  | None            | Development   |
-| FP16 | 2x        | Minimal         | Production    |
-| BF16 | 2x        | None (Ampere+)  | Modern        |
-| INT8 | 4x        | ~1%             | Memory-limited|
-
-### Complexity Levels
-
-| Level    | Indicators                          | Example                              |
-|----------|-------------------------------------|--------------------------------------|
-| TRIVIAL  | <10 words, no terms                 | "What is the weather?"               |
-| SIMPLE   | 10-25 words, basic                  | "Explain photosynthesis simply."     |
-| STANDARD | 25-50 words, domain terms           | "How does REST API auth work?"       |
-| ADVANCED | 50-100 words, multiple concepts     | "Design e-commerce microservices."   |
-| EXPERT   | >100 words, specialized             | "Optimize distributed transactions." |
+### On Replit
+Both services run automatically via configured workflows:
+- **AMAIMA Backend** on port 8000
+- **AMAIMA Frontend** on port 5000 (webview)
 
 ---
 
 ## Deployment
 
-### Docker
+### Vercel (Frontend)
+The frontend includes a `vercel.json` configuration for direct deployment to Vercel. Set `BACKEND_URL` to your backend's public URL.
 
-**Backend**:
-```bash
-docker build -t amaima/backend:latest ./backend
-docker run -d -p 8000:8000 --env-file backend/.env amaima/backend:latest
-```
-
-**Frontend**:
-```bash
-docker build -t amaima/frontend:latest ./frontend
-docker run -d -p 80:80 amaima/frontend:latest
-```
-
-### Kubernetes
+### Backend
+Deploy as any Python FastAPI application. Recommended: use `gunicorn` with `uvicorn` workers for production.
 
 ```bash
-kubectl create namespace amaima
-kubectl apply -f k8s/backend/
-kubectl apply -f k8s/frontend/
-kubectl apply -f k8s/monitoring/
+gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 ```
-
-### Terraform
-
-```bash
-cd infrastructure/terraform
-terraform init
-terraform apply -var="environment=production"
-```
-
----
-
-## API Reference
-
-### REST
-
-| Method | Endpoint              | Description          |
-|--------|-----------------------|----------------------|
-| POST   | `/api/v1/query`       | Submit query         |
-| GET    | `/api/v1/query/{id}`  | Get result           |
-| POST   | `/api/v1/workflow`    | Create workflow      |
-| GET    | `/api/v1/workflow/{id}` | Get workflow       |
-| POST   | `/api/v1/models/load` | Pre-load model       |
-| GET    | `/api/v1/health`      | Health check         |
-
-### WebSocket
-
-| Endpoint             | Description                 |
-|----------------------|-----------------------------|
-| `/ws/query`          | Stream query responses      |
-| `/ws/workflow/{id}`  | Workflow progress           |
-| `/ws/metrics`        | Real-time metrics           |
-
-Full docs: `/api/docs` (Swagger) or `/api/docs/redoc`.
-
----
-
-## Testing
-
-**Backend**:
-```bash
-cd backend
-pytest tests/ --cov=app
-```
-
-**Frontend**:
-```bash
-cd frontend
-npm test
-npm run test:e2e
-```
-
-**Mobile**:
-```bash
-cd mobile
-./gradlew test
-./gradlew connectedAndroidTest
-```
-
-Coverage: Backend 90%+, Frontend 85%+, Mobile 80%+.
-
----
-
-## Contributing
-
-1. Fork repo
-2. Create branch: `git checkout -b feature/name`
-3. Add tests
-4. Run suite: `make test-all`
-5. Submit PR
-
-Standards: PEP8/Black (backend), Prettier (frontend), Kotlin Guide (mobile).
-
----
-
-## Monitoring
-
-Metrics: `/metrics` (Prometheus)
-
-Key:
-- `amaima_query_latency_seconds` (p95 < 0.2)
-- `amaima_model_load_seconds` (p95 < 2.0)
-
-JSON logging with configurable level.
-
----
-
-## Troubleshooting
-
-**Backend start failure** → Check `docker logs`, verify `.env`.
-
-**WebSocket issues** → Check CORS, console errors.
-
-**Mobile crashes** → `adb logcat | grep amaima`.
-
-**GPU OOM** → Lower batch, enable quantization.
 
 ---
 
 ## License
 
-**AMAIMA is multi-licensed under the AMAIMA License v1.0 (December 28, 2025)**
+**AMAIMA License v1.0**
 
-You must choose **ONE** of the following options:
+Three licensing options:
+1. **Community License** - Free for non-commercial use, research, and individuals
+2. **Production License** - Source-available for business use ($49/month)
+3. **Enterprise License** - Full unrestricted commercial use ($499/month)
 
-1. **AMAIMA Community License** – Responsible open-source use (individuals, research, non-commercial)  
-2. **AMAIMA Production License** – Source-available with delayed open transition (Business Source License 1.1)  
-3. **AMAIMA Commercial License** – Full unrestricted enterprise use (proprietary)
-
-Full license text available in [`LICENSE`](LICENSE).
-
-For commercial licensing inquiries: licensing@amaima.ai
+For licensing inquiries: licensing@amaima.ai
 
 ---
 
-## Support
+## Future Roadmap
 
-- Docs: https://docs.amaima.example.com
-- Issues: https://github.com/your-org/amaima/issues
-- Discord: https://discord.gg/amaima
-- Email: support@amaima.example.com
+### High Priority
+- **Streaming Responses** - Server-Sent Events (SSE) for real-time token streaming on long queries
+- **User Authentication** - Full user accounts with email/password or OAuth login tied to API keys
+- **Admin Dashboard** - Analytics panel showing usage across all users, revenue metrics, and system health
+- **Rate Limiting** - Per-second and per-minute rate limits in addition to monthly quotas
+- **API Key Revocation** - Ability to deactivate compromised keys immediately
+
+### Medium Priority
+- **Conversation History** - Persistent chat threads with context window management across sessions
+- **File Upload Processing** - Direct image/document upload for vision and biology endpoints
+- **Webhook Notifications** - Alert users when they approach usage limits or when jobs complete
+- **Model Benchmarking** - Track actual latency, accuracy, and cost per model to improve routing decisions
+- **Caching Layer** - Cache frequent query results to reduce NIM API costs and improve response times
+- **Team Management** - Shared organization accounts with role-based access (admin, developer, viewer)
+
+### Lower Priority
+- **Custom Model Routing Rules** - Let Enterprise users define their own routing preferences
+- **Usage Export** - CSV/JSON export of usage data for enterprise reporting
+- **Android Mobile Client** - Native app implementation from existing spec
+- **WebSocket Streaming** - Real-time bidirectional communication for interactive agent sessions
+- **A/B Testing Framework** - Compare model responses side-by-side for quality evaluation
+- **Plugin Marketplace** - Community-contributed plugins for additional domain services
+- **Multi-Region Deployment** - Route to nearest NIM endpoint for lower latency
+- **Fine-Tuning Pipeline** - Allow users to fine-tune models on their own data via NIM
 
 ---
 
 <div align="center">
 
-**AMAIMA** — *Intelligent AI Orchestration at Scale*
+**AMAIMA** - *Intelligent AI Orchestration at Scale*
+
+Built with NVIDIA NIM, FastAPI, Next.js, and Stripe
 
 </div>
