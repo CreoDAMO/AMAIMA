@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
           if (priceId) {
             const tier = await getTierFromPrice(priceId);
             await updateApiKeyTier(apiKeyId, tier, customerId, subscriptionId);
-            console.log(`Updated API key ${apiKeyId} to tier: ${tier}`);
+            console.log(`Updated API key tier to: ${tier}`);
           }
         }
       }
@@ -80,13 +80,13 @@ export async function POST(request: NextRequest) {
 
           if (event.type === 'customer.subscription.deleted' || subscription.status === 'canceled') {
             await updateApiKeyTier(apiKeyId, 'community', customerId, '');
-            console.log(`Downgraded API key ${apiKeyId} to community (subscription canceled)`);
+            console.log('Downgraded API key to community (subscription canceled)');
           } else if (subscription.status === 'active') {
             const priceId = subscription.items?.data?.[0]?.price?.id;
             if (priceId) {
               const tier = await getTierFromPrice(priceId);
               await updateApiKeyTier(apiKeyId, tier, customerId, subscription.id);
-              console.log(`Updated API key ${apiKeyId} to tier: ${tier}`);
+              console.log(`Updated API key tier to: ${tier}`);
             }
           }
         }
