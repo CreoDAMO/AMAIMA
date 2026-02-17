@@ -245,14 +245,14 @@ async def add_member(org_id: str, api_key_id: str, role: str = "member",
                     org_id, api_key_id
                 )
         
-        logger.info(f"Added {api_key_id} to organization {org_id} with role '{role}'")
+        logger.info(f"Added member to organization {org_id} with role '{role}'")
         return dict(member)
     
     except Exception as e:
         if "IntegrityError" in str(type(e)) or "already a member" in str(e):
             logger.error(f"Cannot add member: {e}")
             raise ValueError(f"Cannot add member: {e}")
-        logger.error(f"Error adding member {api_key_id} to organization {org_id}: {e}")
+        logger.error(f"Error adding member to organization {org_id}: {e}")
         raise
 
 
