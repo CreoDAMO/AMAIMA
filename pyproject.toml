@@ -27,3 +27,8 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.46",
     "uvicorn[standard]>=0.40.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["amaima/backend/tests"]
+asyncio_mode = "auto"
+pythonpath = ["amaima/backend"]
