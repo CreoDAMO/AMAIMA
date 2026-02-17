@@ -122,9 +122,7 @@ async def list_conversations(
             for r in rows
         ]
 
-        logger.info(
-            f"Listed {len(conversations)} conversations for api_key_id {api_key_id}"
-        )
+        logger.info("Listed %d conversations", len(conversations))
 
         return conversations
 
