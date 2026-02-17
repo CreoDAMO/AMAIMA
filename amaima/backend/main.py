@@ -177,6 +177,18 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
 
         start_time_ms = datetime.now()
         decision = route_query(request.query, simulate=False)
+        model_used = decision.get("model", "unknown")
+
+        try:
+            from app.benchmarks import get_cached_response, set_cached_response
+            cached = await get_cached_response(request.query, model_used)
+            if cached:
+                cached["cache_hit"] = True
+                app_state.query_count += 1
+                return cached
+        except Exception as cache_err:
+            logger.debug(f"Cache lookup skipped: {cache_err}")
+
         decision["_original_query"] = request.query
         execution_result = await execute_model(decision)
         decision.pop("_original_query", None)
@@ -198,6 +210,22 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
             )
         except Exception as usage_err:
             logger.warning(f"Usage tracking failed: {usage_err}")
+
+        try:
+            from app.benchmarks import set_cached_response, record_benchmark
+            await set_cached_response(request.query, model_used, response)
+            await record_benchmark(
+                model=model_used,
+                query_complexity=decision.get("complexity_level", "SIMPLE"),
+                domain=decision.get("domain", "general"),
+                latency_ms=latency,
+                tokens_input=len(request.query) // 4,
+                tokens_output=tokens_est,
+                cost_usd=response.get("actual_cost_usd", 0),
+                success=True
+            )
+        except Exception as bench_err:
+            logger.debug(f"Benchmark/cache write skipped: {bench_err}")
 
         return response
         

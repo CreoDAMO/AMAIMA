@@ -204,3 +204,16 @@ amaima/
 - February 17, 2026: Major integration update - Added Vision (Cosmos R2), Biology (BioNeMo), and Robotics (ROS2/Isaac) services with cloud-first NIM APIs. Created multi-agent crew orchestration (research, drug discovery, navigation, manipulation, swarm). Enhanced smart router with domain-aware keyword classification. Added plugin manager. Created frontend API proxy routes and updated UI with 7 operation types and domain-specific sample queries.
 - February 17, 2026: Expanded model registry from 5 to 14 models. Added Cosmos Reason2 7B, Cosmos Predict 2.5 14B, Nemotron Nano 9B v2, Nemotron Nano VL 8B, BioNeMo MegaMolBART, BioNeMo ESM-2, Isaac GR00T N1.6, and Alpamayo 1. Implemented domain-aware model routing (biology/vision/robotics queries auto-route to specialized models). Updated frontend with domain badges, categories, and model descriptions.
 - February 17, 2026: Monetization system - Three-tier subscription (Community free/1K queries, Production $49/10K, Enterprise $499/unlimited). PostgreSQL tables: api_keys, usage_events, monthly_usage. Backend billing service with usage tracking, tier enforcement middleware. Stripe integration via stripe-replit-sync with checkout, portal, webhook routes. Billing dashboard with plan cards, API key management, usage meter. Security: billing endpoints require authentication, usage endpoint enforces ownership, update-tier restricted to admin, webhook handles subscription tier changes automatically.
+- February 17, 2026: Advanced features batch - Added 8 new database tables and 10 new backend service modules:
+  - **Conversation History**: Persistent chat threads with messages, model/latency tracking per response (conversations.py)
+  - **File Upload**: 10MB multipart upload with MD5 checksums for vision/biology endpoints
+  - **Model Benchmarking**: Automatic latency/token/cost recording per query, leaderboard, timeseries (benchmarks.py)
+  - **Response Caching**: MD5-keyed cache with 24hr TTL, integrated into /v1/query endpoint to reduce NIM API costs
+  - **Webhook Notifications**: HMAC-SHA256 signed webhooks for usage alerts (80%/100% limits), auto-disable after 5 failures (webhooks.py)
+  - **Team/Organization Accounts**: Org CRUD, member roles (owner/admin/member), shared billing (organizations.py)
+  - **Custom Routing Rules**: Enterprise-tier model routing preferences by domain/complexity (webhooks.py)
+  - **Usage Export**: CSV/JSON export of usage and benchmark data (benchmarks.py)
+  - **A/B Testing**: Side-by-side model comparison experiments with voting and statistics (experiments.py)
+  - **Plugin Marketplace**: Browse installed + community plugins with capability listing
+  - **Frontend Pages**: Navigation bar, Conversations page, Benchmarks dashboard, Settings page (4 tabs: Orgs/Webhooks/Experiments/Rules)
+  - **API Proxy Routes**: 9 new Next.js API proxy routes for frontend-backend communication
