@@ -19,6 +19,9 @@ from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
 from app.modules.execution_engine import execute_model
 from app.security import get_api_key
+from app.routers import biology as biology_router
+from app.routers import robotics as robotics_router
+from app.routers import vision as vision_router
 from fastapi import Depends
 
 logging.basicConfig(level=logging.INFO)
@@ -121,13 +124,20 @@ app.add_middleware(
 )
 
 
+app.include_router(biology_router.router)
+app.include_router(robotics_router.router)
+app.include_router(vision_router.router)
+
+
 @app.on_event("startup")
 async def startup():
     from app.database import init_db
     from app.modules.observability_framework import get_metrics
+    from app.modules.plugin_manager import initialize_builtin_plugins
     init_db()
     metrics = get_metrics()
     metrics.start_metrics_server()
+    initialize_builtin_plugins()
     app_state.initialize(darpa_enabled=False)
     logger.info("AMAIMA API server started")
 
@@ -300,6 +310,81 @@ async def get_statistics():
         "active_connections": len(app_state.active_connections),
         "version": "5.0.0"
     }
+
+
+class AgentCrewRequest(BaseModel):
+    task: str = Field(..., description="Task for the agent crew")
+    crew_type: str = Field(default="research", description="Crew type: research, drug_discovery, protein_analysis, navigation, manipulation, swarm, custom")
+    process: str = Field(default="sequential", description="Process: sequential, parallel, hierarchical")
+    roles: Optional[List[Dict[str, Any]]] = Field(default=None, description="Custom roles for custom crew type")
+    environment: Optional[str] = Field(default=None, description="Environment context for robotics crews")
+    robot_type: Optional[str] = Field(default="amr", description="Robot type for robotics crews")
+
+
+@app.post("/v1/agents/run")
+async def run_agent_crew(request: AgentCrewRequest):
+    try:
+        if request.crew_type == "research":
+            from app.agents.crew_manager import run_research_crew
+            result = await run_research_crew(request.task, request.process)
+        elif request.crew_type == "drug_discovery":
+            from app.agents.biology_crew import run_drug_discovery_crew
+            result = await run_drug_discovery_crew(request.task)
+        elif request.crew_type == "protein_analysis":
+            from app.agents.biology_crew import run_protein_analysis_crew
+            result = await run_protein_analysis_crew(request.task)
+        elif request.crew_type == "navigation":
+            from app.agents.robotics_crew import run_navigation_crew
+            result = await run_navigation_crew(request.task, request.environment or "indoor", request.robot_type or "amr")
+        elif request.crew_type == "manipulation":
+            from app.agents.robotics_crew import run_manipulation_crew
+            result = await run_manipulation_crew(request.task)
+        elif request.crew_type == "swarm":
+            from app.agents.robotics_crew import run_swarm_crew
+            result = await run_swarm_crew(request.task, environment=request.environment or "warehouse")
+        elif request.crew_type == "custom" and request.roles:
+            from app.agents.crew_manager import run_custom_crew
+            result = await run_custom_crew(request.task, request.roles, request.process)
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown crew type: {request.crew_type}")
+
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Agent crew execution failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/v1/agents/types")
+async def list_agent_types():
+    return {
+        "crew_types": [
+            {"id": "research", "name": "Research Crew", "description": "Researcher, Analyst, Synthesizer for general research tasks"},
+            {"id": "drug_discovery", "name": "Drug Discovery Crew", "description": "Molecule Generator, ADMET Predictor, Lead Optimizer, Safety Reviewer"},
+            {"id": "protein_analysis", "name": "Protein Analysis Crew", "description": "Structural Biologist, Binding Site Predictor"},
+            {"id": "navigation", "name": "Navigation Crew", "description": "Perception, Path Planner, Action Executor, Safety Monitor"},
+            {"id": "manipulation", "name": "Manipulation Crew", "description": "Perception, Grasp Planner, Action Executor, Safety Monitor"},
+            {"id": "swarm", "name": "Swarm Coordination Crew", "description": "Coordinator, Perception, Path Planner, Safety Monitor"},
+            {"id": "custom", "name": "Custom Crew", "description": "Build your own crew with custom roles"},
+        ],
+        "processes": ["sequential", "parallel", "hierarchical"],
+    }
+
+
+@app.get("/v1/plugins")
+async def list_plugins():
+    from app.modules.plugin_manager import list_plugins
+    return {"plugins": list_plugins()}
+
+
+@app.get("/v1/plugins/{plugin_id}/capabilities")
+async def plugin_capabilities(plugin_id: str):
+    from app.modules.plugin_manager import get_plugin_capabilities
+    caps = get_plugin_capabilities(plugin_id)
+    if caps:
+        return caps
+    raise HTTPException(status_code=404, detail=f"Plugin '{plugin_id}' not found or has no capabilities")
 
 
 @app.websocket("/v1/ws/query")

@@ -1,7 +1,7 @@
 # AMAIMA - Advanced Model-Aware AI Management Interface
 
 ## Overview
-AMAIMA is a production AI query platform with intelligent model routing. The system consists of a FastAPI Python backend with a Smart Router engine and a Next.js frontend for the user interface. The backend uses NVIDIA NIM for real AI model inference.
+AMAIMA is an enterprise-grade AI orchestration platform with intelligent model routing, multi-agent collaboration, and specialized capabilities for vision/multimodal reasoning (Cosmos R2), biology/drug discovery (BioNeMo), and robotics (ROS2/Isaac). The system uses NVIDIA NIM for optimized cloud-based inference with a FastAPI backend, Next.js frontend, and Android mobile app.
 
 ## Project Architecture
 
@@ -12,11 +12,12 @@ AMAIMA is a production AI query platform with intelligent model routing. The sys
 - **Port**: 5000 (for Replit webview)
 - **Deployment**: Vercel-ready with `vercel.json` config
 - **Key Features**:
-  - Query input interface with operation type selection
+  - Query input interface with 7 operation types (General, Code, Analysis, Biology, Robotics, Vision, Agents)
   - Real-time API status and system metrics
   - Routing decision visualization
   - Performance metrics display
   - API routes proxy to backend via `BACKEND_URL` env var
+  - Domain-specific sample queries for each operation type
 
 ### Backend
 - **Framework**: FastAPI with Python 3.11
@@ -24,11 +25,26 @@ AMAIMA is a production AI query platform with intelligent model routing. The sys
 - **Port**: 8000 (internal)
 - **AI Inference**: NVIDIA NIM API (cloud-based, no GPU required)
 - **Key Features**:
-  - Smart Router engine for query complexity analysis
+  - Smart Router engine with domain-aware query classification
   - NVIDIA NIM integration for real AI model inference
-  - Query processing with routing decisions
+  - Domain-specific services: Vision (Cosmos R2), Biology (BioNeMo), Robotics (ROS2/Isaac)
+  - Multi-agent crews: Research, Drug Discovery, Protein Analysis, Navigation, Manipulation, Swarm
+  - Plugin manager for extensibility
   - Health monitoring and statistics endpoints
   - CORS-enabled API
+
+### Domain Services
+- **Vision Service** (`app/services/vision_service.py`): Cosmos R2 for embodied reasoning, image/video analysis, scene understanding
+- **Biology Service** (`app/services/biology_service.py`): BioNeMo for drug discovery, protein analysis, molecule optimization, SMILES validation
+- **Robotics Service** (`app/services/robotics_service.py`): Robot action planning, navigation, vision-guided actions, simulation
+
+### Multi-Agent Crews
+- **Crew Manager** (`app/agents/crew_manager.py`): Base AgentRole and Crew classes with sequential/parallel/hierarchical orchestration
+- **Biology Crew** (`app/agents/biology_crew.py`): Drug Discovery and Protein Analysis crews
+- **Robotics Crew** (`app/agents/robotics_crew.py`): Navigation, Manipulation, and Swarm Coordination crews
+
+### Plugin System
+- **Plugin Manager** (`app/modules/plugin_manager.py`): Dynamic plugin registration, built-in plugins for biology/vision/robotics
 
 ## Running the Project
 
@@ -38,6 +54,7 @@ Two workflows run the complete system:
 
 ## API Endpoints
 
+### Core
 - `GET /health` - Health check with component status
 - `GET /v1/stats` - System statistics (queries, uptime, connections)
 - `POST /v1/query` - Submit query for intelligent routing and AI inference
@@ -45,9 +62,38 @@ Two workflows run the complete system:
 - `GET /v1/capabilities` - System capabilities and model details
 - `POST /v1/simulate` - Simulate routing without execution
 
+### Biology
+- `POST /v1/biology/discover` - Drug discovery pipeline
+- `POST /v1/biology/protein` - Protein sequence analysis
+- `POST /v1/biology/optimize` - Molecule optimization
+- `POST /v1/biology/query` - General biology/chemistry query
+- `GET /v1/biology/capabilities` - Biology service capabilities
+
+### Robotics
+- `POST /v1/robotics/navigate` - Robot navigation commands
+- `POST /v1/robotics/plan` - Robot action planning
+- `POST /v1/robotics/simulate` - Action simulation
+- `POST /v1/robotics/vision-action` - Vision-guided robot actions
+- `GET /v1/robotics/capabilities` - Robotics service capabilities
+
+### Vision
+- `POST /v1/vision/reason` - Vision reasoning with optional media
+- `POST /v1/vision/analyze-image` - Image analysis
+- `POST /v1/vision/embodied-reasoning` - Embodied reasoning
+- `GET /v1/vision/capabilities` - Vision service capabilities
+
+### Agents
+- `POST /v1/agents/run` - Run agent crew (research, drug_discovery, protein_analysis, navigation, manipulation, swarm, custom)
+- `GET /v1/agents/types` - List available crew types
+
+### Plugins
+- `GET /v1/plugins` - List registered plugins
+- `GET /v1/plugins/{id}/capabilities` - Plugin capabilities
+
 ## Smart Router
 
 The routing engine analyzes queries and determines:
+- **Domain Detection**: biology, robotics, vision, or general (keyword-based classification)
 - **Complexity Level**: TRIVIAL, SIMPLE, MODERATE, COMPLEX, EXPERT
 - **Model Selection**: Routes to appropriate NVIDIA NIM model based on query complexity
 - **Execution Mode**: streaming, batch, parallel
@@ -65,6 +111,13 @@ amaima/
 ├── frontend/                    # Next.js frontend
 │   ├── src/app/                # App router pages
 │   ├── src/app/api/            # API routes (proxy to backend)
+│   │   └── v1/
+│   │       ├── query/route.ts
+│   │       ├── biology/route.ts
+│   │       ├── robotics/route.ts
+│   │       ├── vision/route.ts
+│   │       ├── agents/route.ts
+│   │       └── plugins/route.ts
 │   ├── src/app/core/           # Core components, hooks, lib
 │   ├── vercel.json             # Vercel deployment config
 │   ├── package.json
@@ -77,9 +130,24 @@ amaima/
 │   ├── app/modules/            # Feature modules
 │   │   ├── nvidia_nim_client.py    # NVIDIA NIM API client
 │   │   ├── execution_engine.py     # Model execution
-│   │   └── smart_router_engine.py  # Query routing logic
+│   │   ├── smart_router_engine.py  # Query routing + domain detection
+│   │   ├── plugin_manager.py       # Plugin system
+│   │   └── observability_framework.py
+│   ├── app/services/           # Domain-specific services
+│   │   ├── vision_service.py       # Cosmos R2 vision/embodied reasoning
+│   │   ├── biology_service.py      # BioNeMo drug discovery/protein
+│   │   └── robotics_service.py     # ROS2/Isaac robotics
+│   ├── app/routers/            # FastAPI routers
+│   │   ├── biology.py
+│   │   ├── robotics.py
+│   │   └── vision.py
+│   ├── app/agents/             # Multi-agent orchestration
+│   │   ├── crew_manager.py         # Base crew framework
+│   │   ├── biology_crew.py         # Drug discovery/protein crews
+│   │   └── robotics_crew.py        # Navigation/manipulation/swarm crews
 │   └── app/security.py        # API key auth
 └── docs/                      # Documentation
+    └── integration-strategy_guide.md
 ```
 
 ## Environment Variables
@@ -87,11 +155,14 @@ amaima/
 - `NVIDIA_API_KEY`: NVIDIA NIM API key for AI inference (secret)
 - `API_SECRET_KEY`: Backend API authentication key
 - `AMAIMA_EXECUTION_MODE`: Set to `execution-enabled` for real inference
+- `COSMOS_NIM_URL`: Cosmos R2 NIM endpoint (default: https://integrate.api.nvidia.com/v1)
+- `BIONEMO_NIM_URL`: BioNeMo NIM endpoint (default: https://integrate.api.nvidia.com/v1)
 
-## Vercel Deployment (Frontend)
-1. Set Root Directory to `amaima/frontend` in Vercel project settings
-2. Set `BACKEND_URL` environment variable to your hosted backend URL
-3. The frontend build works with `next build`
+## Design Decisions
+- Cloud-first architecture: Heavy packages (torch, vLLM, RDKit, rclpy, PyBullet) are optional with graceful fallbacks to cloud NIM APIs
+- Services use try/except for optional imports, defaulting to cloud endpoints when local packages unavailable
+- Multi-agent crews use lightweight AgentRole/Crew classes instead of heavy CrewAI dependency
+- Plugin system allows dynamic registration of domain services
 
 ## Recent Changes
 - Set up full production system with Python backend
@@ -104,7 +175,7 @@ amaima/
 - Added loading skeleton states for polished UX
 - Added collapsible Available Models display from /v1/models endpoint
 - Updated: January 24, 2026
-- February 10, 2026: Migrated project to new Replit environment. Installed all backend Python packages and frontend Node.js dependencies. Fixed missing query client module and tsconfig path aliases. Updated Next.js dev origins config.
-- February 10, 2026: Integrated NVIDIA NIM for real AI inference. Added vercel.json for Vercel deployment. Updated model mappings from placeholders to real NVIDIA NIM models (Llama 3.1, Mixtral, Gemma 2). Updated execution engine to call NVIDIA NIM API.
-- February 10, 2026: Fixed .gitignore `lib/` pattern that was blocking frontend src/app/core/lib/ files from being tracked in git (root cause of Vercel build failure). Created docs/fixed-mobile-workflow.md with corrected GitHub Actions cache key syntax.
-- February 11, 2026: Created comprehensive backend deployment guide (docs/backend-deployment-guide.md) covering 10 platforms: Replit, Railway, Render, Fly.io, Google Cloud Run, AWS (ECS/App Runner/EC2), Azure Container Apps, DigitalOcean, Docker/VPS, and Heroku.
+- February 10, 2026: Migrated project to new Replit environment. Installed all backend Python packages and frontend Node.js dependencies.
+- February 10, 2026: Integrated NVIDIA NIM for real AI inference. Added vercel.json for Vercel deployment. Updated model mappings to real NVIDIA NIM models.
+- February 11, 2026: Created comprehensive backend deployment guide.
+- February 17, 2026: Major integration update - Added Vision (Cosmos R2), Biology (BioNeMo), and Robotics (ROS2/Isaac) services with cloud-first NIM APIs. Created multi-agent crew orchestration (research, drug discovery, navigation, manipulation, swarm). Enhanced smart router with domain-aware keyword classification. Added plugin manager. Created frontend API proxy routes and updated UI with 7 operation types and domain-specific sample queries.

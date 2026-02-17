@@ -10,13 +10,64 @@ with open(config_path, "r") as f:
 
 router_config = config.get("router", {})
 
+BIOLOGY_KEYWORDS = [
+    "drug", "protein", "molecule", "smiles", "fasta", "dna", "rna",
+    "enzyme", "receptor", "binding", "pharmacophore", "admet",
+    "molecular", "compound", "peptide", "genome", "mutation",
+    "bionemo", "drug discovery", "lead optimization",
+]
+
+ROBOTICS_KEYWORDS = [
+    "robot", "navigate", "navigation", "manipulate", "grasp",
+    "autonomous", "slam", "path planning", "ros", "ros2",
+    "actuator", "sensor", "lidar", "swarm", "drone",
+    "humanoid", "amr", "isaac", "simulation", "kinematics",
+]
+
+VISION_KEYWORDS = [
+    "image", "video", "visual", "scene", "camera", "detect",
+    "object detection", "segmentation", "depth", "3d",
+    "cosmos", "embodied", "spatial", "temporal",
+    "recognize", "classify image", "analyze video",
+]
+
+
+def detect_domain(query: str) -> Tuple[str, float]:
+    q_lower = query.lower()
+
+    biology_score = sum(1 for kw in BIOLOGY_KEYWORDS if kw in q_lower)
+    robotics_score = sum(1 for kw in ROBOTICS_KEYWORDS if kw in q_lower)
+    vision_score = sum(1 for kw in VISION_KEYWORDS if kw in q_lower)
+
+    scores = {
+        "biology": biology_score,
+        "robotics": robotics_score,
+        "vision": vision_score,
+        "general": 0,
+    }
+
+    best_domain = max(scores, key=scores.get)
+    best_score = scores[best_domain]
+
+    if best_score == 0:
+        return "general", 0.0
+
+    confidence = min(best_score / 3.0, 1.0)
+    return best_domain, confidence
+
+
 def _calculate_complexity(query: str) -> Tuple[float, str, List[Dict[str, str]]]:
     """
     Analyzes the query to determine its complexity level.
-    This is a placeholder for a more sophisticated implementation.
+    Includes domain-specific classification for biology, robotics, and vision.
     """
     length = len(query)
     reasons = []
+
+    domain, domain_confidence = detect_domain(query)
+    if domain != "general":
+        reasons.append({"code": f"DOMAIN_{domain.upper()}", "label": f"Domain detected: {domain} (confidence: {domain_confidence:.2f})"})
+
     if length > 100 or "architecture" in query or "trade-offs" in query:
         level = "EXPERT"
         score = 0.95
@@ -128,11 +179,15 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
     execution_mode_env = os.getenv('AMAIMA_EXECUTION_MODE', 'decision-only')
     execution_mode_active = execution_mode_env == 'execution-enabled'
 
+    domain, domain_confidence = detect_domain(query)
+
     decision = {
         "query_hash": hashlib.sha256(query.encode()).hexdigest(),
         "complexity_level": complexity_level,
         "model": model,
         "execution_mode": execution_mode,
+        "domain": domain,
+        "domain_confidence": round(domain_confidence, 2),
         "confidence": {
             "complexity": round(complexity_score, 2),
             "model_fit": round(model_fit_score, 2),
@@ -146,7 +201,7 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
         },
         "simulated": simulate or not execution_mode_active,
         "execution_mode_active": execution_mode_active,
-        "decision_schema_version": "1.0.0"
+        "decision_schema_version": "1.1.0"
     }
 
     if decision["simulated"]:

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp, Microscope, Bot, Eye, Users } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -62,9 +62,10 @@ interface HistoryEntry {
 const SAMPLE_QUERIES = [
   { text: 'Write a Python function to sort a list using quicksort', operation: 'code_generation', label: 'Python Code' },
   { text: 'Explain quantum computing in simple terms for a beginner', operation: 'analysis', label: 'Explain Concept' },
-  { text: 'Translate "Hello, how are you today?" to Spanish, French, and Japanese', operation: 'translation', label: 'Translation' },
-  { text: 'Write a haiku about artificial intelligence and human creativity', operation: 'creative', label: 'Creative Writing' },
-  { text: 'What is the capital of France?', operation: 'general', label: 'Simple Question' },
+  { text: 'Design a drug targeting the EGFR receptor with high selectivity', operation: 'biology', label: 'Drug Discovery' },
+  { text: 'Navigate robot to pick up the red box from shelf B3', operation: 'robotics', label: 'Robot Navigation' },
+  { text: 'Analyze the warehouse scene for safety hazards and obstacles', operation: 'vision', label: 'Scene Analysis' },
+  { text: 'Research the latest advances in protein folding prediction', operation: 'agents', label: 'Agent Research' },
 ];
 
 export default function HomePage() {
@@ -160,29 +161,78 @@ export default function HomePage() {
     setError(null);
     
     try {
-      const res = await fetch(`/api/v1/query`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          operation,
-          preferences: {}
-        })
-      });
+      let res: Response;
+
+      if (operation === 'biology') {
+        const formData = new FormData();
+        formData.append('query', query);
+        formData.append('task_type', 'general');
+        res = await fetch(`/api/v1/biology?endpoint=query`, { method: 'POST', body: formData });
+      } else if (operation === 'robotics') {
+        res = await fetch(`/api/v1/robotics?endpoint=plan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, robot_type: 'amr' }),
+        });
+      } else if (operation === 'vision') {
+        const formData = new FormData();
+        formData.append('query', query);
+        res = await fetch(`/api/v1/vision?endpoint=reason`, { method: 'POST', body: formData });
+      } else if (operation === 'agents') {
+        res = await fetch(`/api/v1/agents`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task: query, crew_type: 'research', process: 'sequential' }),
+        });
+      } else {
+        res = await fetch(`/api/v1/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, operation, preferences: {} }),
+        });
+      }
       
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`);
       }
       
-      const data: QueryResponse = await res.json();
-      setResponse(data);
-      
-      addToHistory({
-        query: query.slice(0, 100),
-        operation,
-        complexity: data.routing_decision.complexity,
-        model: data.model_used,
-      });
+      const data = await res.json();
+
+      if (['biology', 'robotics', 'vision', 'agents'].includes(operation)) {
+        const domainResponse: QueryResponse = {
+          response_id: data.crew || data.service || 'domain-' + Date.now(),
+          response_text: data.response || data.final_output || data.plan || data.predicted_outcome || (typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data)),
+          model_used: data.model || data.agents_used?.join(', ') || operation,
+          routing_decision: {
+            execution_mode: data.execution_mode || data.process || 'domain_specific',
+            model_size: 'N/A',
+            complexity: 'DOMAIN',
+            security_level: 'standard',
+            confidence: data.domain_confidence || 0.9,
+            estimated_latency_ms: data.latency_ms || data.total_latency_ms || 0,
+            estimated_cost: data.cost_usd || 0,
+            reasoning: { domain: operation, service: data.service || data.crew || operation },
+          },
+          confidence: 0.9,
+          latency_ms: data.latency_ms || data.total_latency_ms || 0,
+          timestamp: new Date().toISOString(),
+        };
+        setResponse(domainResponse);
+        addToHistory({
+          query: query.slice(0, 100),
+          operation,
+          complexity: 'DOMAIN',
+          model: domainResponse.model_used,
+        });
+      } else {
+        setResponse(data);
+        addToHistory({
+          query: query.slice(0, 100),
+          operation,
+          complexity: data.routing_decision?.complexity || 'UNKNOWN',
+          model: data.model_used || 'unknown',
+        });
+      }
       
       fetchStats();
     } catch (err) {
@@ -204,18 +254,22 @@ export default function HomePage() {
   };
 
   const features = [
-    { icon: Brain, title: 'Intelligent Routing', description: 'Automatic model selection based on query complexity', color: 'text-cyan-400', bgColor: 'bg-cyan-400/20' },
-    { icon: Zap, title: 'Real-time Streaming', description: 'Instant responses with WebSocket streaming', color: 'text-purple-400', bgColor: 'bg-purple-400/20' },
-    { icon: Shield, title: 'Secure & Private', description: 'Enterprise-grade security with encrypted storage', color: 'text-emerald-400', bgColor: 'bg-emerald-400/20' },
-    { icon: Globe, title: 'Multi-Platform', description: 'Web, mobile, and API access anywhere', color: 'text-pink-400', bgColor: 'bg-pink-400/20' },
+    { icon: Brain, title: 'Intelligent Routing', description: 'Automatic model selection with domain-aware classification', color: 'text-cyan-400', bgColor: 'bg-cyan-400/20' },
+    { icon: Microscope, title: 'Drug Discovery', description: 'BioNeMo-powered molecular generation and protein analysis', color: 'text-green-400', bgColor: 'bg-green-400/20' },
+    { icon: Bot, title: 'Robotics / Physical AI', description: 'ROS2/Isaac robot planning, navigation, and simulation', color: 'text-orange-400', bgColor: 'bg-orange-400/20' },
+    { icon: Eye, title: 'Vision & Reasoning', description: 'Cosmos R2 embodied reasoning and multimodal analysis', color: 'text-purple-400', bgColor: 'bg-purple-400/20' },
+    { icon: Users, title: 'Multi-Agent Crews', description: 'CrewAI-based agent orchestration for complex tasks', color: 'text-pink-400', bgColor: 'bg-pink-400/20' },
+    { icon: Shield, title: 'Secure & Extensible', description: 'Plugin architecture with enterprise-grade security', color: 'text-emerald-400', bgColor: 'bg-emerald-400/20' },
   ];
 
   const operations = [
     { value: 'general', label: 'General', icon: Brain },
     { value: 'code_generation', label: 'Code', icon: Server },
     { value: 'analysis', label: 'Analysis', icon: Activity },
-    { value: 'translation', label: 'Translation', icon: Globe },
-    { value: 'creative', label: 'Creative', icon: Sparkles },
+    { value: 'biology', label: 'Biology', icon: Microscope },
+    { value: 'robotics', label: 'Robotics', icon: Bot },
+    { value: 'vision', label: 'Vision', icon: Eye },
+    { value: 'agents', label: 'Agents', icon: Users },
   ];
 
   const getComplexityColor = (complexity: string) => {
@@ -269,7 +323,7 @@ export default function HomePage() {
             </h1>
             
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-              Advanced Model-Aware Artificial Intelligence Management Interface with intelligent query routing.
+              Advanced AI Orchestration Platform with intelligent routing, multi-agent crews, drug discovery, robotics, and vision reasoning.
             </p>
           </div>
 
@@ -474,7 +528,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {features.map((feature, index) => (
               <div key={index} className="group rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl p-6 hover:scale-105 transition-all duration-300">
                 <div className={`p-3 rounded-xl inline-block mb-4 group-hover:scale-110 transition-transform ${feature.bgColor}`}>
