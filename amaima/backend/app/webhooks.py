@@ -428,7 +428,7 @@ async def get_matching_rule(
         rule = await pool.fetchrow(query, *params)
         
         if rule:
-            logger.info(f"Found matching rule {rule['id']} for API key {api_key_id}")
+            logger.info(f"Found matching rule {rule['id']} for API key <redacted>")
             return dict(rule)
         
         return None
