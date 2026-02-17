@@ -995,6 +995,172 @@ async def marketplace_list():
     return {"plugins": marketplace, "total": len(marketplace)}
 
 
+@app.get("/v1/cache/stats")
+async def cache_stats():
+    from app.modules.nvidia_nim_client import get_cache_stats
+    return get_cache_stats()
+
+
+@app.post("/v1/cache/clear")
+async def cache_clear(api_key_info: dict = Depends(get_api_key)):
+    if api_key_info.get("id") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    from app.modules.nvidia_nim_client import clear_cache
+    clear_cache()
+    return {"status": "cache_cleared"}
+
+
+MAU_TIER_LIMITS = {
+    "community": 50,
+    "production": 500,
+    "enterprise": -1,
+}
+
+
+@app.middleware("http")
+async def mau_rate_limit_middleware(request, call_next):
+    from starlette.responses import JSONResponse
+
+    if not request.url.path.startswith("/v1/") or request.method == "OPTIONS":
+        return await call_next(request)
+
+    skip_paths = ["/v1/billing", "/v1/cache", "/v1/models", "/v1/capabilities", "/v1/stats", "/v1/agents/types"]
+    if any(request.url.path.startswith(p) for p in skip_paths):
+        return await call_next(request)
+
+    api_key_header = request.headers.get("X-API-Key")
+    if api_key_header and api_key_header != os.getenv("API_SECRET_KEY", "default_secret_key_for_development"):
+        try:
+            from app.billing import validate_api_key, get_pool, TIER_LIMITS
+            key_info = await validate_api_key(api_key_header)
+            if key_info:
+                tier = key_info.get("tier", "community")
+                tier_config = TIER_LIMITS.get(tier, TIER_LIMITS["community"])
+                monthly_limit = tier_config["queries_per_month"]
+
+                if monthly_limit != -1:
+                    pool = await get_pool()
+                    month = datetime.now().strftime("%Y-%m")
+                    row = await pool.fetchrow(
+                        "SELECT query_count FROM monthly_usage WHERE api_key_id = $1 AND month = $2",
+                        key_info["id"], month
+                    )
+                    current = row["query_count"] if row else 0
+
+                    if current >= monthly_limit:
+                        return JSONResponse(
+                            status_code=429,
+                            content={
+                                "error": "Monthly usage limit reached",
+                                "tier": tier,
+                                "limit": monthly_limit,
+                                "used": current,
+                                "upgrade_url": "/billing",
+                            },
+                        )
+
+                    if current == 900 or (current > 900 and current <= 910 and current % 10 == 0):
+                        asyncio.create_task(
+                            _trigger_mau_threshold_webhook(key_info["id"], current, monthly_limit)
+                        )
+        except Exception as e:
+            logger.debug(f"MAU rate-limit check skipped: {e}")
+
+    return await call_next(request)
+
+
+async def _trigger_mau_threshold_webhook(api_key_id: str, current_usage: int, limit: int):
+    try:
+        from app.webhooks import check_usage_alerts
+        await check_usage_alerts(api_key_id, current_usage, limit)
+        logger.info(f"MAU threshold webhook triggered for key={api_key_id} at {current_usage}/{limit}")
+    except Exception as e:
+        logger.debug(f"MAU webhook skipped: {e}")
+
+
+@app.get("/v1/billing/analytics")
+async def billing_analytics(api_key_id: Optional[str] = None):
+    try:
+        from app.billing import get_pool
+        pool = await get_pool()
+
+        daily_usage = []
+        try:
+            rows = await pool.fetch(
+                """SELECT DATE(created_at) as day, COUNT(*) as queries, 
+                          SUM(tokens_estimated) as tokens, AVG(latency_ms)::int as avg_latency,
+                          SUM(CASE WHEN status_code = 200 THEN 1 ELSE 0 END) as successes
+                   FROM usage_events
+                   WHERE created_at >= NOW() - INTERVAL '30 days'
+                   """ + ("AND api_key_id = $1" if api_key_id else "") + """
+                   GROUP BY DATE(created_at) ORDER BY day""",
+                *([api_key_id] if api_key_id else [])
+            )
+            daily_usage = [{"day": str(r["day"]), "queries": r["queries"], "tokens": r["tokens"] or 0,
+                            "avg_latency": r["avg_latency"] or 0, "success_rate": round(r["successes"] / max(r["queries"], 1) * 100, 1)} for r in rows]
+        except Exception:
+            pass
+
+        model_breakdown = []
+        try:
+            rows = await pool.fetch(
+                """SELECT model_used, COUNT(*) as count, SUM(tokens_estimated) as tokens
+                   FROM usage_events
+                   WHERE created_at >= NOW() - INTERVAL '30 days' AND model_used != ''
+                   """ + ("AND api_key_id = $1" if api_key_id else "") + """
+                   GROUP BY model_used ORDER BY count DESC LIMIT 10""",
+                *([api_key_id] if api_key_id else [])
+            )
+            model_breakdown = [{"model": r["model_used"], "count": r["count"], "tokens": r["tokens"] or 0} for r in rows]
+        except Exception:
+            pass
+
+        endpoint_breakdown = []
+        try:
+            rows = await pool.fetch(
+                """SELECT endpoint, COUNT(*) as count, AVG(latency_ms)::int as avg_latency
+                   FROM usage_events
+                   WHERE created_at >= NOW() - INTERVAL '30 days'
+                   """ + ("AND api_key_id = $1" if api_key_id else "") + """
+                   GROUP BY endpoint ORDER BY count DESC""",
+                *([api_key_id] if api_key_id else [])
+            )
+            endpoint_breakdown = [{"endpoint": r["endpoint"], "count": r["count"], "avg_latency": r["avg_latency"] or 0} for r in rows]
+        except Exception:
+            pass
+
+        tier_distribution = []
+        try:
+            rows = await pool.fetch(
+                """SELECT tier, COUNT(*) as count FROM api_keys WHERE is_active = TRUE GROUP BY tier"""
+            )
+            tier_distribution = [{"tier": r["tier"], "count": r["count"]} for r in rows]
+        except Exception:
+            pass
+
+        from app.modules.nvidia_nim_client import get_cache_stats
+        cache = get_cache_stats()
+
+        return {
+            "daily_usage": daily_usage,
+            "model_breakdown": model_breakdown,
+            "endpoint_breakdown": endpoint_breakdown,
+            "tier_distribution": tier_distribution,
+            "cache_stats": cache,
+            "period": "30_days",
+        }
+    except Exception as e:
+        logger.error(f"Analytics error: {e}")
+        return {
+            "daily_usage": [],
+            "model_breakdown": [],
+            "endpoint_breakdown": [],
+            "tier_distribution": [],
+            "cache_stats": {},
+            "period": "30_days",
+        }
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))

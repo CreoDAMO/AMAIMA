@@ -1,10 +1,70 @@
 import os
+import hashlib
+import json
 import httpx
 import logging
 import time
+from collections import OrderedDict
 from typing import Dict, Any, Optional, List
 
 logger = logging.getLogger(__name__)
+
+
+class PromptCache:
+    def __init__(self, max_size: int = 500, ttl_seconds: int = 600):
+        self._cache: OrderedDict[str, Dict[str, Any]] = OrderedDict()
+        self._max_size = max_size
+        self._ttl = ttl_seconds
+        self._hits = 0
+        self._misses = 0
+
+    def _make_key(self, model: str, messages: list, temperature: float, max_tokens: int) -> str:
+        raw = json.dumps({"model": model, "messages": messages, "temperature": temperature, "max_tokens": max_tokens}, sort_keys=True)
+        return hashlib.sha256(raw.encode()).hexdigest()
+
+    def get(self, model: str, messages: list, temperature: float, max_tokens: int) -> Optional[Dict[str, Any]]:
+        key = self._make_key(model, messages, temperature, max_tokens)
+        entry = self._cache.get(key)
+        if entry is None:
+            self._misses += 1
+            return None
+        if time.time() - entry["ts"] > self._ttl:
+            self._cache.pop(key, None)
+            self._misses += 1
+            return None
+        self._hits += 1
+        self._cache.move_to_end(key)
+        result = entry["data"].copy()
+        result["cache_hit"] = True
+        result["original_latency_ms"] = result.get("latency_ms", 0)
+        result["latency_ms"] = 0.1
+        return result
+
+    def put(self, model: str, messages: list, temperature: float, max_tokens: int, data: Dict[str, Any]) -> None:
+        key = self._make_key(model, messages, temperature, max_tokens)
+        if len(self._cache) >= self._max_size:
+            self._cache.popitem(last=False)
+        self._cache[key] = {"ts": time.time(), "data": data}
+
+    def stats(self) -> Dict[str, Any]:
+        total = self._hits + self._misses
+        return {
+            "size": len(self._cache),
+            "max_size": self._max_size,
+            "ttl_seconds": self._ttl,
+            "hits": self._hits,
+            "misses": self._misses,
+            "hit_rate": round(self._hits / total * 100, 1) if total > 0 else 0,
+            "estimated_latency_savings_pct": round(self._hits / total * 25, 1) if total > 0 else 0,
+        }
+
+    def clear(self) -> None:
+        self._cache.clear()
+        self._hits = 0
+        self._misses = 0
+
+
+_prompt_cache = PromptCache()
 
 NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1"
 
@@ -217,7 +277,14 @@ async def chat_completion(
     temperature: float = 0.7,
     max_tokens: int = 1024,
     stream: bool = False,
+    use_cache: bool = True,
 ) -> Dict[str, Any]:
+    if use_cache:
+        cached = _prompt_cache.get(model, messages, temperature, max_tokens)
+        if cached:
+            logger.info(f"NIM cache hit for model={model}")
+            return cached
+
     api_key = get_api_key()
     if not api_key:
         raise ValueError("NVIDIA_API_KEY environment variable is not set")
@@ -265,7 +332,7 @@ async def chat_completion(
     cost_per_1k = model_info.get("cost_per_1k_tokens", 0.001)
     estimated_cost = (total_tokens / 1000) * cost_per_1k
 
-    return {
+    result = {
         "content": content,
         "model": model,
         "latency_ms": round(elapsed_ms, 2),
@@ -276,7 +343,21 @@ async def chat_completion(
         },
         "estimated_cost_usd": round(estimated_cost, 6),
         "finish_reason": data["choices"][0].get("finish_reason", "stop") if data.get("choices") else "error",
+        "cache_hit": False,
     }
+
+    if use_cache:
+        _prompt_cache.put(model, messages, temperature, max_tokens, result)
+
+    return result
+
+
+def get_cache_stats() -> Dict[str, Any]:
+    return _prompt_cache.stats()
+
+
+def clear_cache() -> None:
+    _prompt_cache.clear()
 
 
 def list_available_models() -> List[Dict[str, Any]]:

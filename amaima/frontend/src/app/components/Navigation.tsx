@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brain, MessageSquare, BarChart3, Settings, CreditCard } from 'lucide-react';
+import { Brain, MessageSquare, BarChart3, Settings, CreditCard, Workflow } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Brain },
+  { href: '/agent-builder', label: 'Agent Builder', icon: Workflow },
   { href: '/conversations', label: 'Conversations', icon: MessageSquare },
   { href: '/benchmarks', label: 'Benchmarks', icon: BarChart3 },
   { href: '/settings', label: 'Settings', icon: Settings },
