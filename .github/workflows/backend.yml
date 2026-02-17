@@ -26,10 +26,8 @@ jobs:
           cd amaima/backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest httpx
+          pip install httpx
       - name: Run tests
         run: |
           cd amaima/backend
-          # Only run pytest if tests are found, otherwise exit gracefully
-          pytest --collect-only || exit 0
-          pytest
+          pytest -v --tb=short
