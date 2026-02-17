@@ -92,6 +92,12 @@ const TIER_COLORS: Record<string, string> = {
   enterprise: 'border-amber-500 bg-amber-900/30',
 };
 
+const TIER_PRICING: Record<string, { amount: number; label: string }> = {
+  community: { amount: 0, label: 'Free' },
+  production: { amount: 49, label: '$49' },
+  enterprise: { amount: 299, label: '$299' },
+};
+
 export default function BillingPage() {
   const [apiKeys, setApiKeys] = useState<ApiKeyInfo[]>([]);
   const [usage, setUsage] = useState<UsageStats | null>(null);
@@ -632,7 +638,10 @@ export default function BillingPage() {
                       </div>
                     ) : (
                       <div>
-                        <span className="text-3xl font-bold">Free</span>
+                        <span className="text-3xl font-bold">{TIER_PRICING[tierKey]?.label || 'Free'}</span>
+                        {TIER_PRICING[tierKey]?.amount > 0 && (
+                          <span className="text-gray-400 text-sm">/month</span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -663,9 +672,18 @@ export default function BillingPage() {
                         </>
                       )}
                     </button>
+                  ) : tierKey === 'community' ? (
+                    <div className="text-center py-2 text-sm text-gray-500 border border-gray-600/30 rounded-lg">
+                      Free tier
+                    </div>
+                  ) : tierKey === 'enterprise' ? (
+                    <div className="text-center py-2 text-sm text-amber-400/80 border border-amber-500/30 rounded-lg bg-amber-900/10 cursor-pointer hover:bg-amber-900/20 transition-colors">
+                      Contact Sales
+                    </div>
                   ) : (
-                    <div className="text-center py-2 text-sm text-gray-500">
-                      Default tier
+                    <div className="text-center py-2 text-sm text-blue-400 border border-blue-500/30 rounded-lg bg-blue-900/10 cursor-pointer hover:bg-blue-900/20 transition-colors">
+                      <ArrowUpRight className="w-4 h-4 inline mr-1" />
+                      Upgrade
                     </div>
                   )}
                 </div>
