@@ -326,11 +326,11 @@ async def update_member_role(org_id: str, api_key_id: str, new_role: str) -> Dic
         if not member:
             raise ValueError(f"Member {api_key_id} not found in organization {org_id}")
         
-        logger.info(f"Updated {api_key_id} role to '{new_role}' in organization {org_id}")
+        logger.info(f"Updated member role to '%s' in organization %s", new_role, org_id)
         return dict(member)
     
     except Exception as e:
-        logger.error(f"Error updating member role in organization {org_id}: {e}")
+        logger.error("Error updating member role in organization %s: %s", org_id, e)
         raise
 
 
