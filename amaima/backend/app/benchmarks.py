@@ -361,7 +361,7 @@ async def export_usage_data(
             *params
         )
         
-        logger.info(f"Exported {len(rows)} usage records for API key {api_key_id}")
+        logger.info("Exported %d usage records", len(rows))
         
         if format == "json":
             return {
