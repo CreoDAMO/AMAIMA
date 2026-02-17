@@ -70,7 +70,7 @@ async def execute_model(decision: Dict[str, Any]) -> Dict[str, Any]:
         logger.error(f"NVIDIA NIM execution failed: {e}")
         elapsed = (time.time() - start_time) * 1000
         return {
-            "output": f"AI inference error: {str(e)}",
+            "output": "AI inference error: An internal error occurred while processing your request.",
             "actual_latency_ms": int(elapsed),
             "actual_cost_usd": 0.0,
         }
