@@ -142,7 +142,7 @@ async def list_organizations(api_key_id: str) -> List[Dict[str, Any]]:
         return [dict(o) for o in orgs]
     
     except Exception as e:
-        logger.error(f"Error listing organizations for {api_key_id}: {e}")
+        logger.error(f"Error listing organizations: {e}")
         raise
 
 
