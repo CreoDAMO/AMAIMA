@@ -388,6 +388,10 @@ async def run_agent_crew(request: AgentCrewRequest):
         elif request.crew_type == "swarm":
             from app.agents.robotics_crew import run_swarm_crew
             result = await run_swarm_crew(request.task, environment=request.environment or "warehouse")
+        elif request.crew_type == "workflow":
+            from app.agents.langchain_agent import run_langchain_agent
+            workflow_type = request.environment or "research"
+            result = await run_langchain_agent(request.task, workflow_type=workflow_type)
         elif request.crew_type == "custom" and request.roles:
             from app.agents.crew_manager import run_custom_crew
             result = await run_custom_crew(request.task, request.roles, request.process)
@@ -413,8 +417,10 @@ async def list_agent_types():
             {"id": "manipulation", "name": "Manipulation Crew", "description": "Perception, Grasp Planner, Action Executor, Safety Monitor"},
             {"id": "swarm", "name": "Swarm Coordination Crew", "description": "Coordinator, Perception, Path Planner, Safety Monitor"},
             {"id": "custom", "name": "Custom Crew", "description": "Build your own crew with custom roles"},
+            {"id": "workflow", "name": "Stateful Workflow", "description": "Multi-step stateful workflows with conditional logic (research, complex_reasoning, biology, robotics, vision)"},
         ],
         "processes": ["sequential", "parallel", "hierarchical"],
+        "workflow_types": ["research", "complex_reasoning", "biology", "robotics", "vision"],
     }
 
 

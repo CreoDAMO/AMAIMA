@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  amaima-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - AMAIMA_EXECUTION_MODE=${AMAIMA_EXECUTION_MODE:-execution-enabled}
+      - COSMOS_NIM_URL=${COSMOS_NIM_URL:-https://integrate.api.nvidia.com/v1}
+      - BIONEMO_NIM_URL=${BIONEMO_NIM_URL:-https://integrate.api.nvidia.com/v1}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      - redis
+    volumes:
+      - upload_data:/app/uploads
+    restart: unless-stopped
+    networks:
+      - amaima-network
+
+  amaima-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_URL=http://amaima-backend:8000
+    depends_on:
+      - amaima-backend
+    restart: unless-stopped
+    networks:
+      - amaima-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - amaima-network
+
+  cosmos-nim:
+    image: nvcr.io/nim/nvidia/cosmos-reason2-7b:latest
+    ports:
+      - "8001:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - MODEL_NAME=nvidia/cosmos-reason2-7b
+    volumes:
+      - model_cache:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - gpu
+
+  bionemo-nim:
+    image: nvcr.io/nim/nvidia/bionemo-megamolbart:latest
+    ports:
+      - "8002:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - MODEL_NAME=nvidia/bionemo-megamolbart
+    volumes:
+      - model_cache:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - gpu
+
+  isaac-ros:
+    image: osrf/ros:humble-desktop
+    command: ros2 run demo_nodes_cpp talker
+    ports:
+      - "11311:11311"
+    environment:
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ./robotics:/ros_ws/src
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - robotics
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - monitoring
+
+volumes:
+  upload_data:
+  redis_data:
+  model_cache:
+  prometheus_data:
+
+networks:
+  amaima-network:
+    driver: bridge

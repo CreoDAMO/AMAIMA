@@ -42,9 +42,15 @@ AMAIMA is an enterprise-grade AI orchestration platform with intelligent model r
 - **Crew Manager** (`app/agents/crew_manager.py`): Base AgentRole and Crew classes with sequential/parallel/hierarchical orchestration
 - **Biology Crew** (`app/agents/biology_crew.py`): Drug Discovery and Protein Analysis crews
 - **Robotics Crew** (`app/agents/robotics_crew.py`): Navigation, Manipulation, and Swarm Coordination crews
+- **LangChain Agent** (`app/agents/langchain_agent.py`): Stateful workflow engine with 5 workflow types (research, complex_reasoning, biology, robotics, vision). Uses WorkflowState/WorkflowNode/ConditionalEdge classes for graph-based orchestration.
 
 ### Plugin System
 - **Plugin Manager** (`app/modules/plugin_manager.py`): Dynamic plugin registration, built-in plugins for biology/vision/robotics
+
+### Testing
+- **Test Suite** (`tests/agents/`): 55 unit tests covering crew_manager, biology_crew, robotics_crew, langchain_agent
+- **Makefile**: `make test-agents` runs agent tests, `make test` runs all tests
+- **Docker Compose** (`docker-compose.yml`): Multi-service deployment with Cosmos NIM, BioNeMo NIM, ROS2, Redis, Prometheus
 
 ## Running the Project
 
@@ -217,3 +223,4 @@ amaima/
   - **Plugin Marketplace**: Browse installed + community plugins with capability listing
   - **Frontend Pages**: Navigation bar, Conversations page, Benchmarks dashboard, Settings page (4 tabs: Orgs/Webhooks/Experiments/Rules)
   - **API Proxy Routes**: 9 new Next.js API proxy routes for frontend-backend communication
+- February 17, 2026: Stateful workflow agent system - Created `langchain_agent.py` with WorkflowState, WorkflowNode, ConditionalEdge, StatefulWorkflow classes. 5 built-in workflow types (research, complex_reasoning, biology, robotics, vision). Integrated into `/v1/agents/run` with `crew_type=workflow`. Created comprehensive test suite (55 tests in `tests/agents/`). Added Makefile with test-agents target. Created `docker-compose.yml` for multi-service deployment. Updated `final_integration_stratergy.md` with full completion status.
