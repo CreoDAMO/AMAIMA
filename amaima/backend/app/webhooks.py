@@ -332,7 +332,7 @@ async def create_routing_rule(
             preferred_model, fallback_model, True, priority
         )
         
-        logger.info(f"Created routing rule {rule_id} for API key {api_key_id}")
+        logger.info(f"Created routing rule {rule_id}")
         
         return {
             "id": rule_id,
