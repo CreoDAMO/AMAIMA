@@ -546,6 +546,421 @@ async def list_tiers():
     return {"tiers": TIER_LIMITS}
 
 
+# ── Conversation History ──────────────────────────────────
+
+class ConversationRequest(BaseModel):
+    title: Optional[str] = "New Conversation"
+    operation_type: Optional[str] = "general"
+    model: Optional[str] = None
+
+class MessageRequest(BaseModel):
+    content: str
+    role: str = "user"
+
+@app.post("/v1/conversations")
+async def create_conversation(request: ConversationRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.conversations import create_conversation
+    result = await create_conversation(
+        api_key_id=api_key_info["id"],
+        title=request.title or "New Conversation",
+        operation_type=request.operation_type or "general",
+        model=request.model
+    )
+    return result
+
+@app.get("/v1/conversations")
+async def list_conversations(limit: int = 20, offset: int = 0, api_key_info: dict = Depends(get_api_key)):
+    from app.conversations import list_conversations
+    convos = await list_conversations(api_key_info["id"], limit, offset)
+    return {"conversations": convos}
+
+@app.get("/v1/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str):
+    from app.conversations import get_conversation
+    convo = await get_conversation(conversation_id)
+    if not convo:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return convo
+
+@app.post("/v1/conversations/{conversation_id}/messages")
+async def send_message(conversation_id: str, request: MessageRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.conversations import add_message, get_conversation
+    convo = await get_conversation(conversation_id)
+    if not convo:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    user_msg = await add_message(
+        conversation_id=conversation_id,
+        role="user",
+        content=request.content
+    )
+
+    decision = route_query(request.content, simulate=False)
+    result = await execute_model(decision)
+
+    from app.benchmarks import record_benchmark
+    model_used = decision.get("model", "unknown")
+    latency = result.get("actual_latency_ms", 0)
+    tokens = len(result.get("output", "")) // 4
+    await record_benchmark(
+        model=model_used,
+        query_complexity=decision.get("complexity_level", "SIMPLE"),
+        domain=decision.get("domain", "general"),
+        latency_ms=latency,
+        tokens_input=len(request.content) // 4,
+        tokens_output=tokens,
+        cost_usd=result.get("actual_cost_usd", 0),
+        success=True
+    )
+
+    assistant_msg = await add_message(
+        conversation_id=conversation_id,
+        role="assistant",
+        content=result.get("output", ""),
+        model=model_used,
+        tokens_used=tokens,
+        latency_ms=latency,
+        metadata={"routing": decision}
+    )
+
+    return {"user_message": user_msg, "assistant_message": assistant_msg}
+
+@app.delete("/v1/conversations/{conversation_id}")
+async def delete_conversation_endpoint(conversation_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.conversations import delete_conversation
+    await delete_conversation(conversation_id)
+    return {"status": "deleted"}
+
+@app.get("/v1/conversations/search/{query}")
+async def search_conversations_endpoint(query: str, api_key_info: dict = Depends(get_api_key)):
+    from app.conversations import search_conversations
+    results = await search_conversations(api_key_info["id"], query)
+    return {"conversations": results}
+
+
+# ── File Upload ──────────────────────────────────────
+
+from fastapi import UploadFile, File as FastAPIFile
+
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+@app.post("/v1/upload")
+async def upload_file(
+    file: UploadFile = FastAPIFile(...),
+    purpose: str = "general",
+    api_key_info: dict = Depends(get_api_key)
+):
+    import hashlib
+    import secrets as sec
+
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="File too large (max 10MB)")
+
+    allowed_types = ["image/png", "image/jpeg", "image/gif", "image/webp",
+                     "application/pdf", "text/plain", "text/csv",
+                     "chemical/x-mdl-sdfile", "chemical/x-pdb"]
+    content_type = file.content_type or "application/octet-stream"
+
+    file_id = sec.token_hex(8)
+    checksum = hashlib.md5(content).hexdigest()
+    filename = f"{file_id}_{file.filename}"
+    filepath = os.path.join(UPLOAD_DIR, filename)
+
+    with open(filepath, "wb") as f:
+        f.write(content)
+
+    from app.billing import get_pool
+    pool = await get_pool()
+    await pool.execute(
+        """INSERT INTO uploads (id, api_key_id, filename, content_type, size_bytes, storage_path, checksum, purpose)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
+        file_id, api_key_info["id"], file.filename, content_type, len(content), filepath, checksum, purpose
+    )
+
+    return {
+        "id": file_id,
+        "filename": file.filename,
+        "content_type": content_type,
+        "size_bytes": len(content),
+        "purpose": purpose
+    }
+
+@app.get("/v1/uploads")
+async def list_uploads(api_key_info: dict = Depends(get_api_key)):
+    from app.billing import get_pool
+    pool = await get_pool()
+    rows = await pool.fetch(
+        "SELECT id, filename, content_type, size_bytes, purpose, created_at FROM uploads WHERE api_key_id = $1 ORDER BY created_at DESC",
+        api_key_info["id"]
+    )
+    return {"uploads": [dict(r) for r in rows]}
+
+
+# ── Model Benchmarks ──────────────────────────────────────
+
+@app.get("/v1/benchmarks")
+async def get_benchmarks(model: Optional[str] = None, days: int = 30):
+    from app.benchmarks import get_benchmark_stats
+    stats = await get_benchmark_stats(model, days)
+    return {"benchmarks": stats}
+
+@app.get("/v1/benchmarks/leaderboard")
+async def get_leaderboard():
+    from app.benchmarks import get_benchmark_leaderboard
+    board = await get_benchmark_leaderboard()
+    return {"leaderboard": board}
+
+@app.get("/v1/benchmarks/timeseries/{model_id:path}")
+async def get_timeseries(model_id: str, days: int = 7):
+    from app.benchmarks import get_benchmark_timeseries
+    data = await get_benchmark_timeseries(model_id, days)
+    return {"timeseries": data}
+
+
+# ── Response Cache ──────────────────────────────────────
+
+@app.get("/v1/cache/stats")
+async def cache_stats():
+    from app.benchmarks import get_cache_stats
+    stats = await get_cache_stats()
+    return stats
+
+@app.post("/v1/cache/clear")
+async def clear_cache(api_key_info: dict = Depends(get_api_key)):
+    if api_key_info.get("id") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    from app.benchmarks import clear_expired_cache
+    deleted = await clear_expired_cache()
+    return {"status": "cleared", "entries_removed": deleted}
+
+
+# ── Webhooks ──────────────────────────────────────
+
+class WebhookRequest(BaseModel):
+    url: str
+    events: Optional[List[str]] = None
+
+@app.post("/v1/webhooks")
+async def create_webhook(request: WebhookRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.webhooks import create_webhook
+    webhook = await create_webhook(api_key_info["id"], request.url, request.events)
+    return webhook
+
+@app.get("/v1/webhooks")
+async def list_webhooks(api_key_info: dict = Depends(get_api_key)):
+    from app.webhooks import list_webhooks
+    hooks = await list_webhooks(api_key_info["id"])
+    return {"webhooks": hooks}
+
+@app.delete("/v1/webhooks/{webhook_id}")
+async def delete_webhook(webhook_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.webhooks import delete_webhook
+    await delete_webhook(webhook_id)
+    return {"status": "deleted"}
+
+
+# ── Organizations ──────────────────────────────────────
+
+class OrgRequest(BaseModel):
+    name: str
+
+class OrgMemberRequest(BaseModel):
+    api_key_id: str
+    role: str = "member"
+
+@app.post("/v1/organizations")
+async def create_org(request: OrgRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.organizations import create_organization
+    org = await create_organization(request.name, api_key_info["id"])
+    return org
+
+@app.get("/v1/organizations")
+async def list_orgs(api_key_info: dict = Depends(get_api_key)):
+    from app.organizations import list_organizations
+    orgs = await list_organizations(api_key_info["id"])
+    return {"organizations": orgs}
+
+@app.get("/v1/organizations/{org_id}")
+async def get_org(org_id: str):
+    from app.organizations import get_organization
+    org = await get_organization(org_id)
+    if not org:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    return org
+
+@app.post("/v1/organizations/{org_id}/members")
+async def add_org_member(org_id: str, request: OrgMemberRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.organizations import add_member
+    member = await add_member(org_id, request.api_key_id, request.role, api_key_info["id"])
+    return member
+
+@app.delete("/v1/organizations/{org_id}/members/{member_key_id}")
+async def remove_org_member(org_id: str, member_key_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.organizations import remove_member
+    await remove_member(org_id, member_key_id)
+    return {"status": "removed"}
+
+@app.delete("/v1/organizations/{org_id}")
+async def delete_org(org_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.organizations import delete_organization
+    await delete_organization(org_id)
+    return {"status": "deleted"}
+
+
+# ── Custom Routing Rules ──────────────────────────────────────
+
+class RoutingRuleRequest(BaseModel):
+    name: str
+    preferred_model: str
+    domain: Optional[str] = None
+    min_complexity: Optional[str] = None
+    max_complexity: Optional[str] = None
+    fallback_model: Optional[str] = None
+    priority: int = 0
+
+@app.post("/v1/routing-rules")
+async def create_routing_rule(request: RoutingRuleRequest, api_key_info: dict = Depends(get_api_key)):
+    if api_key_info.get("tier") != "enterprise" and api_key_info.get("id") != "admin":
+        raise HTTPException(status_code=403, detail="Enterprise tier required for custom routing rules")
+    from app.webhooks import create_routing_rule
+    rule = await create_routing_rule(
+        api_key_info["id"], request.name, request.preferred_model,
+        request.domain, request.min_complexity, request.max_complexity,
+        request.fallback_model, request.priority
+    )
+    return rule
+
+@app.get("/v1/routing-rules")
+async def list_routing_rules(api_key_info: dict = Depends(get_api_key)):
+    from app.webhooks import list_routing_rules
+    rules = await list_routing_rules(api_key_info["id"])
+    return {"rules": rules}
+
+@app.delete("/v1/routing-rules/{rule_id}")
+async def delete_routing_rule(rule_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.webhooks import delete_routing_rule
+    await delete_routing_rule(rule_id)
+    return {"status": "deleted"}
+
+
+# ── Usage Export ──────────────────────────────────────
+
+from fastapi.responses import PlainTextResponse
+
+@app.get("/v1/export/usage")
+async def export_usage(format: str = "json", start_date: Optional[str] = None, end_date: Optional[str] = None, api_key_info: dict = Depends(get_api_key)):
+    from app.benchmarks import export_usage_data
+    data = await export_usage_data(api_key_info["id"], format, start_date, end_date)
+    if format == "csv":
+        return PlainTextResponse(content=data, media_type="text/csv",
+                                 headers={"Content-Disposition": "attachment; filename=usage_export.csv"})
+    return data
+
+@app.get("/v1/export/benchmarks")
+async def export_benchmarks(model: Optional[str] = None, format: str = "json", days: int = 30):
+    from app.benchmarks import export_benchmarks_data
+    data = await export_benchmarks_data(model, format, days)
+    if format == "csv":
+        return PlainTextResponse(content=data, media_type="text/csv",
+                                 headers={"Content-Disposition": "attachment; filename=benchmarks_export.csv"})
+    return data
+
+
+# ── A/B Testing Experiments ──────────────────────────────────────
+
+class ExperimentRequest(BaseModel):
+    name: str
+    model_a: str
+    model_b: str
+    description: Optional[str] = None
+    traffic_split: float = 0.5
+
+class VoteRequest(BaseModel):
+    winner: str
+
+@app.post("/v1/experiments")
+async def create_experiment(request: ExperimentRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import create_experiment
+    exp = await create_experiment(
+        api_key_info["id"], request.name, request.model_a, request.model_b,
+        request.description, request.traffic_split
+    )
+    return exp
+
+@app.get("/v1/experiments")
+async def list_experiments(api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import list_experiments
+    exps = await list_experiments(api_key_info["id"])
+    return {"experiments": exps}
+
+@app.get("/v1/experiments/{experiment_id}")
+async def get_experiment(experiment_id: str):
+    from app.experiments import get_experiment
+    exp = await get_experiment(experiment_id)
+    if not exp:
+        raise HTTPException(status_code=404, detail="Experiment not found")
+    return exp
+
+@app.post("/v1/experiments/{experiment_id}/status")
+async def update_experiment_status(experiment_id: str, status: str, api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import update_experiment_status
+    result = await update_experiment_status(experiment_id, status)
+    return result
+
+@app.post("/v1/experiments/{experiment_id}/run")
+async def run_experiment_trial(experiment_id: str, request: QueryRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import run_trial
+    trial = await run_trial(experiment_id, request.query)
+    return trial
+
+@app.post("/v1/experiments/trials/{trial_id}/vote")
+async def vote_trial(trial_id: int, request: VoteRequest, api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import vote_trial
+    result = await vote_trial(trial_id, request.winner)
+    return result
+
+@app.get("/v1/experiments/{experiment_id}/stats")
+async def experiment_stats(experiment_id: str):
+    from app.experiments import get_experiment_stats
+    stats = await get_experiment_stats(experiment_id)
+    return stats
+
+@app.delete("/v1/experiments/{experiment_id}")
+async def delete_experiment(experiment_id: str, api_key_info: dict = Depends(get_api_key)):
+    from app.experiments import delete_experiment
+    await delete_experiment(experiment_id)
+    return {"status": "deleted"}
+
+
+# ── Plugin Marketplace ──────────────────────────────────────
+
+@app.get("/v1/marketplace")
+async def marketplace_list():
+    from app.modules.plugin_manager import list_plugins
+    plugins = list_plugins()
+    marketplace = []
+    for p in plugins:
+        marketplace.append({
+            "id": p["id"],
+            "name": p["name"],
+            "description": p.get("description", ""),
+            "version": p.get("version", "1.0.0"),
+            "category": p.get("category", "general"),
+            "installed": True,
+            "capabilities": p.get("capabilities", [])
+        })
+
+    marketplace.extend([
+        {"id": "nlp-sentiment", "name": "Sentiment Analysis", "description": "Analyze text sentiment and emotion", "version": "1.0.0", "category": "nlp", "installed": False, "capabilities": ["sentiment_analysis", "emotion_detection"]},
+        {"id": "data-viz", "name": "Data Visualization", "description": "Generate charts and graphs from data", "version": "1.0.0", "category": "analytics", "installed": False, "capabilities": ["chart_generation", "data_plotting"]},
+        {"id": "code-review", "name": "Code Review", "description": "Automated code review and suggestions", "version": "1.0.0", "category": "development", "installed": False, "capabilities": ["code_analysis", "security_scan"]},
+        {"id": "translation", "name": "Multi-Language Translation", "description": "Translate text between 100+ languages", "version": "1.0.0", "category": "nlp", "installed": False, "capabilities": ["translation", "language_detection"]},
+    ])
+    return {"plugins": marketplace, "total": len(marketplace)}
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
