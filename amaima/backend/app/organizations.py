@@ -330,7 +330,7 @@ async def update_member_role(org_id: str, api_key_id: str, new_role: str) -> Dic
         return dict(member)
     
     except Exception as e:
-        logger.error(f"Error updating member role for {api_key_id} in organization {org_id}: {e}")
+        logger.error(f"Error updating member role in organization {org_id}: {e}")
         raise
 
 
