@@ -54,7 +54,7 @@ async def create_conversation(
         )
 
         logger.info(
-            f"Created conversation {conversation_id} for api_key_id {api_key_id}"
+            f"Created conversation {conversation_id}"
         )
 
         return {
