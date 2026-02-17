@@ -81,12 +81,13 @@ async def cosmos_inference(
             "media_type": media_type or "text",
         }
     except Exception as e:
-        logger.error(f"Cosmos inference failed: {e}")
+        # Log full exception details on the server, but do not return them to the client.
+        logger.exception("Cosmos inference failed")
         return {
             "service": "vision",
             "model": COSMOS_MODEL,
-            "response": f"Vision service unavailable: {str(e)}. Ensure NVIDIA_API_KEY is configured and Cosmos R2 model is accessible.",
-            "error": str(e),
+            "response": "Vision service is currently unavailable. Please try again later.",
+            "error": "vision_service_unavailable",
             "latency_ms": round((time.time() - start_time) * 1000, 2),
         }
 
