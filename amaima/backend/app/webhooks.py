@@ -527,7 +527,7 @@ def _generate_signature(payload: Dict[str, Any], secret: str) -> str:
     signature = hmac.new(
         secret.encode(),
         payload_json.encode(),
-        hashlib.sha256
+        hashlib.sha512
     ).hexdigest()
     return signature
 
