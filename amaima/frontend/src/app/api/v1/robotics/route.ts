@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+const ALLOWED_ENDPOINTS = ['plan', 'execute', 'status', 'capabilities'];
 
 export async function POST(request: Request) {
   try {
     const url = new URL(request.url);
-    const endpoint = url.searchParams.get('endpoint') || 'plan';
+    let endpoint = url.searchParams.get('endpoint') || 'plan';
+    if (!ALLOWED_ENDPOINTS.includes(endpoint)) {
+      endpoint = 'plan';
+    }
     const body = await request.json();
 
     const response = await fetch(`${BACKEND_URL}/v1/robotics/${endpoint}`, {
