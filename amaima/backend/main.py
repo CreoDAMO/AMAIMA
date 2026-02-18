@@ -18,7 +18,7 @@ import os
 from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
 from app.modules.execution_engine import execute_model
-from app.security import get_api_key, enforce_tier_limit
+from app.security import get_api_key, enforce_tier_limit, get_current_user, require_admin
 from app.routers import biology as biology_router
 from app.routers import robotics as robotics_router
 from app.routers import vision as vision_router
@@ -139,6 +139,11 @@ async def startup():
     metrics.start_metrics_server()
     initialize_builtin_plugins()
     app_state.initialize(darpa_enabled=False)
+    try:
+        from app.auth import init_auth_tables
+        await init_auth_tables()
+    except Exception as e:
+        logger.warning(f"Auth tables init skipped: {e}")
     logger.info("AMAIMA API server started")
 
 
@@ -234,6 +239,62 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
     except Exception as e:
         logger.error(f"Query processing failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/v1/query/stream")
+async def stream_query(request: QueryRequest, api_key_info: dict = Depends(get_api_key)):
+    from sse_starlette.sse import EventSourceResponse
+    from app.modules.nvidia_nim_client import (
+        is_configured, chat_completion_stream, NVIDIA_MODELS, get_model_for_complexity
+    )
+
+    await enforce_tier_limit(api_key_info)
+    decision = route_query(request.query, simulate=False)
+    model_used = decision.get("model", "unknown")
+
+    if decision.get("simulated", True) or not is_configured():
+        async def sim_gen():
+            tokens = "Streaming is not available in simulation mode. Configure NVIDIA_API_KEY for real-time streaming.".split()
+            for i, tok in enumerate(tokens):
+                yield {"event": "token", "data": json.dumps({"content": tok + " ", "index": i + 1})}
+                await asyncio.sleep(0.03)
+            yield {"event": "done", "data": json.dumps({"model": model_used, "total_tokens": len(tokens), "latency_ms": 0})}
+        return EventSourceResponse(sim_gen())
+
+    router_model = decision.get("model", "")
+    nim_model = router_model if router_model in NVIDIA_MODELS else get_model_for_complexity(decision.get("complexity_level", "SIMPLE"))
+
+    messages = [
+        {"role": "system", "content": "You are AMAIMA, an Advanced Multimodal AI assistant. Provide clear, accurate, and helpful responses."},
+        {"role": "user", "content": request.query},
+    ]
+
+    async def event_generator():
+        start_time = datetime.now()
+        yield {"event": "start", "data": json.dumps({"model": nim_model, "complexity": decision.get("complexity_level", "SIMPLE")})}
+        try:
+            async for chunk in chat_completion_stream(model=nim_model, messages=messages):
+                yield {"event": chunk["event"], "data": json.dumps(chunk["data"])}
+
+                if chunk["event"] == "done":
+                    latency = int((datetime.now() - start_time).total_seconds() * 1000)
+                    tokens_est = chunk["data"].get("total_tokens", 0)
+                    try:
+                        from app.billing import record_usage
+                        await record_usage(
+                            api_key_id=api_key_info.get("id", "admin"),
+                            endpoint="/v1/query/stream",
+                            model_used=nim_model,
+                            tokens_estimated=tokens_est,
+                            latency_ms=latency,
+                        )
+                    except Exception:
+                        pass
+                    app_state.query_count += 1
+        except Exception as e:
+            yield {"event": "error", "data": json.dumps({"error": str(e)})}
+
+    return EventSourceResponse(event_generator())
 
 
 @app.post("/v1/workflow", response_model=WorkflowResponse)
@@ -437,6 +498,100 @@ async def plugin_capabilities(plugin_id: str):
     if caps:
         return caps
     raise HTTPException(status_code=404, detail=f"Plugin '{plugin_id}' not found or has no capabilities")
+
+
+class RegisterRequest(BaseModel):
+    email: str = Field(..., description="User email")
+    password: str = Field(..., description="Password (min 8 characters)")
+    display_name: Optional[str] = Field(default=None, description="Display name")
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+@app.post("/v1/auth/register")
+async def register(request: RegisterRequest):
+    from app.auth import register_user
+    try:
+        result = await register_user(request.email, request.password, request.display_name)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Registration failed: {e}")
+        raise HTTPException(status_code=500, detail="Registration failed")
+
+
+@app.post("/v1/auth/login")
+async def login(request: LoginRequest):
+    from app.auth import login_user
+    result = await login_user(request.email, request.password)
+    if not result:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return result
+
+
+@app.post("/v1/auth/refresh")
+async def refresh_token(request: RefreshRequest):
+    from app.auth import refresh_access_token
+    result = await refresh_access_token(request.refresh_token)
+    if not result:
+        raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+    return result
+
+
+@app.get("/v1/auth/me")
+async def get_me(user: dict = Depends(get_current_user)):
+    from app.auth import get_user_api_keys
+    keys = await get_user_api_keys(user["id"])
+    return {
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "display_name": user.get("display_name"),
+            "role": user.get("role"),
+            "created_at": str(user.get("created_at", "")),
+            "last_login_at": str(user.get("last_login_at", "")),
+        },
+        "api_keys": keys,
+    }
+
+
+@app.post("/v1/auth/api-keys")
+async def create_user_api_key(user: dict = Depends(get_current_user)):
+    from app.billing import create_api_key
+    from app.auth import link_api_key_to_user
+    result = await create_api_key(email=user["email"], tier="community")
+    await link_api_key_to_user(result["id"], user["id"])
+    return result
+
+
+@app.get("/v1/admin/analytics")
+async def admin_analytics(admin: dict = Depends(require_admin)):
+    from app.admin import get_admin_analytics
+    return await get_admin_analytics()
+
+
+@app.get("/v1/admin/health")
+async def admin_health(admin: dict = Depends(require_admin)):
+    from app.admin import get_system_health
+    return await get_system_health()
+
+
+@app.get("/v1/admin/users")
+async def admin_users(
+    limit: int = 50, offset: int = 0,
+    admin: dict = Depends(require_admin)
+):
+    from app.admin import get_all_users_with_usage
+    users = await get_all_users_with_usage(limit=limit, offset=offset)
+    return {"users": users, "limit": limit, "offset": offset}
 
 
 @app.websocket("/v1/ws/query")

@@ -352,6 +352,84 @@ async def chat_completion(
     return result
 
 
+async def chat_completion_stream(
+    model: str,
+    messages: List[Dict[str, str]],
+    temperature: float = 0.7,
+    max_tokens: int = 1024,
+):
+    api_key = get_api_key()
+    if not api_key:
+        raise ValueError("NVIDIA_API_KEY environment variable is not set")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": True,
+    }
+
+    start_time = time.time()
+    total_tokens = 0
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        async with client.stream(
+            "POST",
+            f"{NVIDIA_NIM_BASE_URL}/chat/completions",
+            headers=headers,
+            json=payload,
+        ) as response:
+            if response.status_code != 200:
+                body = await response.aread()
+                raise RuntimeError(f"NVIDIA NIM API returned {response.status_code}: {body.decode()}")
+
+            buffer = ""
+            async for chunk in response.aiter_text():
+                buffer += chunk
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    line = line.strip()
+                    if not line or line == "data: [DONE]":
+                        if line == "data: [DONE]":
+                            elapsed_ms = (time.time() - start_time) * 1000
+                            yield {
+                                "event": "done",
+                                "data": {
+                                    "model": model,
+                                    "total_tokens": total_tokens,
+                                    "latency_ms": round(elapsed_ms, 2),
+                                },
+                            }
+                        continue
+                    if line.startswith("data: "):
+                        try:
+                            data = json.loads(line[6:])
+                            choices = data.get("choices", [])
+                            if choices:
+                                delta = choices[0].get("delta", {})
+                                content = delta.get("content", "")
+                                finish_reason = choices[0].get("finish_reason")
+                                if content:
+                                    total_tokens += 1
+                                    yield {
+                                        "event": "token",
+                                        "data": {"content": content, "index": total_tokens},
+                                    }
+                                if finish_reason:
+                                    yield {
+                                        "event": "finish",
+                                        "data": {"finish_reason": finish_reason},
+                                    }
+                        except json.JSONDecodeError:
+                            continue
+
+
 def get_cache_stats() -> Dict[str, Any]:
     return _prompt_cache.stats()
 

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp, Microscope, Bot, Eye, Users } from 'lucide-react';
+import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp, Microscope, Bot, Eye, Users, LogIn, Settings } from 'lucide-react';
+import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -87,6 +88,9 @@ export default function HomePage() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [showModels, setShowModels] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [useStreaming, setUseStreaming] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem('amaima-query-history');
@@ -190,6 +194,76 @@ export default function HomePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ task: query, crew_type: 'research', process: 'sequential' }),
         });
+      } else if (useStreaming) {
+        setIsStreaming(true);
+        setStreamingText('');
+        let fullText = '';
+        let streamModel = '';
+
+        try {
+          const streamRes = await fetch(`/api/v1/query/stream`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, operation, preferences: {} }),
+          });
+
+          if (!streamRes.ok) throw new Error(`Stream error: ${streamRes.status}`);
+
+          const reader = streamRes.body?.getReader();
+          const decoder = new TextDecoder();
+          if (!reader) throw new Error('No stream reader');
+
+          let buffer = '';
+          let currentEvent = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+              if (line.startsWith('event: ')) {
+                currentEvent = line.slice(7).trim();
+              } else if (line.startsWith('data: ')) {
+                try {
+                  const parsed = JSON.parse(line.slice(6));
+                  if (currentEvent === 'error') {
+                    throw new Error(parsed.error || 'Stream error');
+                  }
+                  if (currentEvent === 'token' && parsed.content) {
+                    fullText += parsed.content;
+                    setStreamingText(fullText);
+                  }
+                  if (parsed.model) streamModel = parsed.model;
+                  if (currentEvent === 'done') break;
+                } catch (e) {
+                  if (e instanceof Error && e.message !== 'Stream error') {} else throw e;
+                }
+                currentEvent = '';
+              } else if (line.trim() === '') {
+                currentEvent = '';
+              }
+            }
+          }
+
+          const streamResponse: QueryResponse = {
+            response_id: 'stream-' + Date.now(),
+            response_text: fullText || 'No response received',
+            model_used: streamModel || 'streaming',
+            routing_decision: { execution_mode: 'streaming', model_size: 'N/A', complexity: 'N/A', security_level: 'standard', confidence: 0.9, estimated_latency_ms: 0, estimated_cost: 0, reasoning: {} },
+            confidence: 0.9,
+            latency_ms: 0,
+            timestamp: new Date().toISOString(),
+          };
+          setResponse(streamResponse);
+          setStreamingText('');
+          addToHistory({ query: query.slice(0, 100), operation, complexity: 'STREAMED', model: streamModel || 'streaming' });
+        } finally {
+          setIsStreaming(false);
+        }
+        setIsSubmitting(false);
+        fetchStats();
+        return;
       } else {
         res = await fetch(`/api/v1/query`, {
           method: 'POST',
@@ -331,6 +405,25 @@ export default function HomePage() {
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
               Advanced AI Orchestration Platform with intelligent routing, multi-agent crews, drug discovery, robotics, and vision reasoning.
             </p>
+
+            <div className="flex items-center justify-center gap-3 mt-6">
+              <Link href="/login" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all">
+                <LogIn className="h-4 w-4" />
+                Login
+              </Link>
+              <Link href="/admin" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all">
+                <Settings className="h-4 w-4" />
+                Admin
+              </Link>
+              <Link href="/billing" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all">
+                <Zap className="h-4 w-4" />
+                Billing
+              </Link>
+              <Link href="/agent-builder" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all">
+                <Cpu className="h-4 w-4" />
+                Agent Builder
+              </Link>
+            </div>
           </div>
 
           <div className="mb-16">
@@ -396,6 +489,18 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    <label className="inline-flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={useStreaming}
+                        onChange={(e) => setUseStreaming(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-8 h-4 rounded-full bg-slate-600 peer-checked:bg-cyan-500 relative transition-colors">
+                        <div className="absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform peer-checked:translate-x-4" />
+                      </div>
+                      Stream
+                    </label>
                     <button
                       onClick={() => setShowHistory(!showHistory)}
                       className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all"
@@ -457,7 +562,17 @@ export default function HomePage() {
 
                 {isSubmitting && <LoadingSkeleton />}
 
-                {response && !isSubmitting && (
+                {isStreaming && streamingText && (
+                  <div className="mt-6 p-4 rounded-lg bg-white/5 border border-cyan-500/30">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
+                      <h3 className="text-lg font-semibold text-cyan-400">Streaming Response...</h3>
+                    </div>
+                    <p className="text-slate-300 whitespace-pre-wrap">{streamingText}<span className="inline-block w-2 h-5 bg-cyan-400 animate-pulse ml-0.5" /></p>
+                  </div>
+                )}
+
+                {response && !isSubmitting && !isStreaming && (
                   <div className="space-y-4 mt-6">
                     <div className="p-4 rounded-lg bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between mb-3">

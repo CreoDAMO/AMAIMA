@@ -26,6 +26,9 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **MAU Rate Limiting**: HTTP middleware in FastAPI that checks per-API-key monthly active usage against tier limits and triggers webhook alerts at the 900 MAU threshold.
 - **Billing Analytics Dashboard**: Recharts-powered analytics tab in the billing page showing daily query volume, latency trends, model usage pie chart, endpoint breakdown, tier distribution, and cache performance stats via `/v1/billing/analytics`.
 - **Integration Tests**: End-to-end tests for biology/drug discovery crew pipeline, protein analysis, NIM caching, and agent types (`tests/integration/test_biology_e2e.py`, 8 tests).
+- **SSE Streaming**: Real-time Server-Sent Events streaming via `/v1/query/stream` endpoint using httpx async streaming from NVIDIA NIM, with EventSourceResponse and event types (start, token, finish, done, error). Frontend toggle for streaming mode with live token rendering and cursor animation.
+- **User Authentication**: Full email/password auth system in `app/auth.py` with bcrypt hashing, JWT access tokens (60min, HS256) and refresh tokens (30-day with revocation). Endpoints: `/v1/auth/register`, `/v1/auth/login`, `/v1/auth/refresh`, `/v1/auth/me`, `/v1/auth/api-keys`. Users table with roles (user/admin), linked to api_keys via user_id. Frontend login/register page at `/login`.
+- **Admin Dashboard**: Role-gated admin analytics in `app/admin.py` with aggregated platform metrics (total users, MAU, queries, tokens, revenue estimates, tier distribution, daily usage, model/endpoint breakdowns, top users). System health endpoint with database/cache/NIM status. Frontend admin page at `/admin` with recharts visualizations, KPI cards, and auto-refresh.
 
 ## Mobile App (Android)
 - **Location**: `amaima/mobile/`
