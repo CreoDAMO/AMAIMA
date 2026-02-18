@@ -65,10 +65,17 @@
 -keep class com.amaima.app.data.** { *; }
 -keep class com.amaima.app.domain.model.** { *; }
 
+# Keep ML classes
+-keep class com.amaima.app.ml.** { *; }
+
 # ONNX Runtime
 -keep class ai.onnxruntime.** { *; }
 -dontwarn ai.onnxruntime.**
+-keep class com.microsoft.onnxruntime.** { *; }
 
 # TensorFlow Lite
 -keep class org.tensorflow.lite.** { *; }
 -dontwarn org.tensorflow.lite.**
+
+# ONNX Runtime Extensions
+-dontwarn ai.onnxruntime.extensions.**

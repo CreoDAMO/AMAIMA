@@ -4,8 +4,10 @@ import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
 import java.io.File
@@ -16,10 +18,16 @@ class OnDeviceMLManager(
     private val context: Context,
     private val modelDownloader: ModelDownloader
 ) {
-    private val ortEnvironment: OrtEnvironment = OrtEnvironment.getEnvironment()
+    val ortEnvironment: OrtEnvironment = OrtEnvironment.getEnvironment()
     private val onnxSessions = ConcurrentHashMap<String, OrtSession>()
     private val tfliteInterpreters = ConcurrentHashMap<String, Interpreter>()
     private val models = ConcurrentHashMap<String, MLModel>()
+
+    val registry = ModelRegistry()
+    val modelStore = ModelStore(context, modelDownloader)
+    val embeddingEngine = EmbeddingEngine(context, ortEnvironment)
+    val audioEngine = AudioEngine(context, ortEnvironment)
+    val visionEngine = VisionEngine(context, ortEnvironment)
 
     companion object {
         private const val TAG = "OnDeviceMLManager"
@@ -34,6 +42,7 @@ class OnDeviceMLManager(
         val version: String,
         val modelPath: String,
         val runtime: Runtime,
+        val precision: ModelPrecision = ModelPrecision.FP32,
         val inputShape: IntArray,
         val outputShape: IntArray,
         val labels: List<String>
@@ -84,6 +93,7 @@ class OnDeviceMLManager(
         )
 
         defaultModels.forEach { model ->
+            registry.register(model.toMetadata())
             loadModel(model)
         }
     }
@@ -91,14 +101,19 @@ class OnDeviceMLManager(
     suspend fun loadModel(model: MLModel) {
         withContext(Dispatchers.IO) {
             try {
-                val modelFile = File(context.filesDir, model.modelPath)
+                registry.updateState(model.name, model.precision, ModelState.LOADING)
 
-                if (!modelFile.exists()) {
-                    val downloaded = modelDownloader.downloadModel(model.name, modelFile)
-                    if (!downloaded) {
-                        Log.w(TAG, "Failed to download model: ${model.name}")
-                        return@withContext
-                    }
+                val metadata = model.toMetadata()
+                registry.updateState(model.name, model.precision, ModelState.DOWNLOADING)
+
+                val modelFile = modelStore.ensureModelAvailable(metadata) { progress ->
+                    Log.d(TAG, "Download progress for ${model.name}: ${(progress * 100).toInt()}%")
+                }
+
+                if (modelFile == null) {
+                    registry.updateState(model.name, model.precision, ModelState.ERROR, error = "Download failed or checksum mismatch")
+                    Log.w(TAG, "Failed to obtain model via ModelStore: ${model.name}")
+                    return@withContext
                 }
 
                 when (model.runtime) {
@@ -107,17 +122,113 @@ class OnDeviceMLManager(
                 }
 
                 models[model.name] = model
+                registry.updateState(
+                    model.name, model.precision, ModelState.LOADED,
+                    memorySizeBytes = modelFile.length()
+                )
                 Log.d(TAG, "Model loaded (${model.runtime}): ${model.name}")
             } catch (e: Exception) {
+                registry.updateState(model.name, model.precision, ModelState.ERROR, error = e.message)
                 Log.e(TAG, "Failed to load model: ${model.name}", e)
             }
         }
+    }
+
+    suspend fun hotSwapModel(
+        modelName: String,
+        newModelPath: String,
+        newVersion: String,
+        newPrecision: ModelPrecision = ModelPrecision.FP32
+    ) {
+        withContext(Dispatchers.IO) {
+            val existing = models[modelName]
+            if (existing != null) {
+                Log.d(TAG, "Hot-swapping model: $modelName (${existing.version} -> $newVersion)")
+                unloadModel(modelName)
+            }
+
+            val newModel = existing?.copy(
+                modelPath = newModelPath,
+                version = newVersion,
+                precision = newPrecision
+            ) ?: return@withContext
+
+            loadModel(newModel)
+            Log.d(TAG, "Hot-swap complete: $modelName v$newVersion (${newPrecision.label})")
+        }
+    }
+
+    suspend fun switchPrecision(modelName: String, precision: ModelPrecision) {
+        val model = models[modelName] ?: return
+
+        val precisionPath = when (precision) {
+            ModelPrecision.FP32 -> model.modelPath
+            ModelPrecision.FP16 -> model.modelPath.replace(".onnx", "_fp16.onnx")
+                .replace(".tflite", "_fp16.tflite")
+            ModelPrecision.INT8 -> model.modelPath.replace(".onnx", "_int8.onnx")
+                .replace(".tflite", "_int8.tflite")
+            ModelPrecision.INT4 -> model.modelPath.replace(".onnx", "_int4.onnx")
+                .replace(".tflite", "_int4.tflite")
+        }
+
+        hotSwapModel(modelName, precisionPath, model.version, precision)
+    }
+
+    fun createStreamingSession(
+        modelName: String,
+        config: StreamingConfig = StreamingConfig()
+    ): StreamingSession? {
+        val session = onnxSessions[modelName] ?: return null
+        return StreamingSession(ortEnvironment, session, config)
+    }
+
+    fun streamInference(
+        modelName: String,
+        inputIds: IntArray,
+        config: StreamingConfig = StreamingConfig()
+    ): Flow<StreamingChunk>? {
+        val session = createStreamingSession(modelName, config) ?: return null
+        return session.streamInference(inputIds)
+    }
+
+    suspend fun generateEmbedding(text: String): EmbeddingResult {
+        return embeddingEngine.embedText(text)
+    }
+
+    suspend fun generateImageEmbedding(bitmap: Bitmap): EmbeddingResult {
+        return embeddingEngine.embedImage(bitmap)
+    }
+
+    suspend fun transcribeAudio(audioFile: File, config: AudioConfig = AudioConfig()): TranscriptionResult {
+        return audioEngine.transcribeFile(audioFile, config)
+    }
+
+    fun streamTranscription(config: AudioConfig = AudioConfig()): Flow<TranscriptionSegment> {
+        return audioEngine.streamTranscription(config)
+    }
+
+    suspend fun classifyImage(bitmap: Bitmap, topK: Int = 5): ClassificationResult {
+        return visionEngine.classifyImage(bitmap, topK)
+    }
+
+    suspend fun recognizeText(bitmap: Bitmap): OcrResult {
+        return visionEngine.recognizeText(bitmap)
     }
 
     private fun loadOnnxModel(model: MLModel, modelFile: File) {
         val sessionOptions = OrtSession.SessionOptions().apply {
             setIntraOpNumThreads(4)
             setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT)
+
+            when (model.precision) {
+                ModelPrecision.FP16 -> {
+                    try { addConfigEntry("session.graph_optimization_level", "99") } catch (_: Exception) {}
+                }
+                ModelPrecision.INT8 -> {
+                    try { addConfigEntry("session.graph_optimization_level", "99") } catch (_: Exception) {}
+                }
+                else -> {}
+            }
         }
         val session = ortEnvironment.createSession(modelFile.absolutePath, sessionOptions)
         onnxSessions[model.name] = session
@@ -126,6 +237,9 @@ class OnDeviceMLManager(
     private fun loadTfliteModel(model: MLModel, modelFile: File) {
         val options = Interpreter.Options().apply {
             setNumThreads(4)
+            if (model.precision == ModelPrecision.FP16) {
+                setUseNNAPI(true)
+            }
         }
         val interpreter = Interpreter(modelFile, options)
         tfliteInterpreters[model.name] = interpreter
@@ -185,7 +299,7 @@ class OnDeviceMLManager(
         }
     }
 
-    private fun runOnnxInference(modelName: String, input: FloatArray, outputSize: Int): FloatArray {
+    fun runOnnxInference(modelName: String, input: FloatArray, outputSize: Int): FloatArray {
         val session = onnxSessions[modelName]
             ?: throw IllegalStateException("ONNX session not loaded: $modelName")
 
@@ -205,7 +319,7 @@ class OnDeviceMLManager(
         return outputTensor[0]
     }
 
-    private fun runTfliteInference(modelName: String, input: FloatArray, outputSize: Int): FloatArray {
+    fun runTfliteInference(modelName: String, input: FloatArray, outputSize: Int): FloatArray {
         val interpreter = tfliteInterpreters[modelName]
             ?: throw IllegalStateException("TFLite interpreter not loaded: $modelName")
 
@@ -241,11 +355,18 @@ class OnDeviceMLManager(
         return models[modelName]?.runtime
     }
 
+    fun getModelPrecision(modelName: String): ModelPrecision {
+        return models[modelName]?.precision ?: ModelPrecision.FP32
+    }
+
     suspend fun unloadModel(modelName: String) {
         withContext(Dispatchers.IO) {
             onnxSessions.remove(modelName)?.close()
             tfliteInterpreters.remove(modelName)?.close()
-            models.remove(modelName)
+            val model = models.remove(modelName)
+            model?.let {
+                registry.updateState(it.name, it.precision, ModelState.NOT_DOWNLOADED)
+            }
             Log.d(TAG, "Model unloaded: $modelName")
         }
     }
@@ -260,7 +381,23 @@ class OnDeviceMLManager(
 
     fun destroy() {
         clearAllModels()
+        embeddingEngine.close()
+        audioEngine.close()
+        visionEngine.close()
         ortEnvironment.close()
+    }
+
+    private fun MLModel.toMetadata(): ModelMetadata {
+        return ModelMetadata(
+            name = name,
+            version = version,
+            modelPath = modelPath,
+            runtime = runtime,
+            precision = precision,
+            inputShape = inputShape,
+            outputShape = outputShape,
+            labels = labels
+        )
     }
 
     data class ComplexityResult(

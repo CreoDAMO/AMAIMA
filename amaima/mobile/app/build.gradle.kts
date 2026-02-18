@@ -116,12 +116,14 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
-    // ONNX Runtime (replaces TensorFlow - lighter, faster, portable)
+    // ONNX Runtime (primary inference - lighter, faster, portable)
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.16.3")
+    implementation("com.microsoft.onnxruntime:onnxruntime-extensions-android:0.9.0")
 
-    // TensorFlow Lite (lightweight on-device inference)
+    // TensorFlow Lite (secondary inference - lightweight on-device)
     implementation("org.tensorflow:tensorflow-lite:2.14.0")
     implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
 
     // Biometric
     implementation("androidx.biometric:biometric:1.1.0")

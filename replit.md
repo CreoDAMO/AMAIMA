@@ -36,6 +36,15 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **Min SDK**: 26 (Android 8.0), Target SDK: 34
 - **Security**: Biometric auth, EncryptedSharedPreferences, certificate pinning, network security config
 - **Features**: Background sync (WorkManager), WebSocket streaming, deep linking, offline support
+- **Advanced ML Features** (in `app/src/main/java/com/amaima/app/ml/`):
+  - **ModelRegistry + ModelStore**: Hot-swappable model lifecycle management with disk caching, SHA-256 integrity checks, LRU eviction (500MB cap), and StateFlow-based UI observation
+  - **Quantized Models**: INT8/FP16/INT4 precision variants with automatic path resolution and NNAPI delegation for FP16 on TFLite
+  - **StreamingInference**: Flow-based token-by-token and chunked inference with temperature/topK sampling, KV-cache support, and cancellation
+  - **EmbeddingEngine**: On-device text (384-dim) and image (512-dim) embedding generation via ONNX, with cosine similarity and ImageNet normalization
+  - **AudioEngine**: Whisper-style speech-to-text with log-mel spectrogram computation, VAD, chunked processing, real-time mic streaming via Flow, and WAV file support
+  - **VisionEngine**: Image classification (MobileNet-compatible), OCR (CTC decoder), and object detection (YOLO-compatible) with softmax, NMS, and top-K results
+  - **VectorStore**: In-memory vector database with cosine/euclidean/dot-product similarity search, metadata filtering, binary persistence, and LRU eviction (10K entries)
+  - **ModelDownloader**: Asset-first model loading with HTTP fallback, progress callbacks, and cache management
 
 ## External Dependencies
 - **NVIDIA NIM API**: Primary AI inference engine for all models.
