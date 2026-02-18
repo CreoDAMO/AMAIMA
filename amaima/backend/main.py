@@ -515,6 +515,15 @@ class RefreshRequest(BaseModel):
     refresh_token: str
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: str = Field(..., description="Email address for password reset")
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str = Field(..., description="Password reset token")
+    new_password: str = Field(..., description="New password (min 8 characters)")
+
+
 @app.post("/v1/auth/register")
 async def register(request: RegisterRequest):
     from app.auth import register_user
@@ -570,6 +579,33 @@ async def create_user_api_key(user: dict = Depends(get_current_user)):
     result = await create_api_key(email=user["email"], tier="community")
     await link_api_key_to_user(result["id"], user["id"])
     return result
+
+
+@app.post("/v1/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    from app.auth import request_password_reset
+    reset_token = await request_password_reset(request.email)
+    if not reset_token:
+        return {"message": "If an account with that email exists, a password reset link has been generated."}
+    logger.info("Password reset requested for: %s", request.email)
+    return {
+        "message": "If an account with that email exists, a password reset link has been generated.",
+        "reset_token": reset_token,
+        "expires_in": "1 hour",
+        "note": "Use this token with /v1/auth/reset-password to set a new password.",
+    }
+
+
+@app.post("/v1/auth/reset-password")
+async def reset_password_endpoint(request: ResetPasswordRequest):
+    from app.auth import reset_password
+    try:
+        success = await reset_password(request.token, request.new_password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    if not success:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    return {"message": "Password has been reset successfully. You can now log in with your new password."}
 
 
 @app.get("/v1/admin/analytics")

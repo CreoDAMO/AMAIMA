@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 
 import asyncpg
-from passlib.context import CryptContext
+import bcrypt
 from jose import jwt, JWTError
 
 logger = logging.getLogger(__name__)
@@ -14,8 +14,6 @@ JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_hex(32))
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 30
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -55,20 +53,50 @@ async def init_auth_tables():
         )
     """)
     await pool.execute("""
+        CREATE TABLE IF NOT EXISTS password_reset_tokens (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            token_hash TEXT NOT NULL,
+            expires_at TIMESTAMPTZ NOT NULL,
+            used BOOLEAN DEFAULT false,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    """)
+    await pool.execute("""
         DO $$ BEGIN
             ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS user_id TEXT REFERENCES users(id);
         EXCEPTION WHEN others THEN NULL;
         END $$;
     """)
+
+    admin_email = "admin@amaima.xyz"
+    existing_admin = await pool.fetchrow("SELECT id FROM users WHERE email = $1", admin_email)
+    if not existing_admin:
+        admin_id = secrets.token_hex(12)
+        admin_pw = os.getenv("ADMIN_DEFAULT_PASSWORD", "AMAIMAadmin2026!")
+        admin_hash = hash_password(admin_pw)
+        await pool.execute(
+            """INSERT INTO users (id, email, password_hash, display_name, role)
+               VALUES ($1, $2, $3, $4, 'admin')""",
+            admin_id, admin_email, admin_hash, "AMAIMA Admin"
+        )
+        logger.info("Default admin user created: %s", admin_email)
+    else:
+        await pool.execute("UPDATE users SET role = 'admin' WHERE email = $1 AND role != 'admin'", admin_email)
+
     logger.info("Auth tables initialized")
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    pw_bytes = password.encode("utf-8")[:72]
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pw_bytes, salt).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    pw_bytes = plain.encode("utf-8")[:72]
+    hashed_bytes = hashed.encode("utf-8")
+    return bcrypt.checkpw(pw_bytes, hashed_bytes)
 
 
 def create_access_token(user_id: str, email: str, role: str) -> str:
@@ -125,7 +153,7 @@ async def register_user(email: str, password: str, display_name: Optional[str] =
     refresh_token = create_refresh_token(user_id)
 
     refresh_id = secrets.token_hex(8)
-    refresh_hash = pwd_context.hash(refresh_token[:32])
+    refresh_hash = hash_password(refresh_token[:32])
     await pool.execute(
         """INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at)
            VALUES ($1, $2, $3, $4)""",
@@ -166,7 +194,7 @@ async def login_user(email: str, password: str) -> Optional[Dict[str, Any]]:
     refresh_token = create_refresh_token(user["id"])
 
     refresh_id = secrets.token_hex(8)
-    refresh_hash = pwd_context.hash(refresh_token[:32])
+    refresh_hash = hash_password(refresh_token[:32])
     await pool.execute(
         """INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at)
            VALUES ($1, $2, $3, $4)""",
@@ -249,3 +277,81 @@ async def count_users() -> int:
     pool = await get_pool()
     row = await pool.fetchrow("SELECT COUNT(*) as cnt FROM users")
     return row["cnt"] if row else 0
+
+
+async def request_password_reset(email: str) -> Optional[str]:
+    pool = await get_pool()
+    user = await pool.fetchrow("SELECT id, email, is_active FROM users WHERE email = $1", email)
+    if not user or not user["is_active"]:
+        return None
+
+    raw_token = secrets.token_urlsafe(32)
+    token_id = secrets.token_hex(8)
+    token_hash = hash_password(raw_token[:32])
+
+    await pool.execute(
+        "UPDATE password_reset_tokens SET used = true WHERE user_id = $1 AND used = false",
+        user["id"]
+    )
+
+    await pool.execute(
+        """INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at)
+           VALUES ($1, $2, $3, $4)""",
+        token_id, user["id"], token_hash,
+        datetime.utcnow() + timedelta(hours=1)
+    )
+
+    return f"{token_id}:{raw_token}"
+
+
+async def reset_password(token: str, new_password: str) -> bool:
+    if len(new_password) < 8:
+        raise ValueError("Password must be at least 8 characters")
+
+    pool = await get_pool()
+
+    parts = token.split(":", 1)
+    if len(parts) == 2:
+        token_id, raw_token = parts
+        row = await pool.fetchrow(
+            """SELECT id, user_id, token_hash, expires_at FROM password_reset_tokens
+               WHERE id = $1 AND used = false AND expires_at > NOW()""",
+            token_id
+        )
+        if row and verify_password(raw_token[:32], row["token_hash"]):
+            matched_row = row
+        else:
+            matched_row = None
+    else:
+        rows = await pool.fetch(
+            """SELECT id, user_id, token_hash, expires_at FROM password_reset_tokens
+               WHERE used = false AND expires_at > NOW()
+               ORDER BY created_at DESC LIMIT 10"""
+        )
+        matched_row = None
+        for row in rows:
+            try:
+                if verify_password(token[:32], row["token_hash"]):
+                    matched_row = row
+                    break
+            except Exception:
+                continue
+
+    if not matched_row:
+        return False
+
+    new_hash = hash_password(new_password)
+    await pool.execute(
+        "UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2",
+        new_hash, matched_row["user_id"]
+    )
+    await pool.execute(
+        "UPDATE password_reset_tokens SET used = true WHERE id = $1",
+        matched_row["id"]
+    )
+    await pool.execute(
+        "UPDATE refresh_tokens SET revoked = true WHERE user_id = $1",
+        matched_row["user_id"]
+    )
+
+    return True
