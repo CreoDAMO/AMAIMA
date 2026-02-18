@@ -405,7 +405,7 @@ export default function BillingPage() {
                       <div className="h-48">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
-                            <Pie data={analytics.model_breakdown} dataKey="count" nameKey="model" cx="50%" cy="50%" outerRadius={70} label={({ name }: { name: string }) => name.split('/').pop()}>
+                            <Pie data={analytics.model_breakdown} dataKey="count" nameKey="model" cx="50%" cy="50%" outerRadius={70} label={({ name }: { name?: string }) => name ? name.split('/').pop() : ''}>
                               {analytics.model_breakdown.map((_: any, i: number) => (
                                 <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                               ))}

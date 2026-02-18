@@ -100,12 +100,12 @@ function AgentNode({ data, selected }: NodeProps) {
         </div>
         <span className="text-sm font-semibold text-white">{data.label as string}</span>
       </div>
-      {data.model && (
+      {data.model ? (
         <p className="text-[10px] text-gray-400 truncate">{String(data.model)}</p>
-      )}
-      {data.systemPrompt && (
+      ) : null}
+      {data.systemPrompt ? (
         <p className="text-[10px] text-gray-500 mt-1 truncate max-w-[160px]">{String(data.systemPrompt)}</p>
-      )}
+      ) : null}
       <Handle type="source" position={Position.Bottom} className="!w-3 !h-3 !bg-gray-400 !border-2 !border-gray-600" />
     </div>
   );
