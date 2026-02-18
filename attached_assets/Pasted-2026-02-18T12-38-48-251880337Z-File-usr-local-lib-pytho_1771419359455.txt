@@ -1,0 +1,400 @@
+2026-02-18T12:38:48.251880337Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:38:48.251882467Z     return _parse_url(name_or_url)
+2026-02-18T12:38:48.251884478Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:38:48.251886498Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:38:48.251888508Z     raise exc.ArgumentError(
+2026-02-18T12:38:48.251890618Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:38:48.251892628Z 
+2026-02-18T12:38:48.251903259Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:38:49.351390513Z INFO:     Waiting for child process [149]
+2026-02-18T12:38:49.450681898Z INFO:     Child process [149] died
+2026-02-18T12:38:54.450930685Z INFO:     Started server process [155]
+2026-02-18T12:38:54.450962607Z INFO:     Waiting for application startup.
+2026-02-18T12:38:54.550526619Z INFO:     Waiting for child process [152]
+2026-02-18T12:38:54.550822818Z INFO:     Child process [152] died
+2026-02-18T12:38:55.252902276Z INFO:     Started server process [156]
+2026-02-18T12:38:55.25297324Z INFO:     Waiting for application startup.
+2026-02-18T12:39:00.351573161Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:39:00.351592412Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:39:00.351596822Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:39:00.351600432Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:00.351603952Z     return await anext(self.gen)
+2026-02-18T12:39:00.351606303Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351609573Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:00.351612413Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:00.351615113Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:00.351617783Z     return await anext(self.gen)
+2026-02-18T12:39:00.351620513Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351623374Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:00.351626274Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:00.351629384Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:00.351632034Z     return await anext(self.gen)
+2026-02-18T12:39:00.351645095Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351648255Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:00.351650926Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:00.351654026Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:39:00.351657206Z     await self._router._startup()
+2026-02-18T12:39:00.351660386Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:39:00.351663946Z     await handler()
+2026-02-18T12:39:00.351666936Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:39:00.351669657Z     from app.database import init_db
+2026-02-18T12:39:00.351672527Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:39:00.351675267Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:39:00.351678147Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351681027Z   File "<string>", line 2, in create_engine
+2026-02-18T12:39:00.351683757Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:39:00.351686458Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:39:00.351689008Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351691778Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:39:00.351694328Z     u = _url.make_url(url)
+2026-02-18T12:39:00.351697098Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351700178Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:39:00.351702829Z     return _parse_url(name_or_url)
+2026-02-18T12:39:00.351705689Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:00.351711299Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:39:00.351714419Z     raise exc.ArgumentError(
+2026-02-18T12:39:00.351717159Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:39:00.35171953Z 
+2026-02-18T12:39:00.351737621Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:39:01.15066238Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:39:01.150685101Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:39:01.150689442Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:39:01.150692872Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:01.150696292Z     return await anext(self.gen)
+2026-02-18T12:39:01.150698892Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150703692Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:01.150706432Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:01.150709143Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:01.150711953Z     return await anext(self.gen)
+2026-02-18T12:39:01.150714493Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150717143Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:01.150734414Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:01.150738205Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:01.150740915Z     return await anext(self.gen)
+2026-02-18T12:39:01.150753815Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150757166Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:01.150759756Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:01.150762446Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:39:01.150765086Z     await self._router._startup()
+2026-02-18T12:39:01.150767727Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:39:01.150770887Z     await handler()
+2026-02-18T12:39:01.150773617Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:39:01.150776157Z     from app.database import init_db
+2026-02-18T12:39:01.150778897Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:39:01.150781457Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:39:01.150783968Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150786517Z   File "<string>", line 2, in create_engine
+2026-02-18T12:39:01.150789078Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:39:01.150791908Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:39:01.150794728Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150797408Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:39:01.150800109Z     u = _url.make_url(url)
+2026-02-18T12:39:01.150802759Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.150807689Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:39:01.150810659Z     return _parse_url(name_or_url)
+2026-02-18T12:39:01.150813299Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:01.15081605Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:39:01.15081878Z     raise exc.ArgumentError(
+2026-02-18T12:39:01.15082138Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:39:01.15082392Z 
+2026-02-18T12:39:01.150838841Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:39:05.550674349Z INFO:     Waiting for child process [156]
+2026-02-18T12:39:05.752541375Z INFO:     Child process [156] died
+2026-02-18T12:39:09.751286676Z INFO:     Started server process [161]
+2026-02-18T12:39:09.751309377Z INFO:     Waiting for application startup.
+2026-02-18T12:39:11.951849258Z INFO:     Waiting for child process [155]
+2026-02-18T12:39:11.951868229Z INFO:     Child process [155] died
+2026-02-18T12:39:14.557014457Z INFO:     Started server process [164]
+2026-02-18T12:39:14.557323026Z INFO:     Waiting for application startup.
+2026-02-18T12:39:17.355189836Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:39:17.355206686Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:39:17.355210407Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:39:17.355214587Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:17.355220357Z     return await anext(self.gen)
+2026-02-18T12:39:17.355225118Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355229988Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:17.355234268Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:17.355238468Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:17.355252569Z     return await anext(self.gen)
+2026-02-18T12:39:17.35525581Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.35525876Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:17.35526173Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:17.3552643Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:39:17.355267Z     return await anext(self.gen)
+2026-02-18T12:39:17.35526959Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355271811Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:39:17.355274391Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:39:17.355276941Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:39:17.355279741Z     await self._router._startup()
+2026-02-18T12:39:17.355283211Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:39:17.355286511Z     await handler()
+2026-02-18T12:39:17.355289242Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:39:17.355291952Z     from app.database import init_db
+2026-02-18T12:39:17.355294752Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:39:17.355297192Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:39:17.355299772Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355302372Z   File "<string>", line 2, in create_engine
+2026-02-18T12:39:17.355305223Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:39:17.355308093Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:39:17.355310603Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355313203Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:39:17.355315843Z     u = _url.make_url(url)
+2026-02-18T12:39:17.355318273Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355320764Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:39:17.355323284Z     return _parse_url(name_or_url)
+2026-02-18T12:39:17.355325764Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:39:17.355328524Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:39:17.355330934Z     raise exc.ArgumentError(
+2026-02-18T12:39:17.355333374Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:39:17.355335795Z 
+2026-02-18T12:39:17.355349226Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:54:54.552179921Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:54:54.552182291Z   File "<string>", line 2, in create_engine
+2026-02-18T12:54:54.552184641Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:54:54.552187301Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:54:54.552189651Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:54:54.552191951Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:54:54.552194301Z     u = _url.make_url(url)
+2026-02-18T12:54:54.552196611Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:54:54.552198922Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:54:54.552201202Z     return _parse_url(name_or_url)
+2026-02-18T12:54:54.552203462Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:54:54.552205732Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:54:54.552207962Z     raise exc.ArgumentError(
+2026-02-18T12:54:54.552210252Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:54:54.552212352Z 
+2026-02-18T12:54:54.552541123Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:00.053142905Z INFO:     Started server process [528]
+2026-02-18T12:55:00.054504491Z INFO:     Waiting for application startup.
+2026-02-18T12:55:02.152870288Z INFO:     Waiting for child process [525]
+2026-02-18T12:55:02.166753329Z INFO:     Child process [525] died
+2026-02-18T12:55:05.255336862Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:55:05.255358223Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:55:05.255364274Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:55:05.255368724Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:05.255373034Z     return await anext(self.gen)
+2026-02-18T12:55:05.255376664Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255381215Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:05.255385115Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:05.255388935Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:05.255392645Z     return await anext(self.gen)
+2026-02-18T12:55:05.255396476Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255410526Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:05.255413006Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:05.255417377Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:05.255437018Z     return await anext(self.gen)
+2026-02-18T12:55:05.255442258Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255444799Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:05.255447009Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:05.255449559Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:55:05.255451939Z     await self._router._startup()
+2026-02-18T12:55:05.255454269Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:55:05.255456839Z     await handler()
+2026-02-18T12:55:05.255459029Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:55:05.255461189Z     from app.database import init_db
+2026-02-18T12:55:05.25546345Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:55:05.25546569Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:55:05.25546823Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.25547046Z   File "<string>", line 2, in create_engine
+2026-02-18T12:55:05.25547275Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:55:05.25547496Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:55:05.255477221Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255479431Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:55:05.255481581Z     u = _url.make_url(url)
+2026-02-18T12:55:05.255483931Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255486281Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:55:05.255488661Z     return _parse_url(name_or_url)
+2026-02-18T12:55:05.255490851Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:05.255493142Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:55:05.255495532Z     raise exc.ArgumentError(
+2026-02-18T12:55:05.255498562Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:55:05.255500672Z 
+2026-02-18T12:55:05.255503172Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:05.555152523Z INFO:     Started server process [531]
+2026-02-18T12:55:05.555186535Z INFO:     Waiting for application startup.
+2026-02-18T12:55:11.053661407Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:55:11.054231933Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:55:11.054238514Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:55:11.054243274Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:11.054247984Z     return await anext(self.gen)
+2026-02-18T12:55:11.054252095Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.054257965Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:11.054262235Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:11.054266276Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:11.054277296Z     return await anext(self.gen)
+2026-02-18T12:55:11.054279796Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.054282406Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:11.054285087Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:11.054287537Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:11.054289867Z     return await anext(self.gen)
+2026-02-18T12:55:11.054292317Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.054294757Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:11.054297238Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:11.054299538Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:55:11.054302388Z     await self._router._startup()
+2026-02-18T12:55:11.054304798Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:55:11.054307878Z     await handler()
+2026-02-18T12:55:11.054310268Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:55:11.054312848Z     from app.database import init_db
+2026-02-18T12:55:11.054315179Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:55:11.054317539Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:55:11.054319779Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.054321989Z   File "<string>", line 2, in create_engine
+2026-02-18T12:55:11.054324219Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:55:11.054326589Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:55:11.05432882Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.05433118Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:55:11.05433348Z     u = _url.make_url(url)
+2026-02-18T12:55:11.05433577Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.05433813Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:55:11.05434042Z     return _parse_url(name_or_url)
+2026-02-18T12:55:11.05434267Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:11.05434497Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:55:11.05434719Z     raise exc.ArgumentError(
+2026-02-18T12:55:11.054349491Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:55:11.054351611Z 
+2026-02-18T12:55:11.054386323Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:12.454926598Z INFO:     Started server process [534]
+2026-02-18T12:55:12.455257719Z INFO:     Waiting for application startup.
+2026-02-18T12:55:12.655764363Z INFO:     Waiting for child process [528]
+2026-02-18T12:55:12.7517243Z INFO:     Child process [528] died
+2026-02-18T12:55:18.254668349Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:55:18.25469411Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:55:18.254697241Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:55:18.254700061Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:18.254703001Z     return await anext(self.gen)
+2026-02-18T12:55:18.254705481Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254719902Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:18.254722192Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:18.254724342Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:18.254726483Z     return await anext(self.gen)
+2026-02-18T12:55:18.254728573Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254730713Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:18.254732883Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:18.254735043Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:18.254737093Z     return await anext(self.gen)
+2026-02-18T12:55:18.254739133Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254741233Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:18.254743304Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:18.254745424Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:55:18.254747474Z     await self._router._startup()
+2026-02-18T12:55:18.254749624Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:55:18.254752474Z     await handler()
+2026-02-18T12:55:18.254754674Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:55:18.254756765Z     from app.database import init_db
+2026-02-18T12:55:18.254758874Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:55:18.254760955Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:55:18.254763015Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254765105Z   File "<string>", line 2, in create_engine
+2026-02-18T12:55:18.254767155Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:55:18.254769235Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:55:18.254771255Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254773326Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:55:18.254775676Z     u = _url.make_url(url)
+2026-02-18T12:55:18.254777746Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254779846Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:55:18.254781896Z     return _parse_url(name_or_url)
+2026-02-18T12:55:18.254784036Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:18.254788246Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:55:18.254790407Z     raise exc.ArgumentError(
+2026-02-18T12:55:18.254792577Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:55:18.254794477Z 
+2026-02-18T12:55:18.255254436Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:18.450681551Z INFO:     Waiting for child process [531]
+2026-02-18T12:55:18.450816119Z INFO:     Child process [531] died
+2026-02-18T12:55:22.852789085Z INFO:     Started server process [537]
+2026-02-18T12:55:22.852814807Z INFO:     Waiting for application startup.
+2026-02-18T12:55:23.655727515Z INFO:     Waiting for child process [534]
+2026-02-18T12:55:23.853089901Z INFO:     Child process [534] died
+2026-02-18T12:55:29.052877744Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:55:29.052908376Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:55:29.052930177Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:55:29.052934127Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:29.052937828Z     return await anext(self.gen)
+2026-02-18T12:55:29.052940458Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.052943998Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:29.052946678Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:29.052949268Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:29.052951858Z     return await anext(self.gen)
+2026-02-18T12:55:29.052954418Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.052957479Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:29.052959969Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:29.052962519Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:29.052965119Z     return await anext(self.gen)
+2026-02-18T12:55:29.052967529Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.05297005Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:29.0529726Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:29.05297509Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:55:29.05297764Z     await self._router._startup()
+2026-02-18T12:55:29.05298007Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:55:29.05298318Z     await handler()
+2026-02-18T12:55:29.052985591Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:55:29.052988071Z     from app.database import init_db
+2026-02-18T12:55:29.052991151Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:55:29.052993771Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:55:29.052996221Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.052998751Z   File "<string>", line 2, in create_engine
+2026-02-18T12:55:29.053001232Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:55:29.053003541Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:55:29.053006132Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.053008992Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:55:29.053011412Z     u = _url.make_url(url)
+2026-02-18T12:55:29.053013762Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.053016322Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:55:29.053018962Z     return _parse_url(name_or_url)
+2026-02-18T12:55:29.053025243Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:29.053028263Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:55:29.053031093Z     raise exc.ArgumentError(
+2026-02-18T12:55:29.053034354Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:55:29.053037214Z 
+2026-02-18T12:55:29.053054645Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:31.953456509Z INFO:     Started server process [540]
+2026-02-18T12:55:31.953486571Z INFO:     Waiting for application startup.
+2026-02-18T12:55:35.250725577Z INFO:     Waiting for child process [537]
+2026-02-18T12:55:35.250838624Z INFO:     Child process [537] died
+2026-02-18T12:55:36.757591566Z ERROR:    Traceback (most recent call last):
+2026-02-18T12:55:36.757630069Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-18T12:55:36.757633549Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-18T12:55:36.757636679Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:36.75763954Z     return await anext(self.gen)
+2026-02-18T12:55:36.757641769Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.75764439Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:36.75764657Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:36.75764897Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:36.75765113Z     return await anext(self.gen)
+2026-02-18T12:55:36.75765337Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757655501Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:36.75765771Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:36.757659971Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-18T12:55:36.757662411Z     return await anext(self.gen)
+2026-02-18T12:55:36.757664721Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757666971Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-18T12:55:36.757669061Z     async with original_context(app) as maybe_original_state:
+2026-02-18T12:55:36.757671482Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-18T12:55:36.757673842Z     await self._router._startup()
+2026-02-18T12:55:36.757676122Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-18T12:55:36.757678892Z     await handler()
+2026-02-18T12:55:36.757681342Z   File "/app/amaima/backend/main.py", line 134, in startup
+2026-02-18T12:55:36.757683542Z     from app.database import init_db
+2026-02-18T12:55:36.757686152Z   File "/app/amaima/backend/app/database.py", line 9, in <module>
+2026-02-18T12:55:36.757688383Z     engine = create_engine(DATABASE_URL)
+2026-02-18T12:55:36.757690743Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757692953Z   File "<string>", line 2, in create_engine
+2026-02-18T12:55:36.757695133Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-18T12:55:36.757697233Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-18T12:55:36.757699413Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757701733Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 564, in create_engine
+2026-02-18T12:55:36.757703904Z     u = _url.make_url(url)
+2026-02-18T12:55:36.757706064Z         ^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757708504Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 856, in make_url
+2026-02-18T12:55:36.757710734Z     return _parse_url(name_or_url)
+2026-02-18T12:55:36.757713144Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-18T12:55:36.757715374Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/url.py", line 922, in _parse_url
+2026-02-18T12:55:36.757717674Z     raise exc.ArgumentError(
+2026-02-18T12:55:36.757720194Z sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from given URL string
+2026-02-18T12:55:36.757736146Z 
+2026-02-18T12:55:36.757738676Z ERROR:    Application startup failed. Exiting.
+2026-02-18T12:55:40.150607598Z INFO:     Started server process [543]
+2026-02-18T12:55:40.15064693Z INFO:     Waiting for application startup.
+2026-02-18T12:55:42.851890362Z INFO:     Started server process [546]
+2026-02-18T12:55:42.851922774Z INFO:     Waiting for application startup.
