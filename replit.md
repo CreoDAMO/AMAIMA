@@ -27,6 +27,16 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **Billing Analytics Dashboard**: Recharts-powered analytics tab in the billing page showing daily query volume, latency trends, model usage pie chart, endpoint breakdown, tier distribution, and cache performance stats via `/v1/billing/analytics`.
 - **Integration Tests**: End-to-end tests for biology/drug discovery crew pipeline, protein analysis, NIM caching, and agent types (`tests/integration/test_biology_e2e.py`, 8 tests).
 
+## Mobile App (Android)
+- **Location**: `amaima/mobile/`
+- **Stack**: Kotlin + Jetpack Compose, Hilt DI, Room DB, Retrofit/OkHttp, Material 3
+- **ML Runtime**: ONNX Runtime (primary, `.onnx` models) + TensorFlow Lite (secondary, `.tflite` models) — replacing full TensorFlow for portability and smaller size
+- **ML Manager**: `OnDeviceMLManager` in `app/src/main/java/com/amaima/app/ml/OnDeviceMLManager.kt` — dual-runtime inference engine supporting both ONNX and TFLite models
+- **Build System**: Gradle 8.5, AGP 8.2.0, Kotlin 1.9.20, KSP for annotation processing
+- **Min SDK**: 26 (Android 8.0), Target SDK: 34
+- **Security**: Biometric auth, EncryptedSharedPreferences, certificate pinning, network security config
+- **Features**: Background sync (WorkManager), WebSocket streaming, deep linking, offline support
+
 ## External Dependencies
 - **NVIDIA NIM API**: Primary AI inference engine for all models.
 - **Cosmos R2**: Used by the Vision Service for embodied reasoning, image/video analysis, and scene understanding.
@@ -36,3 +46,5 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **Stripe**: Payment gateway for subscription management and billing.
 - **Vercel**: Deployment platform for the frontend.
 - **Docker Compose**: For multi-service deployment.
+- **ONNX Runtime**: On-device ML inference for mobile (replaces TensorFlow).
+- **TensorFlow Lite**: Lightweight on-device inference (secondary runtime for mobile).
