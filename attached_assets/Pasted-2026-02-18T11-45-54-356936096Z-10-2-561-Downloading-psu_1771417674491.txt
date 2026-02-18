@@ -1,0 +1,250 @@
+2026-02-18T11:45:54.356936096Z #10 2.561   Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+2026-02-18T11:45:54.476387206Z #10 2.606 Collecting pyyaml>=6.0.1 (from -r requirements.txt (line 25))
+2026-02-18T11:45:54.476402516Z #10 2.617   Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+2026-02-18T11:45:54.476405246Z #10 2.639 Collecting python-dotenv>=1.0.0 (from -r requirements.txt (line 26))
+2026-02-18T11:45:54.476407646Z #10 2.648   Downloading python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+2026-02-18T11:45:54.476409836Z #10 2.680 Collecting httpx>=0.26.0 (from -r requirements.txt (line 29))
+2026-02-18T11:45:54.692526639Z #10 2.690   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2026-02-18T11:45:54.692546109Z #10 2.706 Collecting aiofiles>=23.2.1 (from -r requirements.txt (line 30))
+2026-02-18T11:45:54.692548849Z #10 2.716   Downloading aiofiles-25.1.0-py3-none-any.whl.metadata (6.3 kB)
+2026-02-18T11:45:54.692551069Z #10 2.736 Collecting python-dateutil>=2.8.2 (from -r requirements.txt (line 33))
+2026-02-18T11:45:54.69255375Z #10 2.746   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2026-02-18T11:45:54.852571212Z #10 3.056 Collecting orjson>=3.9.0 (from -r requirements.txt (line 34))
+2026-02-18T11:45:54.963427686Z #10 3.066   Downloading orjson-3.11.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (41 kB)
+2026-02-18T11:45:54.963444747Z #10 3.070      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.0/42.0 kB 12.3 MB/s eta 0:00:00
+2026-02-18T11:45:54.963448017Z #10 3.128 Collecting pytest>=9.0.0 (from -r requirements.txt (line 37))
+2026-02-18T11:45:54.963450227Z #10 3.138   Downloading pytest-9.0.2-py3-none-any.whl.metadata (7.6 kB)
+2026-02-18T11:45:54.963452387Z #10 3.167 Collecting pytest-asyncio>=0.23.0 (from -r requirements.txt (line 38))
+2026-02-18T11:45:55.079738754Z #10 3.177   Downloading pytest_asyncio-1.3.0-py3-none-any.whl.metadata (4.1 kB)
+2026-02-18T11:45:55.079753654Z #10 3.238 Collecting starlette<1.0.0,>=0.40.0 (from fastapi>=0.109.0->-r requirements.txt (line 4))
+2026-02-18T11:45:55.079755964Z #10 3.248   Downloading starlette-0.52.1-py3-none-any.whl.metadata (6.3 kB)
+2026-02-18T11:45:55.079757894Z #10 3.283 Collecting typing-extensions>=4.8.0 (from fastapi>=0.109.0->-r requirements.txt (line 4))
+2026-02-18T11:45:55.179948269Z #10 3.293   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+2026-02-18T11:45:55.17996794Z #10 3.309 Collecting typing-inspection>=0.4.2 (from fastapi>=0.109.0->-r requirements.txt (line 4))
+2026-02-18T11:45:55.17997223Z #10 3.318   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+2026-02-18T11:45:55.17997582Z #10 3.332 Collecting annotated-doc>=0.0.2 (from fastapi>=0.109.0->-r requirements.txt (line 4))
+2026-02-18T11:45:55.17998009Z #10 3.341   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+2026-02-18T11:45:55.17999368Z #10 3.374 Collecting click>=7.0 (from uvicorn>=0.27.0->uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:55.17999606Z #10 3.384   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+2026-02-18T11:45:55.386661705Z #10 3.399 Collecting h11>=0.8 (from uvicorn>=0.27.0->uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:55.386684336Z #10 3.409   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2026-02-18T11:45:55.386687736Z #10 3.430 Collecting annotated-types>=0.6.0 (from pydantic>=2.5.0->-r requirements.txt (line 7))
+2026-02-18T11:45:55.386690266Z #10 3.440   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+2026-02-18T11:45:56.025566784Z #10 4.229 Collecting pydantic-core==2.41.5 (from pydantic>=2.5.0->-r requirements.txt (line 7))
+2026-02-18T11:45:56.186725766Z #10 4.240   Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+2026-02-18T11:45:56.206542446Z #10 4.410 Collecting greenlet>=1 (from sqlalchemy>=2.0.25->sqlalchemy[asyncio]>=2.0.25->-r requirements.txt (line 12))
+2026-02-18T11:45:56.391263195Z #10 4.420   Downloading greenlet-3.3.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.7 kB)
+2026-02-18T11:45:56.391283536Z #10 4.456 Collecting ecdsa!=0.15 (from python-jose>=3.3.0->python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:56.391287226Z #10 4.466   Downloading ecdsa-0.19.1-py2.py3-none-any.whl.metadata (29 kB)
+2026-02-18T11:45:56.391313047Z #10 4.489 Collecting rsa!=4.1.1,!=4.4,<5.0,>=4.0 (from python-jose>=3.3.0->python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:56.391318347Z #10 4.499   Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+2026-02-18T11:45:56.391320677Z #10 4.595 Collecting pyasn1>=0.5.0 (from python-jose>=3.3.0->python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:56.503876826Z #10 4.605   Downloading pyasn1-0.6.2-py3-none-any.whl.metadata (8.4 kB)
+2026-02-18T11:45:56.503889816Z #10 4.673 Collecting anyio (from httpx>=0.26.0->-r requirements.txt (line 29))
+2026-02-18T11:45:56.503892356Z #10 4.683   Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+2026-02-18T11:45:56.503894576Z #10 4.708 Collecting certifi (from httpx>=0.26.0->-r requirements.txt (line 29))
+2026-02-18T11:45:56.612341917Z #10 4.718   Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+2026-02-18T11:45:56.612356968Z #10 4.745 Collecting httpcore==1.* (from httpx>=0.26.0->-r requirements.txt (line 29))
+2026-02-18T11:45:56.612359418Z #10 4.755   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2026-02-18T11:45:56.612361718Z #10 4.776 Collecting idna (from httpx>=0.26.0->-r requirements.txt (line 29))
+2026-02-18T11:45:56.612363898Z #10 4.787   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+2026-02-18T11:45:56.612366058Z #10 4.816 Collecting six>=1.5 (from python-dateutil>=2.8.2->-r requirements.txt (line 33))
+2026-02-18T11:45:56.714656768Z #10 4.826   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2026-02-18T11:45:56.714668478Z #10 4.853 Collecting iniconfig>=1.0.1 (from pytest>=9.0.0->-r requirements.txt (line 37))
+2026-02-18T11:45:56.714671109Z #10 4.862   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+2026-02-18T11:45:56.714673329Z #10 4.888 Collecting packaging>=22 (from pytest>=9.0.0->-r requirements.txt (line 37))
+2026-02-18T11:45:56.714675629Z #10 4.898   Downloading packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+2026-02-18T11:45:56.714677779Z #10 4.918 Collecting pluggy<2,>=1.5 (from pytest>=9.0.0->-r requirements.txt (line 37))
+2026-02-18T11:45:56.834534619Z #10 4.928   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2026-02-18T11:45:56.834555689Z #10 4.956 Collecting pygments>=2.7.2 (from pytest>=9.0.0->-r requirements.txt (line 37))
+2026-02-18T11:45:56.834558359Z #10 4.966   Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+2026-02-18T11:45:56.834560609Z #10 5.038 Collecting bcrypt>=3.1.0 (from passlib[bcrypt]>=1.7.4->-r requirements.txt (line 19))
+2026-02-18T11:45:56.99490664Z #10 5.048   Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+2026-02-18T11:45:57.061224248Z #10 5.265 Collecting cryptography>=3.4.0 (from python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:57.200342073Z #10 5.275   Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+2026-02-18T11:45:57.200356733Z #10 5.345 Collecting httptools>=0.6.3 (from uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:57.200359893Z #10 5.355   Downloading httptools-0.7.1-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+2026-02-18T11:45:57.200362253Z #10 5.404 Collecting uvloop>=0.15.1 (from uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:57.391584253Z #10 5.414   Downloading uvloop-0.22.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
+2026-02-18T11:45:57.391596844Z #10 5.492 Collecting watchfiles>=0.20 (from uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:57.391599914Z #10 5.502   Downloading watchfiles-1.1.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+2026-02-18T11:45:57.391602394Z #10 5.595 Collecting websockets>=10.4 (from uvicorn[standard]>=0.27.0->-r requirements.txt (line 5))
+2026-02-18T11:45:57.552272483Z #10 5.605   Downloading websockets-16.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+2026-02-18T11:45:57.631342365Z #10 5.835 Collecting cffi>=2.0.0 (from cryptography>=3.4.0->python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:57.79182764Z #10 5.845   Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+2026-02-18T11:45:57.807805969Z #10 6.011 Collecting pycparser (from cffi>=2.0.0->cryptography>=3.4.0->python-jose[cryptography]>=3.3.0->-r requirements.txt (line 18))
+2026-02-18T11:45:57.938046121Z #10 6.022   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+2026-02-18T11:45:57.938066041Z #10 6.047 Downloading fastapi-0.129.0-py3-none-any.whl (102 kB)
+2026-02-18T11:45:57.938070531Z #10 6.058    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.0/103.0 kB 9.8 MB/s eta 0:00:00
+2026-02-18T11:45:57.938074302Z #10 6.069 Downloading uvicorn-0.41.0-py3-none-any.whl (68 kB)
+2026-02-18T11:45:57.938078011Z #10 6.074    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.8/68.8 kB 13.7 MB/s eta 0:00:00
+2026-02-18T11:45:57.938081412Z #10 6.085 Downloading python_multipart-0.0.22-py3-none-any.whl (24 kB)
+2026-02-18T11:45:57.938085232Z #10 6.095 Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+2026-02-18T11:45:58.072524244Z #10 6.142    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.6/463.6 kB 10.3 MB/s eta 0:00:00
+2026-02-18T11:45:58.072543945Z #10 6.152 Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+2026-02-18T11:45:58.190448504Z #10 6.276    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 16.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.190478014Z #10 6.286 Downloading pydantic_settings-2.13.0-py3-none-any.whl (58 kB)
+2026-02-18T11:45:58.190481035Z #10 6.289    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.4/58.4 kB 59.9 MB/s eta 0:00:00
+2026-02-18T11:45:58.190483864Z #10 6.299 Downloading asyncpg-0.31.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.0 MB)
+2026-02-18T11:45:58.294186532Z #10 6.394    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 31.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.294205642Z #10 6.404 Downloading sqlalchemy-2.0.46-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.3 MB)
+2026-02-18T11:45:58.294208562Z #10 6.472    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 49.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.294211462Z #10 6.482 Downloading redis-7.2.0-py3-none-any.whl (394 kB)
+2026-02-18T11:45:58.294213682Z #10 6.488    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 394.9/394.9 kB 99.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.294216353Z #10 6.498 Downloading python_jose-3.5.0-py2.py3-none-any.whl (34 kB)
+2026-02-18T11:45:58.400553228Z #10 6.508 Downloading passlib-1.7.4-py2.py3-none-any.whl (525 kB)
+2026-02-18T11:45:58.400573369Z #10 6.517    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 525.6/525.6 kB 64.6 MB/s eta 0:00:00
+2026-02-18T11:45:58.400576899Z #10 6.527 Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+2026-02-18T11:45:58.400579589Z #10 6.529    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 155.6/155.6 kB 233.9 MB/s eta 0:00:00
+2026-02-18T11:45:58.400581869Z #10 6.539 Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (806 kB)
+2026-02-18T11:45:58.400584039Z #10 6.552    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.6/806.6 kB 72.9 MB/s eta 0:00:00
+2026-02-18T11:45:58.400586249Z #10 6.562 Downloading python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+2026-02-18T11:45:58.400588969Z #10 6.571 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2026-02-18T11:45:58.400591129Z #10 6.573    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 298.4 MB/s eta 0:00:00
+2026-02-18T11:45:58.400593309Z #10 6.583 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2026-02-18T11:45:58.400595469Z #10 6.585    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 262.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.400597629Z #10 6.595 Downloading aiofiles-25.1.0-py3-none-any.whl (14 kB)
+2026-02-18T11:45:58.400599849Z #10 6.604 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2026-02-18T11:45:58.550121587Z #10 6.607    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 kB 162.7 MB/s eta 0:00:00
+2026-02-18T11:45:58.550139938Z #10 6.617 Downloading orjson-3.11.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (133 kB)
+2026-02-18T11:45:58.550143818Z #10 6.619    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.4/133.4 kB 206.0 MB/s eta 0:00:00
+2026-02-18T11:45:58.550159498Z #10 6.629 Downloading pytest-9.0.2-py3-none-any.whl (374 kB)
+2026-02-18T11:45:58.550163088Z #10 6.633    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 374.8/374.8 kB 123.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.550167128Z #10 6.643 Downloading pytest_asyncio-1.3.0-py3-none-any.whl (15 kB)
+2026-02-18T11:45:58.550170868Z #10 6.653 Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+2026-02-18T11:45:58.550174459Z #10 6.663 Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+2026-02-18T11:45:58.550177099Z #10 6.673 Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+2026-02-18T11:45:58.550179248Z #10 6.676    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 278.2/278.2 kB 124.5 MB/s eta 0:00:00
+2026-02-18T11:45:58.550181389Z #10 6.686 Downloading click-8.3.1-py3-none-any.whl (108 kB)
+2026-02-18T11:45:58.550183539Z #10 6.688    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 313.3 MB/s eta 0:00:00
+2026-02-18T11:45:58.550188049Z #10 6.698 Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+2026-02-18T11:45:58.655625851Z #10 6.754    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 82.5 MB/s eta 0:00:00
+2026-02-18T11:45:58.655642012Z #10 6.764 Downloading ecdsa-0.19.1-py2.py3-none-any.whl (150 kB)
+2026-02-18T11:45:58.655644862Z #10 6.766    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 150.6/150.6 kB 314.2 MB/s eta 0:00:00
+2026-02-18T11:45:58.655647632Z #10 6.776 Downloading greenlet-3.3.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (590 kB)
+2026-02-18T11:45:58.655649852Z #10 6.782    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 590.3/590.3 kB 168.0 MB/s eta 0:00:00
+2026-02-18T11:45:58.655652302Z #10 6.792 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2026-02-18T11:45:58.655654902Z #10 6.802 Downloading httptools-0.7.1-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (456 kB)
+2026-02-18T11:45:58.655657312Z #10 6.806    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 456.6/456.6 kB 177.3 MB/s eta 0:00:00
+2026-02-18T11:45:58.655659452Z #10 6.816 Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+2026-02-18T11:45:58.655661572Z #10 6.826 Downloading packaging-26.0-py3-none-any.whl (74 kB)
+2026-02-18T11:45:58.655663652Z #10 6.828    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.4/74.4 kB 280.1 MB/s eta 0:00:00
+2026-02-18T11:45:58.655665782Z #10 6.838 Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2026-02-18T11:45:58.655667832Z #10 6.848 Downloading pyasn1-0.6.2-py3-none-any.whl (83 kB)
+2026-02-18T11:45:58.655669872Z #10 6.849    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 83.4/83.4 kB 251.6 MB/s eta 0:00:00
+2026-02-18T11:45:58.655671992Z #10 6.859 Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+2026-02-18T11:45:58.764160885Z #10 6.872    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 109.6 MB/s eta 0:00:00
+2026-02-18T11:45:58.764179485Z #10 6.882 Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+2026-02-18T11:45:58.764182235Z #10 6.893 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-02-18T11:45:58.764184665Z #10 6.910 Downloading starlette-0.52.1-py3-none-any.whl (74 kB)
+2026-02-18T11:45:58.764197736Z #10 6.910    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.3/74.3 kB 157.6 MB/s eta 0:00:00
+2026-02-18T11:45:58.764200166Z #10 6.921 Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+2026-02-18T11:45:58.764202276Z #10 6.924    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 113.6/113.6 kB 242.3 MB/s eta 0:00:00
+2026-02-18T11:45:58.764204526Z #10 6.934 Downloading idna-3.11-py3-none-any.whl (71 kB)
+2026-02-18T11:45:58.764206736Z #10 6.936    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 261.9 MB/s eta 0:00:00
+2026-02-18T11:45:58.764211506Z #10 6.946 Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+2026-02-18T11:45:58.764213786Z #10 6.948    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 255.7 MB/s eta 0:00:00
+2026-02-18T11:45:58.764216066Z #10 6.958 Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+2026-02-18T11:45:58.764218716Z #10 6.968 Downloading uvloop-0.22.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.8 MB)
+2026-02-18T11:45:58.864234057Z #10 7.004    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 114.2 MB/s eta 0:00:00
+2026-02-18T11:45:58.864248877Z #10 7.014 Downloading watchfiles-1.1.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+2026-02-18T11:45:58.864251967Z #10 7.018    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 456.1/456.1 kB 254.1 MB/s eta 0:00:00
+2026-02-18T11:45:58.864266477Z #10 7.028 Downloading websockets-16.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+2026-02-18T11:45:58.864268637Z #10 7.031    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 184.6/184.6 kB 302.9 MB/s eta 0:00:00
+2026-02-18T11:45:58.864271418Z #10 7.041 Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+2026-02-18T11:45:58.864273528Z #10 7.043    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.9/152.9 kB 314.8 MB/s eta 0:00:00
+2026-02-18T11:45:58.864275708Z #10 7.054 Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (215 kB)
+2026-02-18T11:45:58.864277768Z #10 7.056    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 215.6/215.6 kB 321.7 MB/s eta 0:00:00
+2026-02-18T11:45:58.864279958Z #10 7.066 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-02-18T11:45:59.015007667Z #10 7.068    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.2/48.2 kB 274.6 MB/s eta 0:00:00
+2026-02-18T11:45:59.139338974Z #10 7.343 Installing collected packages: passlib, websockets, uvloop, typing-extensions, six, redis, pyyaml, python-multipart, python-dotenv, pygments, pycparser, pyasn1, psutil, pluggy, packaging, orjson, iniconfig, idna, httptools, h11, greenlet, click, certifi, bcrypt, asyncpg, annotated-types, annotated-doc, aiofiles, uvicorn, typing-inspection, sqlalchemy, rsa, python-dateutil, pytest, pydantic-core, httpcore, ecdsa, cffi, anyio, watchfiles, starlette, python-jose, pytest-asyncio, pydantic, httpx, cryptography, pydantic-settings, fastapi
+2026-02-18T11:46:03.252734665Z #10 11.46 Successfully installed aiofiles-25.1.0 annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 asyncpg-0.31.0 bcrypt-5.0.0 certifi-2026.1.4 cffi-2.0.0 click-8.3.1 cryptography-46.0.5 ecdsa-0.19.1 fastapi-0.129.0 greenlet-3.3.1 h11-0.16.0 httpcore-1.0.9 httptools-0.7.1 httpx-0.28.1 idna-3.11 iniconfig-2.3.0 orjson-3.11.7 packaging-26.0 passlib-1.7.4 pluggy-1.6.0 psutil-7.2.2 pyasn1-0.6.2 pycparser-3.0 pydantic-2.12.5 pydantic-core-2.41.5 pydantic-settings-2.13.0 pygments-2.19.2 pytest-9.0.2 pytest-asyncio-1.3.0 python-dateutil-2.9.0.post0 python-dotenv-1.2.1 python-jose-3.5.0 python-multipart-0.0.22 pyyaml-6.0.3 redis-7.2.0 rsa-4.9.1 six-1.17.0 sqlalchemy-2.0.46 starlette-0.52.1 typing-extensions-4.15.0 typing-inspection-0.4.2 uvicorn-0.41.0 uvloop-0.22.1 watchfiles-1.1.1 websockets-16.0
+2026-02-18T11:46:03.360137639Z #10 11.46 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+2026-02-18T11:46:03.360154079Z #10 11.56 
+2026-02-18T11:46:03.360157469Z #10 11.56 [notice] A new release of pip is available: 24.0 -> 26.0.1
+2026-02-18T11:46:03.360160259Z #10 11.56 [notice] To update, run: pip install --upgrade pip
+2026-02-18T11:46:04.23769728Z #10 DONE 12.4s
+2026-02-18T11:46:04.389518848Z 
+2026-02-18T11:46:04.389543659Z #11 [6/8] RUN cd amaima/frontend && npm install && npm run build
+2026-02-18T11:46:06.521029282Z #11 2.282 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2026-02-18T11:46:08.572333706Z #11 4.333 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+2026-02-18T11:46:08.723041454Z #11 4.334 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+2026-02-18T11:46:11.878156667Z #11 7.639 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+2026-02-18T11:46:29.894203861Z #11 25.66 
+2026-02-18T11:46:29.894225011Z #11 25.66 added 624 packages, and audited 625 packages in 26s
+2026-02-18T11:46:29.894228481Z #11 25.66 
+2026-02-18T11:46:29.894233831Z #11 25.66 238 packages are looking for funding
+2026-02-18T11:46:30.028559171Z #11 25.66   run `npm fund` for details
+2026-02-18T11:46:30.028577381Z #11 25.79 
+2026-02-18T11:46:30.028581482Z #11 25.79 9 moderate severity vulnerabilities
+2026-02-18T11:46:30.028585182Z #11 25.79 
+2026-02-18T11:46:30.028589252Z #11 25.79 To address all issues (including breaking changes), run:
+2026-02-18T11:46:30.028592992Z #11 25.79   npm audit fix --force
+2026-02-18T11:46:30.028596482Z #11 25.79 
+2026-02-18T11:46:30.028599832Z #11 25.79 Run `npm audit` for details.
+2026-02-18T11:46:30.179733111Z #11 25.79 npm notice
+2026-02-18T11:46:30.179757512Z #11 25.79 npm notice New major version of npm available! 10.8.2 -> 11.10.0
+2026-02-18T11:46:30.179761732Z #11 25.79 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+2026-02-18T11:46:30.179765762Z #11 25.79 npm notice To update run: npm install -g npm@11.10.0
+2026-02-18T11:46:30.179769272Z #11 25.79 npm notice
+2026-02-18T11:46:30.221366062Z #11 25.98 
+2026-02-18T11:46:30.221384053Z #11 25.98 > amaima-frontend@5.0.0 build
+2026-02-18T11:46:30.221388333Z #11 25.98 > next build
+2026-02-18T11:46:30.221391993Z #11 25.98 
+2026-02-18T11:46:30.731329213Z #11 26.49 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-02-18T11:46:30.731353754Z #11 26.49  We detected multiple lockfiles and selected the directory of /app/package-lock.json as the root directory.
+2026-02-18T11:46:30.731359934Z #11 26.49  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-02-18T11:46:30.731384664Z #11 26.49    See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+2026-02-18T11:46:30.731387804Z #11 26.49  Detected additional lockfiles: 
+2026-02-18T11:46:30.731390585Z #11 26.49    * /app/amaima/frontend/package-lock.json
+2026-02-18T11:46:30.731392725Z #11 26.49 
+2026-02-18T11:46:31.038643485Z #11 26.80 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-02-18T11:46:31.038666985Z #11 26.80 This information is used to shape Next.js' roadmap and prioritize features.
+2026-02-18T11:46:31.038672065Z #11 26.80 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-02-18T11:46:31.038675886Z #11 26.80 https://nextjs.org/telemetry
+2026-02-18T11:46:31.189169058Z #11 26.80 
+2026-02-18T11:46:31.193230935Z #11 26.95 ▲ Next.js 16.1.6 (Turbopack)
+2026-02-18T11:46:31.304988673Z #11 26.95 - Experiments (use with caution):
+2026-02-18T11:46:31.305008693Z #11 26.95   · optimizePackageImports
+2026-02-18T11:46:31.305011653Z #11 26.95 
+2026-02-18T11:46:31.305014653Z #11 27.07   Creating an optimized production build ...
+2026-02-18T11:46:44.066760414Z #11 39.83 ✓ Compiled successfully in 12.4s
+2026-02-18T11:46:44.337374424Z #11 39.90   Running TypeScript ...
+2026-02-18T11:46:50.426187317Z #11 46.19 Failed to compile.
+2026-02-18T11:46:50.426209197Z #11 46.19 
+2026-02-18T11:46:50.547394892Z #11 46.19 ./src/app/api/stripe/checkout/route.ts:4:22
+2026-02-18T11:46:50.547414953Z #11 46.19 Type error: Could not find a declaration file for module 'pg'. '/app/amaima/frontend/node_modules/pg/esm/index.mjs' implicitly has an 'any' type.
+2026-02-18T11:46:50.547420653Z #11 46.19   Try `npm i --save-dev @types/pg` if it exists or add a new declaration (.d.ts) file containing `declare module 'pg';`
+2026-02-18T11:46:50.547423673Z #11 46.19 
+2026-02-18T11:46:50.547425983Z #11 46.19   2 | import { getUncachableStripeClient } from '@/lib/stripeClient';
+2026-02-18T11:46:50.547428653Z #11 46.19   3 | import { initStripe } from '@/lib/stripeInit';
+2026-02-18T11:46:50.547431964Z #11 46.19 > 4 | import { Pool } from 'pg';
+2026-02-18T11:46:50.547435474Z #11 46.19     |                      ^
+2026-02-18T11:46:50.547438434Z #11 46.19   5 |
+2026-02-18T11:46:50.547440644Z #11 46.19   6 | let pool: Pool | null = null;
+2026-02-18T11:46:50.547442894Z #11 46.19   7 | function getPool() {
+2026-02-18T11:46:50.547445054Z #11 46.31 Next.js build worker exited with code: 1 and signal: null
+2026-02-18T11:46:54.412242479Z #11 ERROR: process "/bin/sh -c cd amaima/frontend && npm install && npm run build" did not complete successfully: exit code: 1
+2026-02-18T11:46:54.473958176Z ------
+2026-02-18T11:46:54.473974716Z  > [6/8] RUN cd amaima/frontend && npm install && npm run build:
+2026-02-18T11:46:54.473978586Z 46.19   Try `npm i --save-dev @types/pg` if it exists or add a new declaration (.d.ts) file containing `declare module 'pg';`
+2026-02-18T11:46:54.473981806Z 46.19 
+2026-02-18T11:46:54.473985166Z 46.19   2 | import { getUncachableStripeClient } from '@/lib/stripeClient';
+2026-02-18T11:46:54.473988317Z 46.19   3 | import { initStripe } from '@/lib/stripeInit';
+2026-02-18T11:46:54.474000917Z 46.19 > 4 | import { Pool } from 'pg';
+2026-02-18T11:46:54.474002907Z 46.19     |                      ^
+2026-02-18T11:46:54.474005407Z 46.19   5 |
+2026-02-18T11:46:54.474007267Z 46.19   6 | let pool: Pool | null = null;
+2026-02-18T11:46:54.474008967Z 46.19   7 | function getPool() {
+2026-02-18T11:46:54.474010687Z 46.31 Next.js build worker exited with code: 1 and signal: null
+2026-02-18T11:46:54.474012447Z ------
+2026-02-18T11:46:54.474750877Z Dockerfile:21
+2026-02-18T11:46:54.474763477Z --------------------
+2026-02-18T11:46:54.474767147Z   19 |     ENV NVIDIA_API_KEY=${NVIDIA_API_KEY}
+2026-02-18T11:46:54.474770317Z   20 |     
+2026-02-18T11:46:54.474773657Z   21 | >>> RUN cd amaima/frontend && npm install && npm run build
+2026-02-18T11:46:54.474776487Z   22 |     
+2026-02-18T11:46:54.474779887Z   23 |     ENV BACKEND_URL=http://localhost:8000
+2026-02-18T11:46:54.474782777Z --------------------
+2026-02-18T11:46:54.474786497Z error: failed to solve: process "/bin/sh -c cd amaima/frontend && npm install && npm run build" did not complete successfully: exit code: 1
+2026-02-18T11:46:54.495812408Z error: exit status 1
