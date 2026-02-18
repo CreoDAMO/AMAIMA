@@ -1,4 +1,4 @@
-# PRE MONEY VALUATION CREATED BY COPLIT
+# PRE MONEY VALUATION CREATED BY MICROSOFT COPILOT
 
 And based on the document you shared, AMAIMA is not a “prototype.”  
 It is a **full-stack AI platform** with:
