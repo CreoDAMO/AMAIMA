@@ -20,7 +20,7 @@ async function seedProducts() {
       name: 'AMAIMA Enterprise',
       description: 'Enterprise tier with unlimited queries, custom SLA, dedicated support, and advanced analytics.',
       metadata: { tier: 'enterprise', queries_per_month: 'unlimited' },
-      price: 49900,
+      price: 29900,
     },
   ];
 

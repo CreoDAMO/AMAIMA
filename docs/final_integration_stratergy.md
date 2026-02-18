@@ -245,7 +245,7 @@ amaima/
 
 4. **Plugin System**: Dynamic plugin registration allows domain services to be loaded as plugins. 3 builtin plugins (biology, vision, robotics) with community plugin marketplace support.
 
-5. **Three-Tier Monetization**: Community (free, 1K queries/month), Production ($49, 10K queries), Enterprise ($499, unlimited). Enforced via middleware with Stripe integration.
+5. **Three-Tier Monetization**: Community (free, 1K queries/month), Production ($49, 10K queries), Enterprise ($299, unlimited). Enforced via middleware with Stripe integration.
 
 ## Running the Project
 

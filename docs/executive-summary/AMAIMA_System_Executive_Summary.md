@@ -131,7 +131,7 @@ The Smart Router automatically classifies queries by domain:
 |------|-------|---------------|----------|
 | **Community** | Free | 1,000 | All 14 models, basic routing, API access |
 | **Production** | $49/mo | 10,000 | Priority routing, all domain services, webhook alerts |
-| **Enterprise** | $499/mo | Unlimited | Custom routing rules, team accounts, dedicated support, A/B testing |
+| **Enterprise** | $299/mo | Unlimited | Custom routing rules, team accounts, dedicated support, A/B testing |
 
 ### Payment Infrastructure
 - **Stripe Integration**: Managed via Replit's `stripe-replit-sync` for automatic schema management, webhook handling, and sandbox→production migration
@@ -429,7 +429,7 @@ amaima/
 |------|-------|-------------------|
 | Community | Free | N/A (acquisition) |
 | Production | $49/mo | ~80% at avg usage |
-| Enterprise | $499/mo | ~85% with volume |
+| Enterprise | $299/mo | ~85% with volume |
 
 ---
 
