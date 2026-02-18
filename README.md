@@ -8,6 +8,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-109989?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Next.js 16](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![NVIDIA NIM](https://img.shields.io/badge/NVIDIA_NIM-76B900?style=for-the-badge&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: AMAIMA v1.0](https://img.shields.io/badge/License-AMAIMA%20v1.0-blueviolet?style=for-the-badge)](LICENSE)
@@ -19,14 +20,16 @@
 
 ## Overview
 
-AMAIMA is an enterprise-grade AI orchestration platform that intelligently routes queries across 14 NVIDIA NIM models for optimal cost, speed, and quality. It combines a smart routing engine with specialized domain services for biology/drug discovery, robotics, and vision/multimodal reasoning.
+AMAIMA is an enterprise-grade AI orchestration platform that intelligently routes queries across 14 NVIDIA NIM models for optimal cost, speed, and quality. It combines a smart routing engine with specialized domain services for biology/drug discovery, robotics, and vision/multimodal reasoning, backed by a full-featured Android mobile client with on-device ML inference.
 
 ### What It Does
 
 - **Smart Query Routing** - Analyzes query complexity (TRIVIAL to EXPERT) and automatically selects the best model
 - **Domain-Specific AI** - Dedicated services for biology (BioNeMo), robotics (Isaac/GR00T), and vision (Cosmos R2)
 - **Multi-Agent Crews** - Orchestrated agent teams for research, drug discovery, protein analysis, navigation, and manipulation
+- **Visual Agent Builder** - React Flow drag-and-drop workflow builder with pre-built templates
 - **Monetization Built-In** - Three-tier subscription system with Stripe billing, API key management, and usage tracking
+- **On-Device ML** - Android app with ONNX Runtime + TFLite for embeddings, speech-to-text, vision, and vector search
 - **Cloud-First** - No GPU required; all inference runs through NVIDIA NIM cloud APIs
 
 ---
@@ -68,6 +71,12 @@ AMAIMA is an enterprise-grade AI orchestration platform that intelligently route
                  | NVIDIA NIM    |
                  | Cloud APIs    |
                  +---------------+
+
+    +------------------+
+    | Android Mobile   |
+    | Kotlin + Compose |
+    | ONNX + TFLite    |
+    +------------------+
 ```
 
 ---
@@ -160,6 +169,40 @@ The routing engine classifies queries across five complexity levels and routes t
 
 ---
 
+## Mobile App (Android)
+
+A native Android client built with Kotlin and Jetpack Compose, featuring on-device ML inference for offline-capable AI operations.
+
+### Tech Stack
+- **Language**: Kotlin 1.9.20 with Jetpack Compose (Material 3)
+- **DI**: Hilt (Dagger)
+- **Database**: Room with encrypted preferences
+- **Networking**: Retrofit + OkHttp with certificate pinning, WebSocket streaming
+- **ML Runtimes**: ONNX Runtime 1.16.3 (primary) + TensorFlow Lite 2.14.0 (secondary)
+- **Min SDK**: 26 (Android 8.0), Target SDK: 34
+
+### On-Device ML Features
+
+| Feature | Description |
+|---------|-------------|
+| **Model Registry** | Hot-swappable model lifecycle with StateFlow-based UI observation |
+| **Model Store** | Disk cache with SHA-256 integrity checks and LRU eviction (500MB cap) |
+| **Quantized Models** | FP32, FP16, INT8, INT4 precision variants with NNAPI delegation |
+| **Streaming Inference** | Flow-based token-by-token output with temperature/top-K sampling and KV-cache |
+| **Embedding Engine** | Text (384-dim) and image (512-dim) embeddings via ONNX with cosine similarity |
+| **Audio Engine** | Whisper-style speech-to-text with mel-spectrogram, VAD, real-time mic streaming |
+| **Vision Engine** | Image classification (MobileNet), OCR (CTC decoder), object detection (YOLO) |
+| **Vector Store** | In-memory vector DB with cosine/euclidean/dot-product search, metadata filtering, binary persistence (10K entries) |
+| **Model Downloader** | Asset-first loading with HTTP fallback, progress tracking, cache management |
+
+### Security
+- Biometric authentication
+- EncryptedSharedPreferences for sensitive data
+- Certificate pinning for API communication
+- Network security config with domain restrictions
+
+---
+
 ## Monetization
 
 ### Subscription Tiers
@@ -176,6 +219,7 @@ The routing engine classifies queries across five complexity levels and routes t
 3. Stripe handles subscription upgrades via checkout
 4. Webhooks automatically update tier when subscriptions change
 5. Tier limits are enforced before query execution
+6. Webhook alerts fire at 900 MAU threshold
 
 ---
 
@@ -190,6 +234,7 @@ The routing engine classifies queries across five complexity levels and routes t
 | GET | `/v1/models` | List available models |
 | GET | `/v1/capabilities` | System capabilities |
 | POST | `/v1/simulate` | Simulate routing without execution |
+| GET | `/v1/cache/stats` | NIM prompt cache statistics |
 
 ### Biology
 | Method | Endpoint | Description |
@@ -220,7 +265,7 @@ The routing engine classifies queries across five complexity levels and routes t
 | POST | `/v1/agents/run` | Run agent crew |
 | GET | `/v1/agents/types` | List crew types |
 
-### Billing
+### Billing & Analytics
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/v1/billing/api-keys` | Create API key |
@@ -228,6 +273,7 @@ The routing engine classifies queries across five complexity levels and routes t
 | GET | `/v1/billing/usage/{id}` | Usage stats for key |
 | GET | `/v1/billing/tiers` | Available tiers |
 | POST | `/v1/billing/update-tier` | Update tier (admin) |
+| GET | `/v1/billing/analytics` | Billing analytics data |
 
 ### Plugins
 | Method | Endpoint | Description |
@@ -248,7 +294,7 @@ amaima/
 │   │   ├── core/
 │   │   │   └── unified_smart_router.py  # Smart routing engine
 │   │   ├── modules/
-│   │   │   ├── nvidia_nim_client.py     # NVIDIA NIM API client
+│   │   │   ├── nvidia_nim_client.py     # NVIDIA NIM API client + prompt cache
 │   │   │   ├── execution_engine.py      # Model execution
 │   │   │   ├── smart_router_engine.py   # Query routing + domain detection
 │   │   │   └── plugin_manager.py        # Plugin system
@@ -260,15 +306,17 @@ amaima/
 │   │   │   ├── crew_manager.py          # Multi-agent framework
 │   │   │   ├── biology_crew.py          # Biology agent crews
 │   │   │   └── robotics_crew.py         # Robotics agent crews
-│   │   ├── billing.py                   # Billing & usage tracking
-│   │   └── security.py                 # API key authentication
+│   │   ├── billing.py                   # Billing, usage tracking, analytics
+│   │   ├── security.py                  # API key authentication
+│   │   └── middleware/
+│   │       └── rate_limiter.py          # MAU rate limiting middleware
 │   └── app/routers/                     # FastAPI routers
 │
 ├── frontend/                        # Next.js 16 frontend
 │   ├── src/app/
 │   │   ├── page.tsx                     # Main dashboard
 │   │   ├── agent-builder/page.tsx       # React Flow agent builder
-│   │   ├── billing/page.tsx             # Billing, analytics dashboard
+│   │   ├── billing/page.tsx             # Billing + analytics dashboard
 │   │   ├── conversations/page.tsx       # Conversation history
 │   │   ├── benchmarks/page.tsx          # Model benchmarking
 │   │   └── api/                         # API route proxies
@@ -280,13 +328,43 @@ amaima/
 │   ├── scripts/seed-products.ts         # Stripe product seeding
 │   └── vercel.json                      # Vercel deployment config
 │
+├── mobile/                          # Android mobile client (Kotlin)
+│   ├── app/
+│   │   ├── build.gradle.kts             # App-level build config
+│   │   ├── proguard-rules.pro           # ProGuard/R8 rules
+│   │   └── src/main/
+│   │       ├── AndroidManifest.xml      # App manifest
+│   │       ├── res/                     # Resources, icons, themes
+│   │       └── java/com/amaima/app/
+│   │           ├── ml/                  # On-device ML module
+│   │           │   ├── OnDeviceMLManager.kt   # Dual-runtime inference manager
+│   │           │   ├── ModelRegistry.kt       # Model lifecycle + state tracking
+│   │           │   ├── ModelStore.kt          # Disk cache + SHA-256 checksums
+│   │           │   ├── ModelDownloader.kt     # Asset/HTTP model loading
+│   │           │   ├── StreamingInference.kt  # Flow-based token streaming
+│   │           │   ├── EmbeddingEngine.kt     # Text/image embeddings
+│   │           │   ├── AudioEngine.kt         # Whisper speech-to-text
+│   │           │   ├── VisionEngine.kt        # Classification/OCR/detection
+│   │           │   └── VectorStore.kt         # In-memory vector database
+│   │           ├── di/                  # Hilt dependency injection
+│   │           ├── network/             # Retrofit, WebSocket, interceptors
+│   │           ├── security/            # Biometric, encryption
+│   │           └── data/                # Room DB, DAOs, repositories
+│   ├── build.gradle.kts                 # Project-level build config
+│   ├── settings.gradle.kts              # Gradle settings
+│   └── gradle/                          # Gradle wrapper
+│
+├── tests/
+│   ├── integration/
+│   │   └── test_biology_e2e.py          # Biology/drug discovery integration tests
+│   └── ...                              # Unit tests
+│
 ├── Dockerfile                       # Full-stack container
 ├── start.sh                         # Full-stack startup script
 ├── docker-compose.yml               # Docker Compose with PostgreSQL
 ├── .env.example                     # Environment variable template
 ├── docs/                            # Documentation
 │   └── fullstack-deployment-guide.md    # 10-platform deployment guide
-├── mobile/                          # Android client (spec only)
 └── monitoring/                      # Grafana dashboards
 ```
 
@@ -299,6 +377,7 @@ amaima/
 - Node.js 20+
 - PostgreSQL database
 - NVIDIA NIM API key
+- Android Studio (for mobile development)
 
 ### Environment Variables
 | Variable | Required | Description |
@@ -314,7 +393,7 @@ amaima/
 ### Start Backend
 ```bash
 cd amaima/backend
-pip install -r requirements.txt  # or use pip install
+pip install -r requirements.txt
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -323,6 +402,12 @@ python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 cd amaima/frontend
 npm install
 npm run dev
+```
+
+### Build Mobile App
+```bash
+cd amaima/mobile
+./gradlew assembleDebug
 ```
 
 ### On Replit
@@ -377,6 +462,7 @@ These features are fully built and operational:
 - **Custom Model Routing Rules** - Enterprise users can define custom routing preferences
 - **Integration Tests** - 63 tests (55 unit + 8 integration) covering biology/drug discovery crews, NIM caching, agent types, and rate limiting
 - **Multi-Platform Deployment** - Full-stack Docker container deployable to 10+ platforms (see [Deployment Guide](docs/fullstack-deployment-guide.md))
+- **Android Mobile App** - Native Kotlin + Jetpack Compose client with dual-runtime on-device ML (ONNX + TFLite), featuring model hot-swapping, quantized inference (FP16/INT8/INT4), streaming token generation, text/image embeddings, Whisper speech-to-text, vision classification/OCR/detection, and local vector search with persistence
 
 ---
 
@@ -393,7 +479,6 @@ These features are fully built and operational:
 - **Usage Export** - CSV/JSON export of usage data for enterprise reporting
 
 ### Lower Priority
-- **Android Mobile Client** - Native app implementation from existing spec
 - **WebSocket Streaming** - Real-time bidirectional communication for interactive agent sessions
 - **A/B Testing Framework** - Compare model responses side-by-side for quality evaluation
 - **Plugin Marketplace** - Community-contributed plugins for additional domain services
@@ -406,6 +491,6 @@ These features are fully built and operational:
 
 **AMAIMA** - *Intelligent AI Orchestration at Scale*
 
-Built with NVIDIA NIM, FastAPI, Next.js, and Stripe
+Built with NVIDIA NIM, FastAPI, Next.js, Kotlin, and Stripe
 
 </div>
