@@ -1,64 +1,45 @@
-# ============================================
-# AMAIMA Frontend Production Dockerfile
-# ============================================
-
-# Build stage
 FROM node:20-alpine AS builder
 
-# Set environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Install dependencies
 WORKDIR /app
 
-# Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
 RUN npm ci
 
-# Copy source code
 COPY . .
 
-# Build application
+ARG DATABASE_URL=""
+ARG STRIPE_SECRET_KEY=""
+ENV DATABASE_URL=${DATABASE_URL}
+ENV STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
 RUN npm run build
 
-# Production stage
 FROM node:20-alpine AS runner
 
-# Set environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Create directories
 WORKDIR /app
-RUN mkdir -p /app/public && chown -R nextjs:nodejs /app
 
-# Copy built assets
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 
-# Copy nginx configuration
-COPY --from=builder /app/docker/nginx/default.conf /etc/nginx/http.d/default.conf
-
-# Switch to non-root user
 USER nextjs
 
-# Expose port
-EXPOSE 3000
+EXPOSE 5000
 
-# Health check
+ENV PORT=5000
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5000/ || exit 1
 
-# Entrypoint
-ENV PORT=3000
-EXPOSE 3000
-
-CMD ["node", "server.js"]
+CMD ["npx", "next", "start", "-H", "0.0.0.0", "-p", "5000"]
