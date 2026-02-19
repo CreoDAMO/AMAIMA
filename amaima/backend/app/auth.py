@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any
 import asyncpg
 import bcrypt
 from jose import jwt, JWTError
+from app.db_config import get_database_url
 
 logger = logging.getLogger(__name__)
 
@@ -15,15 +16,16 @@ JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 30
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
 _pool: Optional[asyncpg.Pool] = None
 
 
 async def get_pool() -> asyncpg.Pool:
     global _pool
     if _pool is None:
-        _pool = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=5)
+        db_url = get_database_url()
+        if not db_url:
+            raise RuntimeError("No database URL configured")
+        _pool = await asyncpg.create_pool(db_url, min_size=1, max_size=5)
     return _pool
 
 

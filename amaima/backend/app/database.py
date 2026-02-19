@@ -2,8 +2,9 @@ from sqlalchemy import create_engine, Column, String, Integer, Float, DateTime, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import datetime
-import os
 import logging
+
+from app.db_config import get_database_url_for_sqlalchemy
 
 logger = logging.getLogger(__name__)
 
@@ -13,19 +14,10 @@ _engine = None
 _SessionLocal = None
 
 
-def _get_database_url():
-    url = os.getenv("DATABASE_URL", "")
-    if not url:
-        return None
-    if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
-    return url
-
-
 def get_engine():
     global _engine
     if _engine is None:
-        url = _get_database_url()
+        url = get_database_url_for_sqlalchemy()
         if not url:
             logger.warning("DATABASE_URL not set, database features disabled")
             return None

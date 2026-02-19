@@ -5,10 +5,9 @@ import os
 import logging
 from datetime import datetime
 from typing import Optional, Dict, Any
+from app.db_config import get_database_url
 
 logger = logging.getLogger(__name__)
-
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 API_KEY_HASH_SALT = b"amaima_api_key_salt_v1"
 API_KEY_HASH_ITERATIONS = 200_000
@@ -37,7 +36,10 @@ _pool: Optional[asyncpg.Pool] = None
 async def get_pool() -> asyncpg.Pool:
     global _pool
     if _pool is None:
-        _pool = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=5)
+        db_url = get_database_url()
+        if not db_url:
+            raise RuntimeError("No database URL configured")
+        _pool = await asyncpg.create_pool(db_url, min_size=1, max_size=5)
     return _pool
 
 
