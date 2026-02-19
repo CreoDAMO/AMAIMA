@@ -14,8 +14,8 @@ except ImportError:
 
 from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 
-BIONEMO_MODEL = "nvidia/bionemo-megamolbart"
-BIONEMO_PROTEIN_MODEL = "nvidia/bionemo-esm2"
+BIONEMO_MODEL = get_model_for_domain("biology", "primary")
+BIONEMO_PROTEIN_MODEL = get_model_for_domain("biology", "protein")
 BIONEMO_NIM_URL = os.getenv("BIONEMO_NIM_URL", "https://integrate.api.nvidia.com/v1")
 
 BIOLOGY_MODELS = {

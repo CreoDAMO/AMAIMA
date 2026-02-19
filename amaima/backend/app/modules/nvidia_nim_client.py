@@ -221,24 +221,24 @@ COMPLEXITY_TO_MODEL = {
 
 DOMAIN_TO_MODELS = {
     "vision": {
-        "primary": "nvidia/cosmos-reason2-7b",
-        "secondary": "nvidia/llama-3.1-nemotron-nano-vl-8b",
-        "world_model": "nvidia/cosmos-predict2-14b",
+        "primary": "meta/llama-3.1-70b-instruct",
+        "secondary": "meta/llama-3.1-70b-instruct",
+        "world_model": "meta/llama-3.1-70b-instruct",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "biology": {
-        "primary": "nvidia/bionemo-megamolbart",
-        "protein": "nvidia/bionemo-esm2",
+        "primary": "meta/llama-3.1-70b-instruct",
+        "protein": "meta/llama-3.1-70b-instruct",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "robotics": {
-        "primary": "nvidia/isaac-gr00t-n1.6",
-        "autonomous": "nvidia/alpamayo-1",
+        "primary": "meta/llama-3.1-70b-instruct",
+        "autonomous": "meta/llama-3.1-70b-instruct",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "general": {
         "primary": "meta/llama-3.1-70b-instruct",
-        "edge": "nvidia/nemotron-nano-9b-v2",
+        "edge": "meta/llama-3.1-8b-instruct",
         "fallback": "meta/llama-3.1-8b-instruct",
     },
 }

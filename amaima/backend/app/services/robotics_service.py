@@ -25,8 +25,8 @@ except ImportError:
 from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 from app.services.vision_service import cosmos_inference
 
-ROBOTICS_PRIMARY_MODEL = "nvidia/isaac-gr00t-n1.6"
-ROBOTICS_AV_MODEL = "nvidia/alpamayo-1"
+ROBOTICS_PRIMARY_MODEL = get_model_for_domain("robotics", "primary")
+ROBOTICS_AV_MODEL = get_model_for_domain("robotics", "autonomous")
 
 
 class RobotAction(str, Enum):

@@ -362,12 +362,15 @@ async def log_decision_to_db(query: str, decision: dict):
     """
     Logs a routing decision to the database with correct session management.
     """
-    from ..database import SessionLocal, DecisionTelemetry
+    from ..database import get_session_local, DecisionTelemetry
     import uuid
     import hashlib
     from datetime import datetime
 
-    db = SessionLocal()
+    session_factory = get_session_local()
+    if session_factory is None:
+        return
+    db = session_factory()
     try:
         telemetry_entry = DecisionTelemetry(
             decision_id=str(uuid.uuid4()),

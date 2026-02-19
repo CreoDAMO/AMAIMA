@@ -91,6 +91,9 @@ export default function HomePage() {
   const [streamingText, setStreamingText] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [useStreaming, setUseStreaming] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => { setCopied(false); }, [response]);
 
   useEffect(() => {
     const saved = localStorage.getItem('amaima-query-history');
@@ -601,9 +604,22 @@ export default function HomePage() {
                     <div className="p-4 rounded-lg bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-lg font-semibold text-white">Response</h3>
-                        <span className="text-xs text-slate-400">ID: {response.response_id.slice(0, 8)}...</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(response.response_text).then(() => {
+                                setCopied(true);
+                                setTimeout(() => setCopied(false), 2000);
+                              }).catch(() => {});
+                            }}
+                            className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20 text-slate-300 border border-white/10 transition-colors"
+                          >
+                            {copied ? 'Copied!' : 'Copy'}
+                          </button>
+                          <span className="text-xs text-slate-400">ID: {response.response_id.slice(0, 8)}...</span>
+                        </div>
                       </div>
-                      <p className="text-slate-300">{response.response_text}</p>
+                      <p className="text-slate-300 whitespace-pre-wrap select-text">{response.response_text}</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">

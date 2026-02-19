@@ -14,9 +14,9 @@ except ImportError:
 
 from app.modules.nvidia_nim_client import chat_completion, get_api_key, get_model_for_domain
 
-COSMOS_MODEL = "nvidia/cosmos-reason2-7b"
-COSMOS_VL_MODEL = "nvidia/llama-3.1-nemotron-nano-vl-8b"
-COSMOS_PREDICT_MODEL = "nvidia/cosmos-predict2-14b"
+COSMOS_MODEL = get_model_for_domain("vision", "primary")
+COSMOS_VL_MODEL = get_model_for_domain("vision", "secondary")
+COSMOS_PREDICT_MODEL = get_model_for_domain("vision", "world_model")
 COSMOS_NIM_URL = os.getenv("COSMOS_NIM_URL", "https://integrate.api.nvidia.com/v1")
 
 
