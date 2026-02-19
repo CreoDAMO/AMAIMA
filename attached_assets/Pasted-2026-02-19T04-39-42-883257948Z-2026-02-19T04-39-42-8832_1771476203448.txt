@@ -1,0 +1,150 @@
+2026-02-19T04:39:42.883257948Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.883262108Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:42.883265659Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:42.883269129Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:42.883272509Z     return await anext(self.gen)
+2026-02-19T04:39:42.883286699Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.883288859Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:42.883291399Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:42.883293519Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:42.883295639Z     return await anext(self.gen)
+2026-02-19T04:39:42.883297869Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.883300009Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:42.883302149Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:42.883304289Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-19T04:39:42.883306409Z     await self._router._startup()
+2026-02-19T04:39:42.88330856Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-19T04:39:42.8833114Z     await handler()
+2026-02-19T04:39:42.8833136Z   File "/app/amaima/backend/main.py", line 137, in startup
+2026-02-19T04:39:42.8833157Z     init_db()
+2026-02-19T04:39:42.88331784Z   File "/app/amaima/backend/app/database.py", line 60, in init_db
+2026-02-19T04:39:42.88331993Z     engine = get_engine()
+2026-02-19T04:39:42.88332201Z              ^^^^^^^^^^^^
+2026-02-19T04:39:42.88332412Z   File "/app/amaima/backend/app/database.py", line 24, in get_engine
+2026-02-19T04:39:42.88332616Z     _engine = create_engine(url)
+2026-02-19T04:39:42.8833282Z               ^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.88333038Z   File "<string>", line 2, in create_engine
+2026-02-19T04:39:42.88333253Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-19T04:39:42.8833346Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-19T04:39:42.88333703Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.88333917Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 617, in create_engine
+2026-02-19T04:39:42.88334149Z     dbapi = dbapi_meth(**dbapi_args)
+2026-02-19T04:39:42.88334359Z             ^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:42.88334591Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 696, in import_dbapi
+2026-02-19T04:39:42.88334805Z     import psycopg2
+2026-02-19T04:39:42.88335011Z ModuleNotFoundError: No module named 'psycopg2'
+2026-02-19T04:39:42.883352051Z 
+2026-02-19T04:39:42.883363231Z ERROR:    Application startup failed. Exiting.
+2026-02-19T04:39:43.381198219Z INFO:app.db_config:Database URL found via DATABASE_URL
+2026-02-19T04:39:44.182855537Z ERROR:    Traceback (most recent call last):
+2026-02-19T04:39:44.182885537Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-19T04:39:44.182890818Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-19T04:39:44.182895158Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:44.182899188Z     return await anext(self.gen)
+2026-02-19T04:39:44.182902638Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.182906868Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:44.182925449Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:44.182929198Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:44.182932789Z     return await anext(self.gen)
+2026-02-19T04:39:44.182936289Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.182953019Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:44.182955379Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:44.182957489Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:44.182959639Z     return await anext(self.gen)
+2026-02-19T04:39:44.182961679Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.182963849Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:44.182966039Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:44.18296813Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-19T04:39:44.182970359Z     await self._router._startup()
+2026-02-19T04:39:44.18297243Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-19T04:39:44.1829753Z     await handler()
+2026-02-19T04:39:44.18297752Z   File "/app/amaima/backend/main.py", line 137, in startup
+2026-02-19T04:39:44.18297968Z     init_db()
+2026-02-19T04:39:44.18298186Z   File "/app/amaima/backend/app/database.py", line 60, in init_db
+2026-02-19T04:39:44.18298391Z     engine = get_engine()
+2026-02-19T04:39:44.18298628Z              ^^^^^^^^^^^^
+2026-02-19T04:39:44.1829883Z   File "/app/amaima/backend/app/database.py", line 24, in get_engine
+2026-02-19T04:39:44.18299037Z     _engine = create_engine(url)
+2026-02-19T04:39:44.18299236Z               ^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.18299438Z   File "<string>", line 2, in create_engine
+2026-02-19T04:39:44.18299649Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-19T04:39:44.18299869Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-19T04:39:44.18300073Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.18300286Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 617, in create_engine
+2026-02-19T04:39:44.18300499Z     dbapi = dbapi_meth(**dbapi_args)
+2026-02-19T04:39:44.18300699Z             ^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:44.1830094Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 696, in import_dbapi
+2026-02-19T04:39:44.183011491Z     import psycopg2
+2026-02-19T04:39:44.18301356Z ModuleNotFoundError: No module named 'psycopg2'
+2026-02-19T04:39:44.18301544Z 
+2026-02-19T04:39:44.183028341Z ERROR:    Application startup failed. Exiting.
+2026-02-19T04:39:45.282052616Z INFO:app.db_config:Database URL found via DATABASE_URL
+2026-02-19T04:39:46.980814805Z ERROR:    Traceback (most recent call last):
+2026-02-19T04:39:46.980833345Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+2026-02-19T04:39:46.980836515Z     async with self.lifespan_context(app) as maybe_state:
+2026-02-19T04:39:46.980838965Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:46.980841035Z     return await anext(self.gen)
+2026-02-19T04:39:46.980843016Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980845376Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:46.980847356Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:46.980849346Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:46.980851216Z     return await anext(self.gen)
+2026-02-19T04:39:46.980853146Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980865136Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:46.980867686Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:46.980869556Z   File "/usr/local/lib/python3.11/contextlib.py", line 210, in __aenter__
+2026-02-19T04:39:46.980871426Z     return await anext(self.gen)
+2026-02-19T04:39:46.980873276Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980875266Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 201, in merged_lifespan
+2026-02-19T04:39:46.980877216Z     async with original_context(app) as maybe_original_state:
+2026-02-19T04:39:46.980879186Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 226, in __aenter__
+2026-02-19T04:39:46.980881136Z     await self._router._startup()
+2026-02-19T04:39:46.980883086Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 4554, in _startup
+2026-02-19T04:39:46.980885446Z     await handler()
+2026-02-19T04:39:46.980889797Z   File "/app/amaima/backend/main.py", line 137, in startup
+2026-02-19T04:39:46.980891967Z     init_db()
+2026-02-19T04:39:46.980894257Z   File "/app/amaima/backend/app/database.py", line 60, in init_db
+2026-02-19T04:39:46.980896217Z     engine = get_engine()
+2026-02-19T04:39:46.980898387Z              ^^^^^^^^^^^^
+2026-02-19T04:39:46.980900427Z   File "/app/amaima/backend/app/database.py", line 24, in get_engine
+2026-02-19T04:39:46.980902447Z     _engine = create_engine(url)
+2026-02-19T04:39:46.980904367Z               ^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980906227Z   File "<string>", line 2, in create_engine
+2026-02-19T04:39:46.980924067Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+2026-02-19T04:39:46.980958298Z     return fn(*args, **kwargs)  # type: ignore[no-any-return]
+2026-02-19T04:39:46.980964008Z            ^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980966138Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 617, in create_engine
+2026-02-19T04:39:46.980968038Z     dbapi = dbapi_meth(**dbapi_args)
+2026-02-19T04:39:46.980970128Z             ^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-19T04:39:46.980972448Z   File "/usr/local/lib/python3.11/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 696, in import_dbapi
+2026-02-19T04:39:46.980974348Z     import psycopg2
+2026-02-19T04:39:46.980976379Z ModuleNotFoundError: No module named 'psycopg2'
+2026-02-19T04:39:46.980978079Z 
+2026-02-19T04:39:46.98147996Z ERROR:    Application startup failed. Exiting.
+2026-02-19T04:39:50.08807206Z INFO:     Waiting for child process [95]
+2026-02-19T04:39:50.183254157Z INFO:     Child process [95] died
+2026-02-19T04:39:55.879126315Z INFO:     Waiting for child process [97]
+2026-02-19T04:39:55.983825455Z INFO:     Child process [97] died
+2026-02-19T04:39:56.079566375Z INFO:     Waiting for child process [99]
+2026-02-19T04:39:56.079581805Z INFO:     Child process [99] died
+2026-02-19T04:39:58.684075458Z ▲ Next.js 16.1.6
+2026-02-19T04:39:58.780200228Z - Local:         http://localhost:10000
+2026-02-19T04:39:58.780216858Z - Network:       http://0.0.0.0:10000
+2026-02-19T04:39:58.780221058Z 
+2026-02-19T04:39:58.780225858Z ✓ Starting...
+2026-02-19T04:40:01.384801163Z ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-02-19T04:40:01.384834864Z  We detected multiple lockfiles and selected the directory of /app/package-lock.json as the root directory.
+2026-02-19T04:40:01.384839955Z  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-02-19T04:40:01.384856815Z    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-02-19T04:40:01.384858975Z  Detected additional lockfiles: 
+2026-02-19T04:40:01.384861985Z    * /app/amaima/frontend/package-lock.json
+2026-02-19T04:40:01.384863775Z 
+2026-02-19T04:40:01.98422345Z INFO:     Waiting for child process [143]
+2026-02-19T04:40:02.082021978Z INFO:     Child process [143] died
+2026-02-19T04:40:02.899476873Z ==> Your service is live 🎉
+2026-02-19T04:40:03.008562389Z ==> 
+2026-02-19T04:40:03.012891615Z ==> ///////////////////////////////////////////////////////////
+2026-02-19T04:40:03.016134795Z ==> 
+2026-02-19T04:40:03.01879185Z ==> Available at your primary URL https://amaima.onrender.com
+2026-02-19T04:40:03.021320803Z ==> 
+2026-02-19T04:40:03.023932787Z ==> ///////////////////////////////////////////////////////////

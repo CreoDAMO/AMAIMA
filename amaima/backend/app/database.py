@@ -21,7 +21,11 @@ def get_engine():
         if not url:
             logger.warning("DATABASE_URL not set, database features disabled")
             return None
-        _engine = create_engine(url)
+        try:
+            _engine = create_engine(url)
+        except Exception as e:
+            logger.warning(f"Failed to create database engine: {e}")
+            return None
     return _engine
 
 
