@@ -244,8 +244,20 @@ DOMAIN_TO_MODELS = {
 }
 
 
+_NVIDIA_KEY_NAMES = [
+    "NVIDIA_API_KEY",
+    "NVIDIA_NIM_API_KEY",
+    "NIM_API_KEY",
+    "NGC_API_KEY",
+]
+
+
 def get_api_key() -> Optional[str]:
-    return os.environ.get("NVIDIA_API_KEY")
+    for name in _NVIDIA_KEY_NAMES:
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
 
 
 def is_configured() -> bool:

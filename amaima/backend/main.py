@@ -144,6 +144,15 @@ async def startup():
         await init_auth_tables()
     except Exception as e:
         logger.warning(f"Auth tables init skipped: {e}")
+    from app.modules.nvidia_nim_client import is_configured, get_api_key
+    nim_key = get_api_key()
+    if nim_key:
+        logger.info(f"NVIDIA NIM configured: key={nim_key[:8]}...{nim_key[-4:]}, length={len(nim_key)}")
+    else:
+        logger.warning("NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY")
+    from app.db_config import get_database_url
+    db_url = get_database_url()
+    logger.info(f"Database configured: {bool(db_url)}")
     logger.info("AMAIMA API server started")
 
 
