@@ -1,0 +1,150 @@
+2026-02-19T03:58:24.791799386Z #12 78.40 ├ ƒ /api/v1/webhooks
+2026-02-19T03:58:24.791801486Z #12 78.40 ├ ○ /benchmarks
+2026-02-19T03:58:24.791803736Z #12 78.40 ├ ○ /billing
+2026-02-19T03:58:24.791805756Z #12 78.40 ├ ○ /conversations
+2026-02-19T03:58:24.791807746Z #12 78.40 ├ ○ /login
+2026-02-19T03:58:24.791809746Z #12 78.40 └ ○ /settings
+2026-02-19T03:58:24.791811906Z #12 78.40 
+2026-02-19T03:58:24.791813966Z #12 78.40 
+2026-02-19T03:58:24.942188689Z #12 78.40 ○  (Static)   prerendered as static content
+2026-02-19T03:58:24.94220642Z #12 78.40 ƒ  (Dynamic)  server-rendered on demand
+2026-02-19T03:58:24.94220918Z #12 78.40 
+2026-02-19T03:58:53.540744663Z #12 DONE 107.1s
+2026-02-19T03:58:53.693443763Z 
+2026-02-19T03:58:53.693464293Z #13 [7/8] COPY start.sh /app/start.sh
+2026-02-19T03:58:54.060716105Z #13 DONE 0.5s
+2026-02-19T03:58:54.171796218Z 
+2026-02-19T03:58:54.171816048Z #14 [8/8] RUN chmod +x /app/start.sh
+2026-02-19T03:58:54.171820898Z #14 DONE 0.1s
+2026-02-19T03:58:54.326697365Z 
+2026-02-19T03:58:54.326729436Z #15 exporting to docker image format
+2026-02-19T03:58:54.326735656Z #15 exporting layers
+2026-02-19T03:59:35.650479381Z #15 exporting layers 41.5s done
+2026-02-19T03:59:35.801992584Z #15 exporting manifest sha256:9b2e97fdbb44892fa909256e4ff3c086d1bf4039032995fbf1f4def24556b5f1
+2026-02-19T03:59:35.836019339Z #15 exporting manifest sha256:9b2e97fdbb44892fa909256e4ff3c086d1bf4039032995fbf1f4def24556b5f1 0.2s done
+2026-02-19T03:59:35.836040129Z #15 exporting config sha256:2d9ae66d9bb325b858a7717303e672704a3a9d351bc308c9525c08dbcb10b86e
+2026-02-19T03:59:36.02731678Z #15 exporting config sha256:2d9ae66d9bb325b858a7717303e672704a3a9d351bc308c9525c08dbcb10b86e 0.2s done
+2026-02-19T03:59:39.674785727Z #15 DONE 45.5s
+2026-02-19T03:59:39.825278088Z 
+2026-02-19T03:59:39.825303719Z #16 exporting cache to client directory
+2026-02-19T03:59:39.825308649Z #16 preparing build cache for export
+2026-02-19T03:59:51.497580088Z #16 writing cache image manifest sha256:2bcf6dd9e10ab23884b47ccf7b5c1966ce9a96df4774bb3db710ee574f33e23a 0.0s done
+2026-02-19T03:59:51.497613818Z #16 DONE 11.8s
+2026-02-19T04:00:00.84829023Z Pushing image to registry...
+2026-02-19T04:00:17.001852221Z Upload succeeded
+2026-02-19T04:00:24.739621493Z ==> Deploying...
+2026-02-19T04:00:24.815622492Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-02-19T04:01:51.378608049Z ================================================
+2026-02-19T04:01:51.378630919Z   AMAIMA - Starting Full-Stack Application
+2026-02-19T04:01:51.378634829Z ================================================
+2026-02-19T04:01:51.378637439Z [1/3] Starting FastAPI backend on port 8000...
+2026-02-19T04:01:51.378939765Z [2/3] Waiting for backend to be ready...
+2026-02-19T04:01:52.740109106Z INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-02-19T04:01:52.741043413Z INFO:     Started parent process [7]
+2026-02-19T04:02:16.135603095Z INFO:     Started server process [30]
+2026-02-19T04:02:16.137327426Z INFO:     Waiting for application startup.
+2026-02-19T04:02:16.533365801Z INFO:     Started server process [32]
+2026-02-19T04:02:16.533467603Z INFO:     Waiting for application startup.
+2026-02-19T04:02:16.634290822Z INFO:     Started server process [31]
+2026-02-19T04:02:16.634314382Z INFO:     Waiting for application startup.
+2026-02-19T04:02:17.133552219Z INFO:     Started server process [33]
+2026-02-19T04:02:17.13357234Z INFO:     Waiting for application startup.
+2026-02-19T04:02:23.936441505Z WARNING:app.database:DATABASE_URL not set, database features disabled
+2026-02-19T04:02:23.941796293Z WARNING:app.database:DATABASE_URL not set, database features disabled
+2026-02-19T04:02:23.941808683Z WARNING:app.database:Skipping DB init - no DATABASE_URL
+2026-02-19T04:02:24.033560887Z WARNING:app.database:Skipping DB init - no DATABASE_URL
+2026-02-19T04:02:24.036293536Z INFO:app.services.biology_service:RDKit not available locally; molecule validation will use cloud API
+2026-02-19T04:02:24.133703033Z WARNING:app.database:DATABASE_URL not set, database features disabled
+2026-02-19T04:02:24.133722354Z WARNING:app.database:Skipping DB init - no DATABASE_URL
+2026-02-19T04:02:24.134458657Z INFO:app.services.biology_service:RDKit not available locally; molecule validation will use cloud API
+2026-02-19T04:02:24.233637206Z WARNING:app.database:DATABASE_URL not set, database features disabled
+2026-02-19T04:02:24.233659627Z WARNING:app.database:Skipping DB init - no DATABASE_URL
+2026-02-19T04:02:24.234357919Z INFO:app.services.biology_service:RDKit not available locally; molecule validation will use cloud API
+2026-02-19T04:02:24.238673988Z INFO:app.services.biology_service:RDKit not available locally; molecule validation will use cloud API
+2026-02-19T04:02:25.235577314Z INFO:app.modules.plugin_manager:Plugin registered: biology
+2026-02-19T04:02:25.237206503Z INFO:app.modules.plugin_manager:Plugin registered: biology
+2026-02-19T04:02:25.237445847Z INFO:app.modules.plugin_manager:Plugin registered: biology
+2026-02-19T04:02:25.33571221Z INFO:app.services.vision_service:OpenAI SDK not available; using httpx for NIM calls
+2026-02-19T04:02:25.3357311Z INFO:app.modules.plugin_manager:Plugin registered: vision
+2026-02-19T04:02:25.338562672Z INFO:app.modules.plugin_manager:Plugin registered: biology
+2026-02-19T04:02:25.338578872Z INFO:app.services.vision_service:OpenAI SDK not available; using httpx for NIM calls
+2026-02-19T04:02:25.338582912Z INFO:app.modules.plugin_manager:Plugin registered: vision
+2026-02-19T04:02:25.344455269Z INFO:app.services.vision_service:OpenAI SDK not available; using httpx for NIM calls
+2026-02-19T04:02:25.34447111Z INFO:app.modules.plugin_manager:Plugin registered: vision
+2026-02-19T04:02:25.355136554Z INFO:app.services.vision_service:OpenAI SDK not available; using httpx for NIM calls
+2026-02-19T04:02:25.355269457Z INFO:app.modules.plugin_manager:Plugin registered: vision
+2026-02-19T04:02:25.438622027Z INFO:app.services.robotics_service:ROS2 (rclpy) not available; using cloud simulation via NIM/Omniverse
+2026-02-19T04:02:25.43875362Z INFO:app.services.robotics_service:PyBullet not available; simulation handled via cloud APIs
+2026-02-19T04:02:25.439230638Z INFO:app.modules.plugin_manager:Plugin registered: robotics
+2026-02-19T04:02:25.439244949Z INFO:app.modules.plugin_manager:Initialized 3 builtin plugins
+2026-02-19T04:02:25.43930603Z INFO:app.services.robotics_service:ROS2 (rclpy) not available; using cloud simulation via NIM/Omniverse
+2026-02-19T04:02:25.43931469Z INFO:app.core.unified_smart_router:DARPA tools integration disabled
+2026-02-19T04:02:25.439729637Z INFO:app.core.unified_smart_router:Smart Router initialized
+2026-02-19T04:02:25.439741908Z INFO:main:Application initialized
+2026-02-19T04:02:25.439746028Z INFO:app.services.robotics_service:PyBullet not available; simulation handled via cloud APIs
+2026-02-19T04:02:25.440127295Z INFO:app.modules.plugin_manager:Plugin registered: robotics
+2026-02-19T04:02:25.440134095Z INFO:app.modules.plugin_manager:Initialized 3 builtin plugins
+2026-02-19T04:02:25.440201766Z INFO:app.core.unified_smart_router:DARPA tools integration disabled
+2026-02-19T04:02:25.440214496Z INFO:app.core.unified_smart_router:Smart Router initialized
+2026-02-19T04:02:25.440221736Z INFO:main:Application initialized
+2026-02-19T04:02:25.448194012Z INFO:app.services.robotics_service:ROS2 (rclpy) not available; using cloud simulation via NIM/Omniverse
+2026-02-19T04:02:25.448306164Z INFO:app.services.robotics_service:PyBullet not available; simulation handled via cloud APIs
+2026-02-19T04:02:25.532835416Z INFO:app.modules.plugin_manager:Plugin registered: robotics
+2026-02-19T04:02:25.532855646Z INFO:app.modules.plugin_manager:Initialized 3 builtin plugins
+2026-02-19T04:02:25.532860796Z INFO:app.core.unified_smart_router:DARPA tools integration disabled
+2026-02-19T04:02:25.532872437Z INFO:app.core.unified_smart_router:Smart Router initialized
+2026-02-19T04:02:25.532876757Z INFO:main:Application initialized
+2026-02-19T04:02:25.632491284Z INFO:app.services.robotics_service:ROS2 (rclpy) not available; using cloud simulation via NIM/Omniverse
+2026-02-19T04:02:25.638213198Z INFO:app.services.robotics_service:PyBullet not available; simulation handled via cloud APIs
+2026-02-19T04:02:25.638699217Z INFO:app.modules.plugin_manager:Plugin registered: robotics
+2026-02-19T04:02:25.638707267Z INFO:app.modules.plugin_manager:Initialized 3 builtin plugins
+2026-02-19T04:02:25.638775758Z INFO:app.core.unified_smart_router:DARPA tools integration disabled
+2026-02-19T04:02:25.638782589Z INFO:app.core.unified_smart_router:Smart Router initialized
+2026-02-19T04:02:25.638806339Z INFO:main:Application initialized
+2026-02-19T04:02:28.136239747Z WARNING:main:Auth tables init skipped: No database URL configured
+2026-02-19T04:02:28.136262787Z WARNING:main:NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY
+2026-02-19T04:02:28.136273317Z INFO:main:Database configured: False
+2026-02-19T04:02:28.136279807Z INFO:main:AMAIMA API server started
+2026-02-19T04:02:28.136463471Z INFO:     Application startup complete.
+2026-02-19T04:02:28.237995033Z WARNING:main:Auth tables init skipped: No database URL configured
+2026-02-19T04:02:28.238012153Z WARNING:main:NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY
+2026-02-19T04:02:28.238017753Z INFO:main:Database configured: False
+2026-02-19T04:02:28.238021813Z INFO:main:AMAIMA API server started
+2026-02-19T04:02:28.238025453Z INFO:     Application startup complete.
+2026-02-19T04:02:28.335667184Z INFO:     127.0.0.1:41632 - "HEAD / HTTP/1.1" 404 Not Found
+2026-02-19T04:02:28.337144551Z WARNING:main:Auth tables init skipped: No database URL configured
+2026-02-19T04:02:28.337173072Z WARNING:main:NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY
+2026-02-19T04:02:28.337176862Z INFO:main:Database configured: False
+2026-02-19T04:02:28.337179632Z INFO:main:AMAIMA API server started
+2026-02-19T04:02:28.337181972Z INFO:     Application startup complete.
+2026-02-19T04:02:28.401274738Z ==> No open ports detected, continuing to scan...
+2026-02-19T04:02:28.433778884Z WARNING:main:Auth tables init skipped: No database URL configured
+2026-02-19T04:02:28.433830165Z WARNING:main:NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY
+2026-02-19T04:02:28.43408077Z INFO:main:Database configured: False
+2026-02-19T04:02:28.43408607Z INFO:main:AMAIMA API server started
+2026-02-19T04:02:28.4341038Z INFO:     Application startup complete.
+2026-02-19T04:02:28.43905615Z INFO:     127.0.0.1:41646 - "GET /health HTTP/1.1" 200 OK
+2026-02-19T04:02:28.441080397Z   Backend is ready! (took 26s)
+2026-02-19T04:02:28.493256582Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2026-02-19T04:02:28.543157459Z INFO:     127.0.0.1:41648 - "GET /health HTTP/1.1" 200 OK
+2026-02-19T04:02:28.546574072Z [3/3] Starting Next.js frontend on port 10000...
+2026-02-19T04:02:35.938275719Z ▲ Next.js 16.1.6
+2026-02-19T04:02:35.938578865Z - Local:         http://localhost:10000
+2026-02-19T04:02:35.938596185Z - Network:       http://0.0.0.0:10000
+2026-02-19T04:02:35.938717718Z 
+2026-02-19T04:02:35.938775299Z ✓ Starting...
+2026-02-19T04:02:36.138773087Z ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-02-19T04:02:36.138798997Z  We detected multiple lockfiles and selected the directory of /app/package-lock.json as the root directory.
+2026-02-19T04:02:36.138804297Z  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-02-19T04:02:36.138808397Z    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-02-19T04:02:36.138836318Z  Detected additional lockfiles: 
+2026-02-19T04:02:36.138841218Z    * /app/amaima/frontend/package-lock.json
+2026-02-19T04:02:36.138844748Z 
+2026-02-19T04:02:37.134149254Z ✓ Ready in 3.2s
+2026-02-19T04:02:44.179459076Z ==> Your service is live 🎉
+2026-02-19T04:02:44.332283176Z ==> 
+2026-02-19T04:02:44.343344598Z ==> ///////////////////////////////////////////////////////////
+2026-02-19T04:02:44.345848634Z ==> 
+2026-02-19T04:02:44.347875761Z ==> Available at your primary URL https://amaima.onrender.com
+2026-02-19T04:02:44.350107701Z ==> 
+2026-02-19T04:02:44.352152099Z ==> ///////////////////////////////////////////////////////////
