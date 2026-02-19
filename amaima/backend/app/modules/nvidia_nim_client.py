@@ -251,30 +251,10 @@ _NVIDIA_KEY_NAMES = [
     "NGC_API_KEY",
 ]
 
-_RENDER_SECRETS_DIRS = ["/etc/secrets", "/app/etc/secrets"]
-
-
-def _read_secret_file(name: str) -> Optional[str]:
-    for secrets_dir in _RENDER_SECRETS_DIRS:
-        path = os.path.join(secrets_dir, name)
-        if os.path.isfile(path):
-            try:
-                with open(path, "r") as f:
-                    val = f.read().strip()
-                if val:
-                    return val
-            except Exception:
-                pass
-    return None
-
 
 def get_api_key() -> Optional[str]:
     for name in _NVIDIA_KEY_NAMES:
         val = os.environ.get(name)
-        if val:
-            return val
-    for name in _NVIDIA_KEY_NAMES:
-        val = _read_secret_file(name)
         if val:
             return val
     return None

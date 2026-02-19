@@ -11,23 +11,7 @@ from app.db_config import get_database_url
 
 logger = logging.getLogger(__name__)
 
-def _get_env_or_secret(key: str, default: str = "") -> str:
-    val = os.getenv(key)
-    if val:
-        return val
-    for d in ["/etc/secrets", "/app/etc/secrets"]:
-        p = os.path.join(d, key)
-        if os.path.isfile(p):
-            try:
-                with open(p) as f:
-                    v = f.read().strip()
-                if v:
-                    return v
-            except Exception:
-                pass
-    return default
-
-JWT_SECRET = _get_env_or_secret("JWT_SECRET", secrets.token_hex(32))
+JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_hex(32))
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 30
@@ -91,7 +75,7 @@ async def init_auth_tables():
     existing_admin = await pool.fetchrow("SELECT id FROM users WHERE email = $1", admin_email)
     if not existing_admin:
         admin_id = secrets.token_hex(12)
-        admin_pw = _get_env_or_secret("ADMIN_DEFAULT_PASSWORD", "AMAIMAadmin2026!")
+        admin_pw = os.getenv("ADMIN_DEFAULT_PASSWORD", "AMAIMAadmin2026!")
         admin_hash = hash_password(admin_pw)
         await pool.execute(
             """INSERT INTO users (id, email, password_hash, display_name, role)

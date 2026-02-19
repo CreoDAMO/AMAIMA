@@ -15,22 +15,6 @@ import logging
 import uuid
 import os
 
-def _get_env_or_secret(key: str, default: str = "") -> str:
-    val = os.getenv(key)
-    if val:
-        return val
-    for d in ["/etc/secrets", "/app/etc/secrets"]:
-        p = os.path.join(d, key)
-        if os.path.isfile(p):
-            try:
-                with open(p) as f:
-                    v = f.read().strip()
-                if v:
-                    return v
-            except Exception:
-                pass
-    return default
-
 from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
 from app.modules.execution_engine import execute_model
@@ -163,10 +147,9 @@ async def startup():
     from app.modules.nvidia_nim_client import is_configured, get_api_key
     nim_key = get_api_key()
     if nim_key:
-        source = "env var" if os.environ.get("NVIDIA_API_KEY") else "secret file"
-        logger.info(f"NVIDIA NIM configured via {source}: key={nim_key[:8]}...{nim_key[-4:]}, length={len(nim_key)}")
+        logger.info(f"NVIDIA NIM configured: key={nim_key[:8]}...{nim_key[-4:]}, length={len(nim_key)}")
     else:
-        logger.warning("NVIDIA NIM NOT configured: no API key found in env vars or /etc/secrets/. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY")
+        logger.warning("NVIDIA NIM NOT configured: no API key found. Checked: NVIDIA_API_KEY, NVIDIA_NIM_API_KEY, NIM_API_KEY, NGC_API_KEY")
     from app.db_config import get_database_url
     db_url = get_database_url()
     logger.info(f"Database configured: {bool(db_url)}")
@@ -778,7 +761,7 @@ async def update_tier_endpoint(request: UpdateTierRequest, api_key_info: dict = 
 
 @app.post("/v1/billing/webhook-tier-update")
 async def webhook_tier_update(request: UpdateTierRequest):
-    webhook_secret = _get_env_or_secret("WEBHOOK_INTERNAL_SECRET", "")
+    webhook_secret = os.getenv("WEBHOOK_INTERNAL_SECRET", "")
     if not webhook_secret:
         raise HTTPException(status_code=403, detail="Webhook not configured")
     from app.billing import update_api_key_tier
@@ -1246,7 +1229,7 @@ async def mau_rate_limit_middleware(request, call_next):
         return await call_next(request)
 
     api_key_header = request.headers.get("X-API-Key")
-    if api_key_header and api_key_header != _get_env_or_secret("API_SECRET_KEY", "default_secret_key_for_development"):
+    if api_key_header and api_key_header != os.getenv("API_SECRET_KEY", "default_secret_key_for_development"):
         try:
             from app.billing import validate_api_key, get_pool, TIER_LIMITS
             key_info = await validate_api_key(api_key_header)
