@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+const API_SECRET_KEY = process.env.API_SECRET_KEY || 'default_secret_key_for_development';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const authHeader = request.headers.get('Authorization') || '';
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const clientApiKey = request.headers.get('x-api-key') || '';
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-API-Key': clientApiKey || API_SECRET_KEY,
+    };
     if (authHeader) headers['Authorization'] = authHeader;
 
     const response = await fetch(`${BACKEND_URL}/v1/query/stream`, {

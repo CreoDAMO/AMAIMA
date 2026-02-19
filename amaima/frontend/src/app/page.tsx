@@ -273,7 +273,9 @@ export default function HomePage() {
       }
       
       if (!res.ok) {
-        throw new Error(`API error: ${res.status}`);
+        const errData = await res.json().catch(() => null);
+        const errMsg = errData?.detail || errData?.error || `API error: ${res.status}`;
+        throw new Error(typeof errMsg === 'string' ? errMsg : JSON.stringify(errMsg));
       }
       
       const data = await res.json();
