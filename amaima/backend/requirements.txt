@@ -16,7 +16,10 @@ redis>=5.0.0
 
 # Authentication
 python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
+
+# SSE Streaming
+sse-starlette>=1.6.0
 
 # System monitoring
 psutil>=5.9.0

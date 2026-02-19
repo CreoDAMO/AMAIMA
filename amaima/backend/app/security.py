@@ -21,7 +21,13 @@ async def get_api_key(api_key: str = Security(api_key_header)):
         return {"id": "admin", "tier": "enterprise", "email": None}
 
     from app.billing import validate_api_key
-    key_info = await validate_api_key(api_key)
+    try:
+        key_info = await validate_api_key(api_key)
+    except RuntimeError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database not available for API key validation. Set DATABASE_URL or use the master API key.",
+        )
     if not key_info:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

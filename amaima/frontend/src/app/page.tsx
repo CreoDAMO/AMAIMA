@@ -207,7 +207,11 @@ export default function HomePage() {
             body: JSON.stringify({ query, operation, preferences: {} }),
           });
 
-          if (!streamRes.ok) throw new Error(`Stream error: ${streamRes.status}`);
+          if (!streamRes.ok) {
+            const errBody = await streamRes.json().catch(() => null);
+            const errMsg = errBody?.detail || errBody?.error || `Stream error: ${streamRes.status}`;
+            throw new Error(typeof errMsg === 'string' ? errMsg : JSON.stringify(errMsg));
+          }
 
           const reader = streamRes.body?.getReader();
           const decoder = new TextDecoder();
