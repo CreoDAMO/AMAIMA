@@ -15,15 +15,6 @@ async def execute_model(decision: Dict[str, Any]) -> Dict[str, Any]:
     query_hash = decision.get("query_hash", "unknown")
     original_query = decision.get("_original_query", "")
 
-    if decision.get("simulated", True):
-        await asyncio.sleep(random.uniform(0.05, 0.15))
-        elapsed = (time.time() - start_time) * 1000
-        return {
-            "output": "Simulation only - no execution.",
-            "actual_latency_ms": int(elapsed),
-            "actual_cost_usd": 0.0,
-        }
-
     if not is_configured():
         await asyncio.sleep(random.uniform(0.05, 0.15))
         elapsed = (time.time() - start_time) * 1000

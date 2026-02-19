@@ -252,9 +252,9 @@ async def stream_query(request: QueryRequest, api_key_info: dict = Depends(get_a
     decision = route_query(request.query, simulate=False)
     model_used = decision.get("model", "unknown")
 
-    if decision.get("simulated", True) or not is_configured():
+    if not is_configured():
         async def sim_gen():
-            tokens = "Streaming is not available in simulation mode. Configure NVIDIA_API_KEY for real-time streaming.".split()
+            tokens = "NVIDIA API key not configured. Set NVIDIA_API_KEY to enable real-time streaming.".split()
             for i, tok in enumerate(tokens):
                 yield {"event": "token", "data": json.dumps({"content": tok + " ", "index": i + 1})}
                 await asyncio.sleep(0.03)

@@ -311,12 +311,30 @@ export default function HomePage() {
           model: domainResponse.model_used,
         });
       } else {
-        setResponse(data);
+        const queryResponse: QueryResponse = {
+          response_id: data.response_id || data.query_hash || 'query-' + Date.now(),
+          response_text: data.response_text || data.output || 'No response',
+          model_used: data.model_used || data.model || 'unknown',
+          routing_decision: data.routing_decision || {
+            execution_mode: data.execution_mode || 'standard',
+            model_size: 'N/A',
+            complexity: data.complexity_level || 'UNKNOWN',
+            security_level: 'standard',
+            confidence: data.confidence?.overall || 0,
+            estimated_latency_ms: data.actual_latency_ms || 0,
+            estimated_cost: data.actual_cost_usd || 0,
+            reasoning: data.reasons || {},
+          },
+          confidence: data.confidence?.overall || data.confidence || 0,
+          latency_ms: data.actual_latency_ms || data.latency_ms || 0,
+          timestamp: data.timestamp || new Date().toISOString(),
+        };
+        setResponse(queryResponse);
         addToHistory({
           query: query.slice(0, 100),
           operation,
-          complexity: data.routing_decision?.complexity || 'UNKNOWN',
-          model: data.model_used || 'unknown',
+          complexity: queryResponse.routing_decision?.complexity || data.complexity_level || 'UNKNOWN',
+          model: queryResponse.model_used,
         });
       }
       
