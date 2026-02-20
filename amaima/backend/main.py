@@ -3,7 +3,7 @@ AMAIMA Production Backend Server
 FastAPI-based REST and WebSocket interface
 """
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, List, Any
@@ -182,6 +182,21 @@ async def health_check():
         components=components,
         timestamp=datetime.now()
     )
+
+
+@app.post("/v1/embeddings")
+async def generate_embeddings_endpoint(
+    texts: list[str] = Body(..., description="List of texts to embed"),
+    model: str = Body(default="nvidia/nv-embedqa-e5-v5", description="Embedding model"),
+    input_type: str = Body(default="query", description="Input type: query or passage"),
+    api_key_info: dict = Depends(get_api_key),
+):
+    from app.modules.nvidia_nim_client import generate_embeddings
+    try:
+        result = await generate_embeddings(texts=texts, model=model, input_type=input_type)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/v1/query", response_model=ExecuteResponse)

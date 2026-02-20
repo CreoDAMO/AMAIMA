@@ -204,15 +204,15 @@ NVIDIA_MODELS = {
         "category": "autonomous-vehicle",
         "description": "Reasoning VLA for autonomous vehicles, path planning, and scene understanding",
     },
-    "nvidia/nemotron-4-340b-instruct": {
-        "name": "Nemotron-4 340B Instruct",
+    "nvidia/llama-3.1-nemotron-ultra-253b-v1": {
+        "name": "Nemotron Ultra 253B",
         "provider": "NVIDIA",
-        "parameters": "340B",
-        "context_window": 4096,
+        "parameters": "253B",
+        "context_window": 131072,
         "cost_per_1k_tokens": 0.0045,
         "domain": "general",
         "category": "expert-reasoning",
-        "description": "Expert-level reasoning and synthetic data generation, highest-capability NVIDIA model for complex analysis",
+        "description": "Most capable NVIDIA reasoning model for expert-level analysis, complex multi-step problem solving, and agentic workflows",
     },
     "meta/llama-3.2-90b-vision-instruct": {
         "name": "Llama 3.2 Vision 90B",
@@ -234,15 +234,15 @@ NVIDIA_MODELS = {
         "category": "molecular-docking",
         "description": "Generative diffusion model for molecular blind docking, protein-ligand binding prediction for drug discovery",
     },
-    "nvidia/isaac-gr00t-2": {
-        "name": "GR00T-2",
+    "nvidia/nemotron-3-nano-30b-a3b": {
+        "name": "Nemotron-3 Nano 30B",
         "provider": "NVIDIA",
-        "parameters": "VLA",
-        "context_window": 8192,
-        "cost_per_1k_tokens": 0.001,
-        "domain": "robotics",
-        "category": "robotics-foundation",
-        "description": "Next-gen humanoid robotics foundation model for manipulation, navigation, and cross-embodiment transfer",
+        "parameters": "30B (MoE)",
+        "context_window": 4096,
+        "cost_per_1k_tokens": 0.0003,
+        "domain": "general",
+        "category": "edge-reasoning",
+        "description": "Hybrid Mamba-Transformer MoE model for efficient edge inference, robotics control, and agentic AI tasks",
     },
     "nvidia/nv-embedqa-e5-v5": {
         "name": "NV-Embed-QA E5 v5",
@@ -262,11 +262,11 @@ COMPLEXITY_TO_MODEL = {
     "MODERATE": "meta/llama-3.1-70b-instruct",
     "ADVANCED": "meta/llama-3.1-70b-instruct",
     "COMPLEX": "mistralai/mixtral-8x7b-instruct-v0.1",
-    "EXPERT": "nvidia/nemotron-4-340b-instruct",
+    "EXPERT": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
     "BORDERLINE_SIMPLE": "meta/llama-3.1-8b-instruct",
     "BORDERLINE_ADVANCED": "meta/llama-3.1-70b-instruct",
-    "BORDERLINE_EXPERT": "nvidia/nemotron-4-340b-instruct",
-    "BORDERLINE_ADVANCED_EXPERT": "nvidia/nemotron-4-340b-instruct",
+    "BORDERLINE_EXPERT": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+    "BORDERLINE_ADVANCED_EXPERT": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
 }
 
 DOMAIN_TO_MODELS = {
@@ -285,12 +285,12 @@ DOMAIN_TO_MODELS = {
     "robotics": {
         "primary": "meta/llama-3.1-70b-instruct",
         "autonomous": "meta/llama-3.1-70b-instruct",
-        "foundation": "nvidia/isaac-gr00t-2",
+        "foundation": "nvidia/nemotron-3-nano-30b-a3b",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "general": {
         "primary": "meta/llama-3.1-70b-instruct",
-        "expert": "nvidia/nemotron-4-340b-instruct",
+        "expert": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
         "embedding": "nvidia/nv-embedqa-e5-v5",
         "edge": "meta/llama-3.1-8b-instruct",
         "fallback": "meta/llama-3.1-8b-instruct",
@@ -502,6 +502,50 @@ def get_cache_stats() -> Dict[str, Any]:
 
 def clear_cache() -> None:
     _prompt_cache.clear()
+
+
+async def generate_embeddings(
+    texts: List[str],
+    model: str = "nvidia/nv-embedqa-e5-v5",
+    input_type: str = "query",
+) -> Dict[str, Any]:
+    api_key = get_api_key()
+    if not api_key:
+        raise ValueError("NVIDIA_API_KEY environment variable is not set")
+
+    start_time = time.time()
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(
+            f"{NVIDIA_NIM_BASE_URL}/embeddings",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "input": texts,
+                "model": model,
+                "input_type": input_type,
+                "encoding_format": "float",
+            },
+        )
+    elapsed_ms = (time.time() - start_time) * 1000
+
+    if response.status_code != 200:
+        logger.error(f"NIM Embedding API error: {response.status_code} - {response.text[:200]}")
+        raise RuntimeError(f"NIM Embedding API returned {response.status_code}: {response.text[:200]}")
+
+    data = response.json()
+    embeddings = [item["embedding"] for item in data.get("data", [])]
+    usage = data.get("usage", {})
+
+    return {
+        "embeddings": embeddings,
+        "model": model,
+        "dimensions": len(embeddings[0]) if embeddings else 0,
+        "count": len(embeddings),
+        "latency_ms": round(elapsed_ms, 2),
+        "usage": usage,
+    }
 
 
 def list_available_models() -> List[Dict[str, Any]]:
