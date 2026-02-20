@@ -444,7 +444,8 @@ Three licensing options:
 2. **Production License** - Source-available for business use ($49/month)
 3. **Enterprise License** - Full unrestricted commercial use ($299/month)
 
-For licensing inquiries: licensing@amaima.ai
+For licensing inquiries: licensing@amaima.live
+Foe Suppor: support@amaima.live
 
 ---
 
