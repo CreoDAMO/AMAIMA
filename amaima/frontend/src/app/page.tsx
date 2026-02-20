@@ -453,6 +453,77 @@ export default function HomePage() {
             </div>
           </div>
 
+          <div className="mb-8">
+            <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+              <button
+                onClick={() => setShowModels(!showModels)}
+                className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Brain className="h-5 w-5 text-cyan-400" />
+                  <h3 className="text-lg font-semibold text-white">Available Models</h3>
+                  <span className="text-sm text-slate-400">({models.length} models)</span>
+                </div>
+                {showModels ? <ChevronUp className="h-5 w-5 text-slate-400" /> : <ChevronDown className="h-5 w-5 text-slate-400" />}
+              </button>
+              
+              {showModels && (
+                <div className="p-4 border-t border-white/10">
+                  {modelsLoading ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="p-3 rounded-lg bg-white/5">
+                          <Skeleton height={20} width={120} baseColor="#1e293b" highlightColor="#334155" />
+                          <Skeleton height={14} count={2} baseColor="#1e293b" highlightColor="#334155" className="mt-2" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {models.map((model) => {
+                        const domainColors: Record<string, string> = {
+                          general: 'bg-blue-500/20 text-blue-300',
+                          vision: 'bg-purple-500/20 text-purple-300',
+                          biology: 'bg-green-500/20 text-green-300',
+                          robotics: 'bg-orange-500/20 text-orange-300',
+                          embedding: 'bg-teal-500/20 text-teal-300',
+                          molecular: 'bg-emerald-500/20 text-emerald-300',
+                        };
+                        const domainColor = domainColors[model.domain || 'general'] || domainColors.general;
+                        return (
+                          <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-semibold text-white text-sm">{model.name}</span>
+                              <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                                {model.status}
+                              </span>
+                            </div>
+                            <div className="flex gap-1.5 mb-2">
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${domainColor}`}>
+                                {model.domain || 'general'}
+                              </span>
+                              {model.category && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-slate-300">
+                                  {model.category}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs text-slate-400 space-y-1">
+                              <p>Parameters: {model.parameters || model.params || 'N/A'}</p>
+                              {model.context_window && <p>Context: {(model.context_window / 1000).toFixed(0)}k tokens</p>}
+                              {model.provider && <p>Provider: {model.provider}</p>}
+                              {model.description && <p className="text-slate-500 mt-1">{model.description}</p>}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="mb-16">
             <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
               <div className="p-6 border-b border-white/10">
@@ -764,72 +835,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <button
-              onClick={() => setShowModels(!showModels)}
-              className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <Brain className="h-5 w-5 text-cyan-400" />
-                <h3 className="text-lg font-semibold text-white">Available Models</h3>
-                <span className="text-sm text-slate-400">({models.length} models)</span>
-              </div>
-              {showModels ? <ChevronUp className="h-5 w-5 text-slate-400" /> : <ChevronDown className="h-5 w-5 text-slate-400" />}
-            </button>
-            
-            {showModels && (
-              <div className="p-4 border-t border-white/10">
-                {modelsLoading ? (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                      <div key={i} className="p-3 rounded-lg bg-white/5">
-                        <Skeleton height={20} width={120} baseColor="#1e293b" highlightColor="#334155" />
-                        <Skeleton height={14} count={2} baseColor="#1e293b" highlightColor="#334155" className="mt-2" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {models.map((model) => {
-                      const domainColors: Record<string, string> = {
-                        general: 'bg-blue-500/20 text-blue-300',
-                        vision: 'bg-purple-500/20 text-purple-300',
-                        biology: 'bg-green-500/20 text-green-300',
-                        robotics: 'bg-orange-500/20 text-orange-300',
-                      };
-                      const domainColor = domainColors[model.domain || 'general'] || domainColors.general;
-                      return (
-                        <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold text-white text-sm">{model.name}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                              {model.status}
-                            </span>
-                          </div>
-                          <div className="flex gap-1.5 mb-2">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${domainColor}`}>
-                              {model.domain || 'general'}
-                            </span>
-                            {model.category && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-slate-300">
-                                {model.category}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-xs text-slate-400 space-y-1">
-                            <p>Parameters: {model.parameters || model.params || 'N/A'}</p>
-                            {model.context_window && <p>Context: {(model.context_window / 1000).toFixed(0)}k tokens</p>}
-                            {model.provider && <p>Provider: {model.provider}</p>}
-                            {model.description && <p className="text-slate-500 mt-1">{model.description}</p>}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         </div>
       </section>
 
