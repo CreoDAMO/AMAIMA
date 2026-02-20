@@ -71,7 +71,7 @@ async def init_auth_tables():
         END $$;
     """)
 
-    admin_email = "admin@amaima.xyz"
+    admin_email = "admin@amaima.live"
     existing_admin = await pool.fetchrow("SELECT id FROM users WHERE email = $1", admin_email)
     if not existing_admin:
         admin_id = secrets.token_hex(12)
