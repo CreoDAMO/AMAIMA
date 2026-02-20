@@ -3,7 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     poweredByHeader: false,
     
-    allowedDevOrigins: ['*.replit.dev', '*.spock.replit.dev', '*.repl.co', '*.kirk.replit.dev'],
+    allowedDevOrigins: ['*.replit.dev', '*.spock.replit.dev', '*.repl.co', '*.kirk.replit.dev', '*.janeway.replit.dev', '127.0.0.1'],
     
     env: {
         NEXT_PUBLIC_APP_NAME: 'AMAIMA',
@@ -21,6 +21,15 @@ const nextConfig = {
         ],
     },
     
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://localhost:8000/:path*',
+            },
+        ];
+    },
+
     async headers() {
         return [
             {

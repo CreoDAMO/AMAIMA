@@ -199,6 +199,31 @@ async def generate_embeddings_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/v1/biology/generate-molecules")
+async def generate_molecules_endpoint(
+    smiles: str = Body(..., description="Input SMILES or SAFE format molecule string"),
+    num_molecules: int = Body(default=5, description="Number of molecules to generate"),
+    temperature: float = Body(default=2.0, description="Sampling temperature"),
+    noise: float = Body(default=1.0, description="Noise level for generation"),
+    step_size: int = Body(default=1, description="Diffusion step size"),
+    scoring: str = Body(default="QED", description="Scoring function: QED or plogP"),
+    api_key_info: dict = Depends(get_api_key),
+):
+    from app.modules.nvidia_nim_client import generate_molecules
+    try:
+        result = await generate_molecules(
+            smiles=smiles,
+            num_molecules=num_molecules,
+            temperature=temperature,
+            noise=noise,
+            step_size=step_size,
+            scoring=scoring,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/v1/query", response_model=ExecuteResponse)
 async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_api_key)):
     try:

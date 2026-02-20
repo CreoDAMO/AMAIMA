@@ -254,6 +254,84 @@ NVIDIA_MODELS = {
         "category": "embedding",
         "description": "Multilingual embedding model optimized for RAG retrieval, agent memory, and question-answer matching across 26 languages",
     },
+    "nvidia/llama-3.2-nemoretriever-1b-vlm-embed-v1": {
+        "name": "NeMo Retriever Multimodal Embed",
+        "provider": "NVIDIA",
+        "parameters": "1.6B",
+        "context_window": 4096,
+        "cost_per_1k_tokens": 0.0001,
+        "domain": "general",
+        "category": "multimodal-embedding",
+        "description": "Multimodal embedding model for text+image RAG, cross-modal retrieval, visual document search, and 2048-dim embeddings",
+        "api_status": "cloud_available",
+    },
+    "nvidia/genmol": {
+        "name": "GenMol",
+        "provider": "NVIDIA",
+        "parameters": "Diffusion",
+        "context_window": 2048,
+        "cost_per_1k_tokens": 0.0008,
+        "domain": "biology",
+        "category": "molecule-generation",
+        "description": "Masked diffusion molecule generation using SAFE format, fragment-based drug design with QED/plogP scoring optimization",
+        "api_status": "cloud_available",
+        "api_base": "https://health.api.nvidia.com/v1/biology/nvidia/genmol",
+    },
+    "deepmind/alphafold2": {
+        "name": "AlphaFold2",
+        "provider": "DeepMind",
+        "parameters": "Structure Prediction",
+        "context_window": 2048,
+        "cost_per_1k_tokens": 0.002,
+        "domain": "biology",
+        "category": "protein-folding",
+        "description": "Protein 3D structure prediction from amino acid sequence, mutation analysis, and structure-based drug design",
+        "api_status": "self_hosted",
+    },
+    "nvidia/vila": {
+        "name": "VILA Vision-Language",
+        "provider": "NVIDIA",
+        "parameters": "VLM",
+        "context_window": 32768,
+        "cost_per_1k_tokens": 0.0006,
+        "domain": "vision",
+        "category": "vision-language",
+        "description": "Fine-grained visual QA, multi-image reasoning, video understanding, robotics perception with 4-bit AWQ edge optimization",
+        "api_status": "self_hosted",
+    },
+    "nvidia/isaac-manipulator": {
+        "name": "Isaac Manipulator",
+        "provider": "NVIDIA",
+        "parameters": "Foundation",
+        "context_window": 8192,
+        "cost_per_1k_tokens": 0.001,
+        "domain": "robotics",
+        "category": "manipulation",
+        "description": "Industrial robotics foundation model for grasping, pick-and-place, tool use, assembly tasks with cuMotion + FoundationPose",
+        "api_status": "self_hosted",
+    },
+    "nvidia/parakeet-ctc-1.1b": {
+        "name": "Riva Parakeet ASR",
+        "provider": "NVIDIA",
+        "parameters": "1.1B",
+        "context_window": 0,
+        "cost_per_1k_tokens": 0.0004,
+        "domain": "speech",
+        "category": "speech-to-text",
+        "description": "Real-time speech recognition with speaker diarization, word boosting, automatic punctuation, and VAD endpointing",
+        "api_status": "self_hosted",
+    },
+    "nvidia/magpie-tts-multilingual": {
+        "name": "Riva Magpie TTS",
+        "provider": "NVIDIA",
+        "parameters": "TTS",
+        "context_window": 0,
+        "cost_per_1k_tokens": 0.0005,
+        "domain": "speech",
+        "category": "text-to-speech",
+        "description": "Multilingual text-to-speech in 7 languages (EN/ES/FR/IT/DE/VI/ZH) with emotion control and zero-shot voice cloning",
+        "api_status": "self_hosted",
+    },
 }
 
 COMPLEXITY_TO_MODEL = {
@@ -274,28 +352,41 @@ DOMAIN_TO_MODELS = {
         "primary": "meta/llama-3.2-90b-vision-instruct",
         "secondary": "meta/llama-3.2-90b-vision-instruct",
         "world_model": "meta/llama-3.2-90b-vision-instruct",
+        "fine_grained": "nvidia/vila",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "biology": {
         "primary": "meta/llama-3.1-70b-instruct",
         "protein": "meta/llama-3.1-70b-instruct",
+        "folding": "deepmind/alphafold2",
         "docking": "mit/diffdock",
+        "generation": "nvidia/genmol",
         "fallback": "meta/llama-3.1-70b-instruct",
     },
     "robotics": {
         "primary": "meta/llama-3.1-70b-instruct",
         "autonomous": "meta/llama-3.1-70b-instruct",
         "foundation": "nvidia/nemotron-3-nano-30b-a3b",
+        "manipulation": "nvidia/isaac-manipulator",
         "fallback": "meta/llama-3.1-70b-instruct",
+    },
+    "speech": {
+        "primary": "nvidia/parakeet-ctc-1.1b",
+        "asr": "nvidia/parakeet-ctc-1.1b",
+        "tts": "nvidia/magpie-tts-multilingual",
+        "fallback": "meta/llama-3.1-8b-instruct",
     },
     "general": {
         "primary": "meta/llama-3.1-70b-instruct",
         "expert": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
         "embedding": "nvidia/nv-embedqa-e5-v5",
+        "multimodal_embedding": "nvidia/llama-3.2-nemoretriever-1b-vlm-embed-v1",
         "edge": "meta/llama-3.1-8b-instruct",
         "fallback": "meta/llama-3.1-8b-instruct",
     },
 }
+
+NVIDIA_HEALTH_API_BASE = "https://health.api.nvidia.com/v1"
 
 
 _NVIDIA_KEY_NAMES = [
@@ -548,10 +639,61 @@ async def generate_embeddings(
     }
 
 
+async def generate_molecules(
+    smiles: str,
+    num_molecules: int = 5,
+    temperature: float = 2.0,
+    noise: float = 1.0,
+    step_size: int = 1,
+    scoring: str = "QED",
+) -> Dict[str, Any]:
+    api_key = get_api_key()
+    if not api_key:
+        raise ValueError("NVIDIA_API_KEY environment variable is not set")
+
+    start_time = time.time()
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        response = await client.post(
+            f"{NVIDIA_HEALTH_API_BASE}/biology/nvidia/genmol/generate",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "smiles": smiles,
+                "num_molecules": str(num_molecules),
+                "temperature": str(temperature),
+                "noise": str(noise),
+                "step_size": str(step_size),
+                "scoring": scoring,
+            },
+        )
+    elapsed_ms = (time.time() - start_time) * 1000
+
+    if response.status_code != 200:
+        logger.error(f"GenMol API error: {response.status_code} - {response.text[:200]}")
+        raise RuntimeError(f"GenMol API returned {response.status_code}: {response.text[:200]}")
+
+    data = response.json()
+    return {
+        "status": data.get("status", "success"),
+        "molecules": data.get("molecules", []),
+        "model": "nvidia/genmol",
+        "input_smiles": smiles,
+        "scoring_function": scoring,
+        "latency_ms": round(elapsed_ms, 2),
+    }
+
+
 def list_available_models() -> List[Dict[str, Any]]:
     configured = is_configured()
     models = []
     for model_id, info in NVIDIA_MODELS.items():
+        api_status = info.get("api_status", "cloud_available")
+        if api_status == "cloud_available":
+            status = "available" if configured else "requires_api_key"
+        else:
+            status = "catalog"
         model_entry = {
             "id": model_id,
             "name": info["name"],
@@ -560,7 +702,8 @@ def list_available_models() -> List[Dict[str, Any]]:
             "context_window": info["context_window"],
             "domain": info.get("domain", "general"),
             "category": info.get("category", "language"),
-            "status": "available" if configured else "requires_api_key",
+            "status": status,
+            "api_status": api_status,
         }
         if "description" in info:
             model_entry["description"] = info["description"]

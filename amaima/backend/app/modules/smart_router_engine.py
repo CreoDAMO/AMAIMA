@@ -15,6 +15,9 @@ BIOLOGY_KEYWORDS = [
     "enzyme", "receptor", "binding", "pharmacophore", "admet",
     "molecular", "compound", "peptide", "genome", "mutation",
     "bionemo", "drug discovery", "lead optimization",
+    "folding", "alphafold", "structure prediction", "amino acid",
+    "genmol", "molecule generation", "fragment", "scaffold",
+    "qed", "docking", "ligand", "diffdock",
 ]
 
 ROBOTICS_KEYWORDS = [
@@ -22,6 +25,8 @@ ROBOTICS_KEYWORDS = [
     "autonomous", "slam", "path planning", "ros", "ros2",
     "actuator", "sensor", "lidar", "swarm", "drone",
     "humanoid", "amr", "isaac", "simulation", "kinematics",
+    "pick and place", "assembly", "grasping", "manipulation",
+    "tool use", "industrial robot", "cumotion", "foundationpose",
 ]
 
 VISION_KEYWORDS = [
@@ -31,6 +36,13 @@ VISION_KEYWORDS = [
     "recognize", "classify image", "analyze video",
 ]
 
+SPEECH_KEYWORDS = [
+    "speech", "voice", "audio", "transcribe", "transcription",
+    "speak", "tts", "text to speech", "speech to text",
+    "asr", "dictation", "microphone", "recording",
+    "pronunciation", "synthesize voice", "riva",
+]
+
 
 def detect_domain(query: str) -> Tuple[str, float]:
     q_lower = query.lower()
@@ -38,11 +50,13 @@ def detect_domain(query: str) -> Tuple[str, float]:
     biology_score = sum(1 for kw in BIOLOGY_KEYWORDS if kw in q_lower)
     robotics_score = sum(1 for kw in ROBOTICS_KEYWORDS if kw in q_lower)
     vision_score = sum(1 for kw in VISION_KEYWORDS if kw in q_lower)
+    speech_score = sum(1 for kw in SPEECH_KEYWORDS if kw in q_lower)
 
     scores = {
         "biology": biology_score,
         "robotics": robotics_score,
         "vision": vision_score,
+        "speech": speech_score,
         "general": 0,
     }
 

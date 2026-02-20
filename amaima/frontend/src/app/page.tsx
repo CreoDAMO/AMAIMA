@@ -55,6 +55,7 @@ interface ModelInfo {
   latency_ms?: number;
   cost_per_1k?: number;
   status: string;
+  api_status?: string;
 }
 
 interface HistoryEntry {
@@ -486,16 +487,22 @@ export default function HomePage() {
                           vision: 'bg-purple-500/20 text-purple-300',
                           biology: 'bg-green-500/20 text-green-300',
                           robotics: 'bg-orange-500/20 text-orange-300',
+                          speech: 'bg-pink-500/20 text-pink-300',
                           embedding: 'bg-teal-500/20 text-teal-300',
                           molecular: 'bg-emerald-500/20 text-emerald-300',
                         };
                         const domainColor = domainColors[model.domain || 'general'] || domainColors.general;
+                        const statusStyle = model.status === 'available' || model.status === 'ready'
+                          ? 'bg-emerald-500/20 text-emerald-300'
+                          : model.status === 'catalog'
+                          ? 'bg-sky-500/20 text-sky-300'
+                          : 'bg-amber-500/20 text-amber-300';
                         return (
                           <div key={model.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-semibold text-white text-sm">{model.name}</span>
-                              <span className={`text-xs px-2 py-0.5 rounded ${model.status === 'available' || model.status === 'ready' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                                {model.status}
+                              <span className={`text-xs px-2 py-0.5 rounded ${statusStyle}`}>
+                                {model.status === 'catalog' ? 'self-hosted' : model.status}
                               </span>
                             </div>
                             <div className="flex gap-1.5 mb-2">

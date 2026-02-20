@@ -16,7 +16,7 @@ Multi-agent orchestration is managed by a Crew Manager using lightweight AgentRo
 UI/UX decisions prioritize a dark theme, query input interfaces with sample queries, real-time API status, routing decision visualization, and performance metrics. Core technical implementations include a unified smart router, an NVIDIA NIM API client, and an execution engine.
 
 **Feature Specifications:**
-- **Smart Router**: Analyzes queries for domain detection (biology, robotics, vision, general), complexity level (TRIVIAL to EXPERT), and selects appropriate NVIDIA NIM models, estimating performance.
+- **Smart Router**: Analyzes queries for domain detection (biology, robotics, vision, speech, general), complexity level (TRIVIAL to EXPERT), and selects appropriate NVIDIA NIM models, estimating performance.
 - **API Endpoints**: Comprehensive set of RESTful APIs for core functionalities, domain-specific operations (biology, robotics, vision), agent execution, and plugin management.
 - **Monetization System**: A three-tier subscription model (Community, Production, Enterprise) with usage tracking, API key management, and Stripe integration.
 - **Advanced Features**: Includes persistent conversation history, file upload capabilities, automated model benchmarking, response caching, webhook notifications, team/organization accounts, custom routing rules, usage export, and A/B testing framework.
@@ -29,6 +29,9 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **SSE Streaming**: Real-time Server-Sent Events streaming via `/v1/query/stream` endpoint using httpx async streaming from NVIDIA NIM, with EventSourceResponse and event types (start, token, finish, done, error). Frontend toggle for streaming mode with live token rendering and cursor animation.
 - **User Authentication**: Full email/password auth system in `app/auth.py` with bcrypt hashing, JWT access tokens (60min, HS256) and refresh tokens (30-day with revocation). Endpoints: `/v1/auth/register`, `/v1/auth/login`, `/v1/auth/refresh`, `/v1/auth/me`, `/v1/auth/api-keys`, `/v1/auth/forgot-password`, `/v1/auth/reset-password`. Users table with roles (user/admin), linked to api_keys via user_id. Default admin account: `admin@amaima.live` (seeded on startup). Password reset via token-based flow (1-hour expiry) with frontend UI at `/login` (Forgot Password tab). Frontend login/register page at `/login`.
 - **Admin Dashboard**: Role-gated admin analytics in `app/admin.py` with aggregated platform metrics (total users, MAU, queries, tokens, revenue estimates, tier distribution, daily usage, model/endpoint breakdowns, top users). System health endpoint with database/cache/NIM status. Frontend admin page at `/admin` with recharts visualizations, KPI cards, and auto-refresh.
+- **GenMol Molecule Generation**: NVIDIA GenMol integration via `health.api.nvidia.com` for fragment-based molecule generation with SAFE format, QED/plogP scoring optimization. Endpoint: `/v1/biology/generate-molecules`. Replaces legacy MolMIM.
+- **Multimodal Embeddings**: NeMo Retriever Multimodal Embedding model (`nvidia/llama-3.2-nemoretriever-1b-vlm-embed-v1`) for 2048-dim text+image embeddings via `/v1/embeddings` endpoint with `input_type` parameter.
+- **Model Registry (26 models)**: Full platform model catalog across 6 domains (general, vision, biology, robotics, speech, embedding). Cloud-available models (20): verified working on NVIDIA NIM cloud API. Self-hosted catalog entries (6): AlphaFold2, VILA, Isaac Manipulator, Riva ASR, Riva TTS, DiffDock — registered for platform awareness with `api_status: self_hosted`.
 
 ## Mobile App (Android)
 - **Location**: `amaima/mobile/`
