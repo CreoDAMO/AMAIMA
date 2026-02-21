@@ -43,6 +43,18 @@ SPEECH_KEYWORDS = [
     "pronunciation", "synthesize voice", "riva",
 ]
 
+FHE_KEYWORDS = [
+    "encrypted", "encrypt", "private", "privacy", "confidential",
+    "homomorphic", "fhe", "secure computation", "zero trust",
+    "classified", "sensitive", "protected", "ciphertext",
+    "lattice", "rlwe", "post-quantum", "quantum resistant",
+]
+
+
+def detect_privacy_intent(query: str) -> bool:
+    q_lower = query.lower()
+    return any(kw in q_lower for kw in FHE_KEYWORDS)
+
 
 def detect_domain(query: str) -> Tuple[str, float]:
     q_lower = query.lower()
@@ -187,8 +199,14 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
     # 2. Detect Domain
     domain, domain_confidence = detect_domain(query)
 
+    # 2b. Detect Privacy/FHE Intent
+    privacy_required = detect_privacy_intent(query)
+
     # 3. Select Model (domain-aware)
     model_fit_score, model, model_reasons = _select_model(complexity_level, domain, domain_confidence)
+
+    if privacy_required:
+        model_reasons.append({"code": "FHE_PRIVACY", "label": "Privacy intent detected - FHE encryption available"})
 
     # 3. Determine Execution Fit
     execution_fit_score, execution_mode, execution_reasons = calculate_execution_fit(
@@ -225,9 +243,11 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
             "model_reason": model_reasons,
             "execution_reason": execution_reasons,
         },
+        "privacy_required": privacy_required,
+        "fhe_available": True,
         "simulated": simulate or not execution_mode_active,
         "execution_mode_active": execution_mode_active,
-        "decision_schema_version": "1.1.0"
+        "decision_schema_version": "1.2.0"
     }
 
     if decision["simulated"]:

@@ -55,6 +55,15 @@ NeMo Retriever Multimodal Embedding model for 2048-dimensional text+image embedd
 ### NIM Prompt Caching
 In-memory LRU cache (500 entries, 10min TTL) with SHA-256 key generation, reducing latency 20-30% on repeated queries.
 
+### Fully Homomorphic Encryption (FHE)
+Privacy-preserving computation using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography:
+- **CKKS Scheme**: Approximate arithmetic on real/complex numbers for encrypted ML inference, secure embeddings, and private scoring
+- **BFV Scheme**: Exact integer arithmetic for secure voting, private counting, and encrypted databases
+- **128-bit post-quantum security**: Based on Ring Learning With Errors (RLWE), resistant to quantum attacks
+- **High-level services**: Encrypted drug scoring, encrypted similarity search, secure aggregation, secure voting, vector arithmetic
+- **Privacy model**: All computations performed on RLWE lattice ciphertexts via homomorphic evaluation; server-side key management for demonstration (production: client-held keys)
+- **Frontend dashboard**: Real-time FHE status, interactive demos, scheme documentation at `/fhe`
+
 ## Tech Stack
 
 ### Backend
@@ -62,6 +71,7 @@ In-memory LRU cache (500 entries, 10min TTL) with SHA-256 key generation, reduci
 - **AI Engine**: NVIDIA NIM API
 - **Database**: PostgreSQL
 - **Auth**: JWT (HS256) with bcrypt
+- **Encryption**: Microsoft SEAL (FHE via TenSEAL)
 - **Payments**: Stripe
 
 ### Frontend
@@ -141,6 +151,21 @@ amaima/
 | `/v1/biology/*` | Various | Protein analysis, drug discovery |
 | `/v1/robotics/*` | Various | Navigation, action planning |
 | `/v1/vision/*` | Various | Scene analysis, image understanding |
+
+### FHE (Fully Homomorphic Encryption)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/v1/fhe/status` | GET | FHE subsystem status and capabilities |
+| `/v1/fhe/keygen` | POST | Generate RLWE key pair (BFV or CKKS) |
+| `/v1/fhe/encrypt` | POST | Encrypt vector into lattice ciphertext |
+| `/v1/fhe/compute` | POST | Homomorphic operations on ciphertexts |
+| `/v1/fhe/decrypt` | POST | Decrypt ciphertext (key holder only) |
+| `/v1/fhe/drug-scoring` | POST | Encrypted drug QED/plogP scoring |
+| `/v1/fhe/similarity-search` | POST | Encrypted embedding similarity search |
+| `/v1/fhe/secure-vote` | POST | Private ballot tallying (BFV) |
+| `/v1/fhe/secure-aggregation` | POST | Multi-party encrypted mean |
+| `/v1/fhe/vector-arithmetic` | POST | Encrypted vector math with verification |
+| `/v1/fhe/demo` | GET | Run all demos with live results |
 
 ### Admin & Billing
 | Endpoint | Method | Description |

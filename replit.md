@@ -32,6 +32,7 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **GenMol Molecule Generation**: NVIDIA GenMol integration via `health.api.nvidia.com` for fragment-based molecule generation with SAFE format, QED/plogP scoring optimization. Endpoint: `/v1/biology/generate-molecules`. Replaces legacy MolMIM.
 - **Multimodal Embeddings**: NeMo Retriever Multimodal Embedding model (`nvidia/llama-3.2-nemoretriever-1b-vlm-embed-v1`) for 2048-dim text+image embeddings via `/v1/embeddings` endpoint with `input_type` parameter.
 - **Model Registry (26 models)**: Full platform model catalog across 6 domains (general, vision, biology, robotics, speech, embedding). Cloud-available models (20): verified working on NVIDIA NIM cloud API. Self-hosted catalog entries (6): AlphaFold2, VILA, Isaac Manipulator, Riva ASR, Riva TTS, DiffDock — registered for platform awareness with `api_status: self_hosted`.
+- **Fully Homomorphic Encryption (FHE)**: Privacy-preserving computation subsystem using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography. Supports CKKS (approximate real arithmetic) and BFV (exact integer arithmetic) schemes. 128-bit post-quantum security. High-level services: encrypted drug scoring, encrypted similarity search, secure aggregation, secure voting, encrypted vector arithmetic. FHE Engine in `app/fhe/engine.py`, FHE Service in `app/fhe/service.py`, API Router in `app/fhe/router.py`. Endpoints: `/v1/fhe/status`, `/v1/fhe/keygen`, `/v1/fhe/encrypt`, `/v1/fhe/compute`, `/v1/fhe/decrypt`, `/v1/fhe/drug-scoring`, `/v1/fhe/similarity-search`, `/v1/fhe/secure-vote`, `/v1/fhe/secure-aggregation`, `/v1/fhe/vector-arithmetic`, `/v1/fhe/demo`. Frontend dashboard at `/fhe`. Smart router detects privacy keywords (encrypted, private, confidential, homomorphic, fhe, zero trust) and flags `privacy_required` in routing decisions. Toggle via `FHE_ENABLED` env var.
 
 ## Mobile App (Android)
 - **Location**: `amaima/mobile/`
@@ -63,3 +64,4 @@ UI/UX decisions prioritize a dark theme, query input interfaces with sample quer
 - **Docker Compose**: For multi-service deployment.
 - **ONNX Runtime**: On-device ML inference for mobile (replaces TensorFlow).
 - **TensorFlow Lite**: Lightweight on-device inference (secondary runtime for mobile).
+- **TenSEAL / Microsoft SEAL**: Fully Homomorphic Encryption library for privacy-preserving computation (CKKS, BFV schemes).

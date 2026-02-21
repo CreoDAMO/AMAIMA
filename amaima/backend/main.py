@@ -124,9 +124,12 @@ app.add_middleware(
 )
 
 
+from app.fhe.router import router as fhe_router
+
 app.include_router(biology_router.router)
 app.include_router(robotics_router.router)
 app.include_router(vision_router.router)
+app.include_router(fhe_router)
 
 
 @app.on_event("startup")

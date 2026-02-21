@@ -451,6 +451,10 @@ export default function HomePage() {
                 <Cpu className="h-4 w-4" />
                 Agent Builder
               </Link>
+              <Link href="/fhe" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-sm transition-all">
+                <Shield className="h-4 w-4" />
+                FHE Encryption
+              </Link>
             </div>
           </div>
 
