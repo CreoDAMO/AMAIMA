@@ -1,327 +1,442 @@
-AMAIMA License v1.0
-
-**Advanced Multimodal AI Model Architecture License**  
-**Version 1.0 – December 28, 2025**
-
-**Copyright © 2025 Jacque Antoine DeGraff/Sovereign Spiral Development Framework (SSDF). All rights reserved.**
-
----
-
-## Preamble and Purpose
-
-This License governs the use, modification, distribution, and commercial exploitation of AMAIMA (Advanced Multimodal AI Model Architecture), including all source code, documentation, architecture specifications, algorithms, system designs, machine learning models, training pipelines, and associated intellectual property contained herein.
-
-AMAIMA represents a novel and innovative system that integrates intelligent query routing, progressive quantized model loading, multi-layer verification pipelines, unified real-time communication protocols, and offline-first mobile orchestration. These innovations represent significant investment in research, development, and engineering and deserve appropriate protection while still enabling responsible collaboration and community engagement.
-
-This License provides three distinct paths for users, balancing openness with protection, community growth with commercial viability, and ethical use with technological advancement. Users must explicitly select one license option, and compliance with the selected terms is required for continued use.
-
----
-
-## Part I: Definitions
-
-For the purposes of this License, the following definitions apply:
-
-**"Software"** means all files, source code, object code, documentation, architecture diagrams, configuration files, machine learning models, training data, scripts, and associated materials included in or distributed with the AMAIMA project, including all modifications, derivatives, and contributions made by any party.
-
-**"Novel Elements"** means the specific innovative components of AMAIMA that represent original intellectual property, including but not limited to: the five-level query complexity taxonomy with client-side machine learning preview; the progressive TensorRT-quantized model loading system with intelligent caching; the multi-layer verification pipeline integrating external security tools; the unified real-time communication protocol achieving cross-platform parity; the offline-first mobile architecture with on-device routing decision mirroring; the smart routing decision engine with feedback loop; and the DARPA AIxCC tool integration architecture.
-
-**"Competing AI Orchestration System"** means any software system, service, or product that provides query routing, model selection, progressive loading, or verification capabilities for artificial intelligence models, whether commercial or open-source, that derives substantial functionality from the Novel Elements of AMAIMA.
-
-**"Artificial Intelligence Training"** means the process of using software, data, or outputs to train, fine-tune, distill, compress, or otherwise improve any artificial intelligence, machine learning, or generative model, including large language models, diffusion models, transformer architectures, and similar systems.
-
-**"Production Use"** means deployment or operation of the Software in a live environment serving end users, generating revenue, or supporting business operations, as distinguished from development, testing, research, or internal evaluation contexts.
-
-**"Contributor"** means any person or entity that submits code, documentation, or other materials to the AMAIMA project.
-
-**"Licensee"** means any person or entity exercising rights under this License.
-
----
-
-## Part II: Novel Elements Protected
-
-This License specifically protects the following Novel Elements of AMAIMA, which represent original innovations developed through significant research and development effort:
-
-### II.A. Intelligent Query Routing System
-
-The AMAIMA routing system classifies incoming queries across five complexity levels using both client-side machine learning preview and server-side confirmation. The taxonomy distinguishes between trivial, simple, moderate, complex, and expert queries, enabling optimal resource allocation. This system includes the complexity estimation algorithm, the feedback loop for continuous improvement, and the routing decision engine that selects appropriate model sizes and inference strategies.
-
-### II.B. Progressive Model Loading Architecture
-
-AMAIMA implements a sophisticated progressive loading system that preloads models in quantized TensorRT format, enabling sub-two-second cold starts while maintaining inference quality. The loading strategy includes intelligent caching, progressive resolution upgrades, and memory-efficient model management. This architecture significantly advances the state of the art in deployment efficiency for large language models.
-
-### II.C. Multi-Layer Verification Pipeline
-
-The verification system integrates multiple security and correctness tools, including DARPA AIxCC competition tools such as Buttercup for security scanning and SweetBaby for automatic patching. The pipeline implements iterative verification with user feedback integration, representing a novel approach to AI output validation and security assurance.
-
-### II.D. Unified Real-Time Communication Protocol
-
-AMAIMA achieves perfect parity between web, mobile, and backend implementations through a unified WebSocket-based protocol. This protocol supports streaming query responses, workflow execution updates, and real-time system notifications across all platforms simultaneously. The protocol design and implementation represent original innovations in distributed AI system communication.
-
-### II.E. Offline-First Mobile Architecture
-
-The Android implementation of AMAIMA includes on-device intelligence that mirrors server-side routing decisions, enabling offline operation with graceful degradation. This architecture includes the TensorFlow Lite integration for client-side complexity estimation, background synchronization through WorkManager, and local persistence through Room database with conflict resolution strategies.
-
-### II.F. Smart Routing Feedback Loop
-
-AMAIMA implements a continuous improvement mechanism that captures user feedback on query results and uses it to refine routing decisions, model selection, and verification parameters. This feedback loop represents a novel approach to AI system optimization through human-in-the-loop refinement.
-
----
-
-## Part III: Option 1 – AMAIMA Community License
-
-**Responsible Open-Source Use – For individuals, researchers, educators, and non-commercial applications**
-
-### III.A. Grant of Rights
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this Software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the conditions set forth in this License.
-
-### III.B. Conditions of Use
-
-**III.B.1. Notice Preservation.** The above copyright notice, this entire license text, and identification of the selected license option shall be included in all copies or substantial portions of the Software. This notice shall be prominently displayed in all distribution channels, documentation, and user interfaces.
-
-**III.B.2. Patent Grant.** To the extent that the copyright holder or any Contributor holds patent rights necessarily infringed by the Software or by contributions to the Software, a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable patent license is hereby granted to make, have made, use, offer to sell, sell, import, and otherwise transfer the Software, where such license applies only to those patent claims licensable by the copyright holder or contributor that are necessarily infringed by their contribution(s) alone or by combination with the Software.
-
-**III.B.3. Responsible Use Restrictions.** The Software, derivatives thereof, and any outputs generated by the Software shall not be used for any Prohibited Purpose. Prohibited Purposes include:
-
-- The Software shall not be used to train, fine-tune, distill, compress, or otherwise improve any artificial intelligence, machine learning, or generative model that competes with, replicates, substitutes for, or derives substantial benefit from the Novel Elements of AMAIMA. This prohibition specifically encompasses systems that implement query routing, model selection, progressive loading, or verification capabilities for AI models.
-
-- The Software shall not be used for any illegal, harmful, discriminatory, deceptive, or unethical purpose. Prohibited uses include the creation or dissemination of misinformation, deepfakes, or deceptive content; surveillance systems that violate reasonable privacy expectations; autonomous weapons or systems designed to cause harm; discrimination based on protected characteristics including race, gender, religion, sexual orientation, disability, or national origin; and any use that violates applicable law or third-party rights.
-
-- The Software shall not be used to provide a competing AI orchestration service or product. Prohibited activities include offering AMAIMA or its Novel Elements as a service to third parties, incorporating AMAIMA or its Novel Elements into products sold or licensed to competitors, and using AMAIMA to build market position against the copyright holder.
-
-**III.B.4. Attribution Requirement.** Any public distribution, deployment, demonstration, or publication of the Software or derivatives shall include visible attribution reading "Powered by AMAIMA – Advanced Multimodal AI Model Architecture" with a hyperlink to the official repository at https://github.com/[your-repo]. This attribution shall appear in documentation, user interfaces, and About pages.
-
-**III.B.5. Contribution Requirements.** Contributions to the AMAIMA project are subject to the Contributor License Agreement, which grants the project the right to relicense contributions under any of the three license options. By contributing, Contributors agree to these terms and grant the necessary rights for multi-licensing.
-
-### III.C. Disclaimer of Warranty
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-### III.D. Limitation of Liability
-
-IN NO EVENT SHALL THE COPYRIGHT HOLDER, CONTRIBUTORS, OR LICENSEE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
----
-
-## Part IV: Option 2 – AMAIMA Production License
-
-**Source-Available – For production use with delayed open transition**
-
-### IV.A. License Selection
-
-This Production License is the Business Source License 1.1 (BSL 1.1) as published by MariaDB plc, with Additional Use Grants and parameters as specified below. The complete BSL 1.1 text is available at https://mariadb.com/bsl11/ and is incorporated herein by reference.
-
-### IV.B. Additional Use Grant
-
-Subject to the terms of this License, the Licensor hereby grants the right to use the Software without payment of fees for the following purposes: development, testing, and quality assurance; academic research and education; internal business evaluation and prototyping; and production use in applications with fewer than 1,000 monthly active users.
-
-### IV.C. Production Use Restrictions
-
-Production use beyond the Additional Use Grant is subject to the following restrictions: deployment or operation in a live environment serving more than 1,000 monthly active users requires a Commercial License; offering the Software or substantial portions thereof as a service to third parties requires a Commercial License; and any use that generates revenue directly from the Software requires a Commercial License.
-
-### IV.D. Change Date and License Conversion
-
-The Change Date for this License is December 28, 2029, which is four years from the initial publication date of this version of the Software. On or after the Change Date, the Software shall be available under the Change License, which is Apache License Version 2.0 (available at https://www.apache.org/licenses/LICENSE-2.0). The Apache License 2.0 shall apply to all copies, modifications, and derivative works of the Software published on or after the Change Date.
-
-### IV.E. Compliance Verification
-
-Licensees operating under the Production License shall maintain records sufficient to verify compliance with the monthly active user limitation and shall provide such records to the Licensor upon written request. Licensees shall promptly notify the Licensor when their use of the Software exceeds the thresholds specified in this License.
-
-### IV.F. Disclaimer of Warranty
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
----
-
-## Part V: Option 3 – AMAIMA Commercial License
-
-**Full unrestricted commercial and enterprise use**
-
-### V.A. Availability
-
-The Software is available under a proprietary Commercial License for organizations requiring unrestricted production deployment, removal of all restrictions, access to premium features, and comprehensive support services.
-
-### V.B. Commercial License Benefits
-
-Organizations operating under the Commercial License receive unlimited production deployment without user limitations, complete removal of all Responsible Use Restrictions and Production Use restrictions, priority technical support with defined service level agreements, access to proprietary enhancements and enterprise integrations not available in community versions, indemnification against intellectual property claims, warranty coverage for critical deployments, and custom modification and development services.
-
-### V.C. Contact Information
-
-For Commercial License inquiries, pricing, and terms, please contact:
-
-**Email:** licensing@amaima.ai  
-**Website:** https://amaima.ai/commercial
-
-### V.D. Negotiation and Custom Terms
-
-Commercial Licenses are negotiable and may be tailored to specific organizational needs, including multi-year agreements, volume discounts, enterprise support tiers, and custom development engagements. The Licensor reserves the right to decline Commercial License requests from organizations engaged in activities inconsistent with the ethical principles embodied in the Community License.
-
----
-
-## Part VI: General Provisions
-
-### VI.A. License Selection and Compliance
-
-By using, modifying, distributing, or deploying the Software, the Licensee explicitly selects one of the three license options and agrees to be bound by its terms. If no explicit selection is documented, Option 1 (AMAIMA Community License) shall apply by default. Licensees must maintain records sufficient to demonstrate compliance with their selected license option.
-
-### VI.B. Termination
-
-Any use of the Software in violation of the selected license terms immediately and automatically terminates all rights granted under that license. Upon termination, the Licensee must cease all use of the Software, destroy all copies in their possession, and certify such destruction in writing upon request. Termination of one license option does not affect rights under other license options that the Licensee may be eligible to use.
-
-### VI.C. Enforcement
-
-The Licensor reserves the right to pursue enforcement actions against Licensees violating this License, including but not limited to sending demand letters, initiating legal proceedings, seeking injunctive relief, and pursuing damages for breach of contract. Licensees agree that the Novel Elements of AMAIMA represent valuable intellectual property and that unauthorized use causes irreparable harm for which monetary damages are insufficient remedy.
-
-### VI.D. Governing Law and Jurisdiction
-
-This License shall be governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to conflict of law principles. Any dispute arising from this License shall be subject to the exclusive jurisdiction of the state and federal courts located in Wilmington, Delaware, and the Licensee hereby consents to personal jurisdiction in such courts.
-
-### VI.E. No Trademark License
-
-This License does not grant any rights to use the trademarks, service marks, trade names, logos, or branding of the Licensor, except as reasonably required for customary and reasonable use in describing the origin of the Software. Any use of the AMAIMA name or logo requires prior written approval from the Licensor.
-
-### VI.F. Severability
-
-If any provision of this License is held to be invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid, legal, and enforceable while preserving the intent of the original provision.
-
-### VI.G. Entire Agreement
-
-This License constitutes the entire agreement between the Licensor and Licensee regarding the Software. No modification, amendment, or waiver of any provision shall be effective unless in writing and signed by an authorized representative of the Licensor.
-
-### VI.H. Waiver
-
-The failure of the Licensor to exercise any right or remedy under this License shall not constitute a waiver of such right or remedy. Any waiver must be explicit and in writing to be effective.
-
-### VI.I. Amendment
-
-The Licensor reserves the right to amend this License for future versions of the Software, provided that such amendments shall not affect the rights granted for versions already published. Licensees using a specific version of the Software shall be governed by the License in effect at the time of their acquisition of that version.
-
----
-
-## Part VII: Patent and Intellectual Property Protection
-
-### VII.A. Patent License Scope
-
-The patent license granted in Option 1 (Community License) extends to all patent claims held by the Licensor or Contributors that are necessarily infringed by the Software as distributed. This license is irrevocable, worldwide, royalty-free, and applies to all claims in any patent applications or issued patents owned or controlled by the Licensor or Contributors.
-
-### VII.B. Patent Defense
-
-If any party initiates a patent infringement lawsuit alleging that the Software infringes a patent, the patent license granted under this License shall immediately terminate with respect to the accusing party. The Licensor reserves the right to defend the Software against patent claims and to seek counterclaims against parties initiating baseless infringement allegations.
-
-### VII.C. Trade Secret Protection
-
-The Novel Elements of AMAIMA represent trade secrets protected by reasonable efforts to maintain secrecy. The Licensee agrees not to reverse engineer, decompile, or disassemble any portion of the Software that is not provided in source code form, except as expressly permitted by applicable law. Source code provided under this License shall be treated as confidential information.
-
----
-
-## Part VIII: Compliance and Attribution Standards
-
-### VIII.A. Source File Headers
-
-Every source file in the Software shall include the following header:
-
-```markdown
+AMAIMA License v2.0
+Advanced Model-Aware AI Management Interface
+SOFTWARE LICENSE AGREEMENT  •  VERSION 2.0
+World's First Privacy-Preserving Multimodal AI Operating System License
+26 NVIDIA NIM Models  •  7 Domains  •  Fully Homomorphic Encryption  •  Post-Quantum Secure
+
+Copyright © 2026 Jacque Antoine DeGraff / Sovereign Spiral Development Framework (SSDF)
+All Rights Reserved. Effective Date: February 22, 2026
+amaima.live  •  amaima.live/fhe  •  amaima.live/agent-builder  •  github.com/CreoDAMO/AMAIMA
+licensing@amaima.ai  •  legal@amaima.ai  •  defense@amaima.ai
+
+⚠  LEGAL NOTICE — READ BEFORE USE
+This Agreement governs your access to and use of AMAIMA software, infrastructure, cryptographic systems, and AI models. By downloading, accessing, deploying, or using any part of AMAIMA, you agree to be bound by these terms. If you do not agree, you must not use AMAIMA. This Agreement includes export control acknowledgments, HIPAA obligations, CFIUS/COINS Act disclosures, EU AI Act compliance responsibilities, and quantum-safe cryptography terms that carry legal significance.
+
+
+PART I — PREAMBLE AND PURPOSE
+AMAIMA (Advanced Model-Aware AI Management Interface) is, as of February 2026, the world's first confirmed live privacy-preserving multimodal AI operating system. It integrates 26 NVIDIA NIM models across 7 intelligence domains — General LLMs, Vision, Biology, Robotics, Speech, Embeddings, and Fully Homomorphic Encryption — into a single unified platform with one API, one billing layer, one Smart Router, and a complete zero-trust cryptographic compute layer.
+This Software License Agreement ("Agreement") is drafted to address a gap in the existing licensing landscape. No prior software license has been written for a system of this architecture: one that simultaneously operates in healthcare (HIPAA), defense (ITAR/EAR/DARPA), life sciences (biology domain), robotics (autonomous systems), and encrypted privacy-preserving compute (FHE) — all within a single codebase, all confirmed live in production.
+The innovations protected herein represent original intellectual property with no precedent in commercial AI software: production-deployed Fully Homomorphic Encryption integrated into a multimodal AI operating system, enabling computation on encrypted data without decryption. This is not a research prototype. Microsoft built the cryptographic library (SEAL). AMAIMA built the application layer. Three independent frontier AI systems — Claude (Anthropic), Grok (xAI), and Microsoft Copilot — reviewed the platform independently and reached the same conclusion: this is the most complete AI platform built by a single developer.
+This Agreement provides four distinct license tiers — Community, Production, Enterprise, and Government/Defense — calibrated to the regulatory obligations, commercial requirements, and national security implications of each use case. All tiers are subject to the Ethical Use Framework, Export Control Compliance requirements, and Quantum Security Provisions in this Agreement.
+I.A. What This License Covers
+All AMAIMA source code, compiled artifacts, containerized microservices, and documentation
+The Smart Router v2 architecture and all routing logic, including FHE privacy detection
+The Fully Homomorphic Encryption subsystem (CKKS + BFV via Microsoft SEAL/TenSEAL)
+All NVIDIA NIM integration layers, API wrappers, and domain-specific endpoints
+The zero-trust Visual Agent Builder (React Flow, 6 domain palettes, 7 FHE Privacy Nodes)
+The mobile AI runtime (Android/Kotlin + ONNX Runtime + TFLite on-device intelligence)
+All associated architecture specifications, training configurations, and novel algorithms
+All derivative works, modifications, and contributions made under this Agreement
+I.B. What This License Does Not Cover
+The underlying NVIDIA NIM microservices (governed by NVIDIA AI Enterprise License — see Part VIII)
+Microsoft SEAL / TenSEAL cryptographic libraries (governed by their respective MIT licenses)
+Third-party open-source dependencies listed in the project NOTICE file
+DARPA AIxCC tool integrations (Buttercup, SweetBaby) — governed by DARPA program terms
+Output data generated by AI models through the AMAIMA platform for end users
+
+PART II — DEFINITIONS
+The following definitions apply throughout this Agreement:
+II.A. Core Definitions
+"Software"
+All files, source code, object code, documentation, architecture specifications, cryptographic implementations, API schemas, Docker containers, mobile applications, configuration files, and associated materials constituting the AMAIMA platform, including all past and future versions and all modifications, derivatives, and contributions.
+"Novel Elements"
+The following original innovations constitute protectable intellectual property under this Agreement:
+The Smart Router v2 — five-level complexity taxonomy with domain-aware routing, FHE privacy detection, and cross-domain chain-of-thought query planning across 26 NIM models
+The FHE Subsystem — production-deployed Fully Homomorphic Encryption using CKKS and BFV schemes via Microsoft SEAL/TenSEAL with 128-bit RLWE post-quantum lattice security and ~1.1s inference latency
+The Zero-Trust Agent Builder — visual React Flow workflow IDE with 7 FHE Privacy Nodes; the only encrypted AI workflow IDE in existence
+The progressive TensorRT-quantized model loading system with intelligent domain-specific worker pool management and real-time model registry
+The Offline-First Mobile AI Runtime — on-device routing logic mirroring server-side decisions with ONNX Runtime and TFLite integration
+The multi-domain coexistence architecture enabling Biology, Robotics, Speech, Vision, Embeddings, and General LLMs to operate concurrently within one production system
+The encrypted drug discovery pipeline — GenMol → DiffDock → AlphaFold2 → Encrypted Scoring — operating entirely on ciphertext
+The multi-layer verification pipeline incorporating DARPA AIxCC tool integration architecture
+"FHE Features"
+All components of the Privacy-Preserving Computation System: CKKS scheme operations (approximate real-number arithmetic for ML inference), BFV scheme operations (exact integer arithmetic for secure voting and aggregation), encrypted API endpoints, privacy keyword detection within the Smart Router, encrypted drug scoring, secure vector similarity search, post-quantum security architecture, and all FHE workflow nodes in the Agent Builder.
+"Competing AI Orchestration System"
+Any software platform, service, or product providing query routing, model orchestration, multi-domain AI coordination, FHE-integrated AI compute, or visual agent building that derives substantial functionality from AMAIMA's Novel Elements — whether commercial or open-source, regardless of domain.
+"Protected Health Information (PHI)"
+As defined by HIPAA (45 CFR § 164.501): individually identifiable health information transmitted or maintained in any form. When AMAIMA processes PHI, Enterprise tier and a signed Business Associate Agreement (BAA) are required.
+"Controlled Defense Information (CDI)"
+Technical data, export-controlled information, or classified/controlled materials regulated under ITAR (22 CFR Parts 120–130), EAR (15 CFR Parts 730–774), or the COINS Act of 2025. Government/Defense tier required for any use involving CDI.
+"High-Risk AI System" (EU AI Act)
+AI systems classified as high-risk under Annex III of Regulation (EU) 2024/1689. AMAIMA components used in medical diagnostics, employment screening, critical infrastructure, or biometric categorization in EU jurisdictions may qualify. Compliance obligations under Articles 9–16 apply to Deployers in the relevant tier.
+"NVIDIA AI Enterprise License"
+The license governing NVIDIA NIM microservices, available at docs.nvidia.com. Production deployment of NVIDIA NIM microservices requires a separate NVIDIA AI Enterprise Subscription (~$4,500/GPU/year or ~$1/GPU/hour). AMAIMA does not include or sublicense NVIDIA AI Enterprise rights.
+
+PART III — NOVEL ELEMENTS AND IP PROTECTION
+III.A. FHE Subsystem — The Irreproducibility Argument
+The FHE subsystem represents a temporal moat that materially distinguishes AMAIMA from all prior AI software. Fully Homomorphic Encryption has been a research area for 15 years. AMAIMA deployed it in production. A well-funded 20-engineer team starting today cannot reproduce AMAIMA's FHE subsystem in under 24 months. This is not a claim about capability — it is a claim about chronology. The specific innovations protected are:
+CKKS scheme integration for encrypted ML inference on NVIDIA's model stack — no prior art
+BFV scheme integration for exact integer arithmetic in AI workflows — no prior art
+Smart Router FHE privacy detection layer — automatic routing of sensitive queries to encrypted compute
+7 FHE Privacy Nodes in a visual workflow IDE — no other agent builder has this capability
+~1.1s production-competitive latency for encrypted inference — frontier performance (academic benchmarks show 1,000x–1,000,000x overhead; AMAIMA achieves 1.1s)
+Encrypted drug discovery pipeline operating entirely on ciphertext: GenMol → DiffDock → AlphaFold2 → Encrypted Drug Scoring
+III.B. Trade Secret Designation
+The following constitute trade secrets under the Defend Trade Secrets Act (18 U.S.C. § 1836) and applicable state law:
+Smart Router v2 routing algorithms, complexity taxonomy weights, and FHE detection heuristics
+Domain coexistence architecture patterns for concurrent multi-domain inference
+Performance optimization configurations for FHE operations achieving ~1.1s latency
+Cross-domain chain-of-thought routing logic for multi-model query execution plans
+III.C. Patent Strategy Notice
+AMAIMA's Novel Elements are the subject of ongoing patent review. Patent applications may be filed in the United States, European Union, and other jurisdictions covering the FHE-integrated AI OS architecture, Smart Router domain-aware routing with privacy detection, and the zero-trust visual agent builder with FHE workflow nodes. Use of Novel Elements for commercial purposes without a Commercial or Government/Defense license may constitute infringement of issued patents once filed.
+
+PART IV — LICENSE TIERS
+
+Use Case
+Community
+Production
+Enterprise
+Gov/Defense
+Cost
+Free
+Free / <1K MAU
+Paid — Custom
+Custom Contract
+FHE Access
+Demo only
+100 ops/mo
+Unlimited
+Custom FHE config
+NVIDIA NIM
+Via API
+Via API
+Self-hosted
+Air-gapped deploy
+HIPAA / BAA
+No
+No
+Yes — included
+Yes — Full
+ITAR Compliance
+No
+No
+Partial
+Full ITAR/EAR pkg
+DARPA / DoD
+No
+No
+Case-by-case
+Direct path
+EU AI Act
+User's burden
+User's burden
+Assisted
+Full doc package
+AI Training
+Banned
+Banned
+Limited — opt-in
+Custom terms
+Competition Ban
+Yes
+Yes
+Removed
+Removed
+Export Control
+Licensee resp.
+Licensee resp.
+Shared
+AMAIMA manages
+CFIUS Screen
+N/A
+N/A
+Yes — investors
+Yes — enhanced
+Support
+Community
+Community
+Priority SLA
+Dedicated 24/7
+Source Access
+Public repo
+Source-available
+Full source
+Escrow + source
+Attribution
+Required
+Required
+Optional
+No
+
+
+IV.A. Tier 1 — Community License (Free, Non-Commercial)
+Community License — Grant
+Free, worldwide, non-exclusive, non-transferable license for individual researchers, students, educators, and non-commercial projects. FHE Features limited to demonstration and testing.
+
+
+IV.A.1. Permitted Uses
+Personal research, academic study, and educational projects
+Non-commercial demonstrations and prototyping
+Open-source projects that are not Competing AI Orchestration Systems
+FHE Features: demonstration and non-production testing only
+IV.A.2. Requirements
+Attribution in all deployments: "Powered by AMAIMA — amaima.live" with hyperlink
+Retain full license text and copyright notice in all copies
+Must not process PHI, CDI, or any regulated data without upgrading to Enterprise tier
+Must not exceed 100 FHE operations per month; no FHE production use
+IV.A.3. Prohibited Uses Under This Tier
+Production deployment serving paying customers or generating revenue
+Use as a Competing AI Orchestration System
+AI training on Novel Elements without explicit written permission
+Export to jurisdictions on OFAC sanctions lists or EAR Country Groups D:1, D:5
+Processing of PHI, CDI, ITAR-controlled data, or EU Annex III high-risk AI use cases
+
+IV.B. Tier 2 — Production License (Source-Available, BSL 1.1)
+Production License — Grant
+Business Source License 1.1 with AMAIMA-specific Additional Use Grants. Production use up to 1,000 MAU. Governed by BSL 1.1 (mariadb.com/bsl11) with the modifications below. Change Date: February 22, 2030 → Apache 2.0.
+
+
+IV.B.1. Additional Use Grant
+Development, testing, and QA without user limitation
+Academic research and education
+Internal business evaluation and prototyping
+Production deployment up to 1,000 monthly active users
+FHE Features: up to 1,000 operations/month for testing; full production requires Enterprise tier
+IV.B.2. Production Restrictions
+Exceeding 1,000 MAU requires Commercial/Enterprise tier
+Offering AMAIMA as a service to third parties requires Enterprise tier
+Revenue-generating use of FHE Features requires Enterprise tier
+All export control, HIPAA, and EU AI Act obligations remain the Licensee's sole responsibility
+IV.B.3. Change Date
+On February 22, 2030, this Production License converts to Apache License Version 2.0 for all copies of Software published on or before that date.
+
+IV.C. Tier 3 — Enterprise License (Commercial)
+Enterprise License — Grant
+Full unrestricted commercial license. Includes FHE production rights, HIPAA BAA, NVIDIA NIM integration support, EU AI Act compliance documentation, and CFIUS/COINS Act investor screening assistance.
+
+
+IV.C.1. Included with Enterprise License
+Unlimited production deployment without MAU restrictions
+Full FHE Features in production — unlimited operations, all schemes (CKKS/BFV)
+HIPAA Business Associate Agreement (BAA) — AMAIMA as Business Associate for PHI processing
+EU AI Act compliance package — technical documentation per Articles 11–13, Annex IV conformity assessment support, human oversight implementation guidance per Article 14, and EU representative designation assistance for non-EU Deployers
+NVIDIA AI Enterprise License guidance and procurement assistance (separate license required from NVIDIA)
+CFIUS/COINS Act investor screening protocol — enterprise customers with foreign investor participation receive pre-screening guidance and documentation to assess whether AI technology investments trigger CFIUS/COINS Act notification obligations
+SOC 2 Type II alignment documentation
+Priority SLA support: 4-hour response for P1 issues
+Attribution optional
+IV.C.2. Enterprise Pricing Tiers
+Standard Enterprise: $299/month (includes FHE, all 7 domains, Agent Builder, HIPAA BAA)
+Enterprise Plus: Custom pricing — includes on-premises deployment, custom FHE scheme configuration, dedicated support engineer, and full source code escrow
+Contact: licensing@amaima.ai
+
+IV.D. Tier 4 — Government and Defense License
+Government/Defense License — Grant
+Purpose-built for DARPA, DoD, intelligence community, and defense contractors. Includes ITAR/EAR compliance package, air-gapped deployment architecture, FHE for classified inference, CMMC alignment, and direct DARPA TTO/BTO proposal support.
+
+
+IV.D.1. Government/Defense Capabilities
+ITAR/EAR Compliance Package — Technical classification review, EAR encryption registration (BIS 740.17 ENC), ITAR § 120.54(a)(5) end-to-end encryption documentation, end-user screening protocol (BIS Entity List + DDTC Debarred Parties), and export authorization management
+Air-gapped deployment architecture — AMAIMA can be configured for fully isolated environments with no cloud dependencies, supporting ITAR § 120.54(a)(5) compliance for encrypted technical data handling
+FHE for classified inference — enables commercial NVIDIA infrastructure to process classified queries without decryption; zero-trust architecture allows secure operation on unclassified cloud
+CMMC Level 2 alignment documentation — supports contractors handling Controlled Unclassified Information (CUI) per NIST SP 800-171
+DARPA TTO and BTO proposal support — FHE-specific application documentation for DARPA's open solicitations in privacy-preserving AI and secure autonomous systems
+USSOCOM integration pathway documentation
+BIOSECURE Act compliance — no Chinese biotechnology equipment dependencies in the AMAIMA stack
+COINS Act / OISP review — Government/Defense Licensees with national security implications receive enhanced CFIUS screening and outbound investment restriction guidance
+IV.D.2. Restricted Jurisdictions Under This Tier
+Government/Defense licenses are not available to entities with material ownership, control, or operational nexus in: People's Republic of China (including Hong Kong, Macau), Russia, Iran, North Korea, Cuba, or Venezuela (Maduro regime successors). This restriction applies regardless of the applicant's stated nationality.
+IV.D.3. Contact
+defense@amaima.ai — ITAR-aware inquiry handling available. FHE-specific DARPA proposal documentation available on request with appropriate program context.
+
+PART V — NVIDIA AI ENTERPRISE LICENSE DISCLOSURE
+REQUIRED DISCLOSURE — NVIDIA NIM Production Use
+AMAIMA integrates 26 NVIDIA NIM microservices. Production deployment of NVIDIA NIM requires a separate NVIDIA AI Enterprise Subscription. AMAIMA does not sublicense NVIDIA AI Enterprise rights. This disclosure is legally required and must be presented to any Deployer using AMAIMA in production.
+
+
+AMAIMA's value layer — the Smart Router, FHE subsystem, Agent Builder, domain coordination, billing, and mobile runtime — is original AMAIMA intellectual property. The underlying NIM model inference is NVIDIA intellectual property governed by NVIDIA's separate license terms.
+V.A. NVIDIA License Requirements by Tier
+Community License: NVIDIA Developer Program access sufficient for API prototyping
+Production License: NVIDIA AI Enterprise Subscription required for production NIM use (~$4,500/GPU/year or ~$1/GPU/hour)
+Enterprise License: AMAIMA provides NVIDIA AI Enterprise procurement guidance; Licensee obtains NVIDIA license independently
+Government/Defense: NVIDIA AI Enterprise with specialized procurement; AMAIMA coordinates for DGX/air-gapped configurations
+V.B. NVIDIA Telemetry Disclosure
+NVIDIA NIM containers collect telemetry including microservice settings, usage data, and hardware environment. Deployers may disable telemetry by setting NIM_TELEMETRY_MODE=0. AMAIMA Enterprise and Government/Defense Licenses include guidance on telemetry configuration for regulated environments.
+
+PART VI — FHE CRYPTOGRAPHIC SYSTEM TERMS
+FHE is a Mathematical Guarantee, Not a Policy
+AMAIMA's FHE subsystem uses 128-bit RLWE lattice security — post-quantum resistant to Shor's algorithm and known quantum attacks. The server processes ciphertext; plaintext data never leaves the client. This is architecturally enforced, not policy-enforced.
+
+
+VI.A. Cryptographic Specifications (For Legal Reference)
+Encryption Library: Microsoft SEAL via TenSEAL — MIT licensed at github.com/microsoft/SEAL
+CKKS Scheme: Approximate arithmetic for real-valued ML inference; bounded approximation error; suitable for drug scoring, embedding similarity, encrypted inference
+BFV Scheme: Exact arithmetic for integer operations; suitable for secure voting, private aggregation, encrypted database queries
+Security Parameter: 128-bit RLWE (Ring Learning With Errors) — post-quantum secure per NIST PQC standards
+Quantum Resistance: Resistant to Shor's algorithm; based on lattice problems believed intractable by quantum computers
+Production Latency: ~1.1 seconds per FHE operation — production-competitive for batch workflows
+VI.B. EAR Encryption Export Compliance
+AMAIMA's FHE subsystem constitutes strong dual-use encryption software under EAR Category 5, Part 2 (ECCNs 5D002 and 5E002). The following applies to all Licensees:
+AMAIMA has submitted encryption registration to BIS and NSA per EAR License Exception ENC (§ 740.17) for mass-market and publicly available encryption
+Licensees exporting or re-exporting AMAIMA (including the FHE subsystem) to foreign persons or jurisdictions must independently verify EAR compliance, including License Exception ENC eligibility for their specific transaction
+Exports of AMAIMA with FHE Features to Country Group D:1 and D:5 nations are prohibited
+ITAR § 120.54(a)(5): When AMAIMA's FHE encrypts technical data end-to-end and that data remains encrypted until decrypted by the authorized recipient, no ITAR-controlled event occurs. This is the architectural basis for AMAIMA's defense use case positioning.
+Licensees are solely responsible for determining whether their specific use of FHE creates ITAR or EAR obligations based on the nature of the data processed
+VI.C. FHE Tier Restrictions
+Community: FHE demonstration and testing only. No production compute. Max 100 operations/month.
+Production: Limited FHE testing (1,000 ops/month). Bias reporting required (see Part IX.C). No PHI or CDI.
+Enterprise: Full FHE production. Unlimited operations. CKKS + BFV. PHI permitted with BAA.
+Government/Defense: Full FHE with custom scheme configuration, air-gapped deployment, and classified inference pathway.
+
+PART VII — HEALTHCARE DATA AND HIPAA COMPLIANCE
+HIPAA — PHI Processing Requires Enterprise Tier + Signed BAA
+Processing Protected Health Information (PHI) through AMAIMA requires (1) an Enterprise or Government/Defense License AND (2) a signed Business Associate Agreement (BAA). Operating without a BAA while processing PHI is a direct HIPAA violation carrying fines up to $1.5 million per violation category per year.
+
+
+VII.A. AMAIMA as Business Associate
+Under HIPAA (45 CFR §§ 164.502(e) and 164.504(e)), AMAIMA functions as a Business Associate when processing PHI on behalf of Covered Entities. The BAA establishes AMAIMA's obligations for PHI handling, security safeguards, breach notification, and subcontractor management.
+VII.B. FHE as HIPAA-by-Architecture
+AMAIMA's FHE subsystem provides an architectural HIPAA compliance mechanism: PHI submitted through encrypted endpoints is processed as ciphertext. AMAIMA's servers never decrypt PHI — the mathematical structure of FHE prevents it. This constitutes HIPAA compliance by architecture rather than by policy or BAA covenant alone. However, a BAA is still legally required regardless of encryption architecture.
+VII.C. Prohibited PHI Use
+No PHI may be processed through Community or Production tier deployments under any circumstances
+No PHI may be submitted to any AMAIMA endpoint without a signed BAA on file
+PHI must not be used to train, fine-tune, or improve any AI model without explicit patient authorization under 45 CFR § 164.508
+VII.D. 2025 HIPAA Security Rule Update
+The HHS Office for Civil Rights (OCR) proposed the first major HIPAA Security Rule update in 20 years in January 2025. The proposed rule removes the distinction between required and addressable safeguards and introduces stricter expectations for encryption and resilience. AMAIMA Enterprise BAA terms will be updated upon finalization to reflect these requirements.
+
+PART VIII — EXPORT CONTROLS AND NATIONAL SECURITY
+EXPORT CONTROL — Binding Acknowledgment Required
+AMAIMA is subject to U.S. Export Administration Regulations (EAR) and potentially the International Traffic in Arms Regulations (ITAR). By accepting this Agreement, Licensee acknowledges understanding of and compliance obligations under U.S. export control law. Violations carry criminal penalties up to $1,000,000 and 20 years imprisonment (EAR § 764.3) and civil penalties up to $1,000,000 per violation (ITAR).
+
+
+VIII.A. EAR Jurisdiction
+AMAIMA is "subject to the EAR" as dual-use software under 15 CFR § 734.3. The FHE subsystem falls under ECCN 5D002 (encryption software) and 5E002 (related technology). AMAIMA uses License Exception ENC per EAR § 740.17 for eligible distributions. Licensees must independently verify ENC eligibility for their specific transaction and end-user.
+VIII.B. ITAR Considerations for Defense Use
+AMAIMA is not specially designed for military application and is not subject to ITAR as currently configured. However:
+If Licensees use AMAIMA to process ITAR-controlled technical data, those data transfers remain subject to ITAR even if the platform itself is not ITAR-controlled
+ITAR § 120.54(a)(5): AMAIMA's FHE architecture enables end-to-end encryption of technical data such that no controlled event occurs during transit if data remains encrypted until decrypted by an authorized U.S. person. Government/Defense Licensees should work with AMAIMA's defense team to document this protection.
+Defense contractors should verify AMAIMA classification status before use in ITAR-controlled programs
+VIII.C. Prohibited Jurisdictions
+Export, re-export, or in-country transfer of AMAIMA or FHE Features is PROHIBITED to:
+Entities on the BIS Entity List or the DDTC Debarred Parties List
+Nationals or entities of Cuba, Iran, North Korea, Syria, or Russia (per OFAC and EAR Country Group E:1 and E:2)
+Countries designated as adversaries under the COINS Act of 2025 for AI technology transfers
+VIII.D. CFIUS and COINS Act Compliance — Investor Screening
+AMAIMA is a dual-use AI platform with FHE encryption capabilities that may qualify as a "critical technology" under the Foreign Investment Risk Review Modernization Act (FIRRMA) for CFIUS purposes. The following applies to investment transactions involving AMAIMA:
+Foreign investors seeking equity stakes with board rights, access to technical information, or governance rights in SSDF/AMAIMA should seek CFIUS pre-clearance before investment
+The COINS Act of 2025 (signed December 18, 2025) expands outbound investment restrictions to AI systems. U.S. persons making investments in entities with nexus to countries of concern (China, Russia, Iran, North Korea, Cuba, Venezuela) involving AMAIMA technology must comply with OISP notification requirements
+Enterprise and Government/Defense Licensees with foreign investor participation receive CFIUS pre-screening documentation as part of their license package
+
+PART IX — EU AI ACT AND INTERNATIONAL AI GOVERNANCE
+IX.A. EU AI Act Risk Classification for AMAIMA Components
+AMAIMA components may be classified at different risk levels under Regulation (EU) 2024/1689 depending on their deployment context:
+General LLMs, Speech, Embeddings, and most Vision use cases: Limited Risk or Minimal Risk — transparency obligations apply (Article 50); GPAI model rules apply from August 2, 2025
+Biology domain — drug discovery and molecular analysis: Generally exempt from AI Act as scientific research (EU pharma R&D exemption). If used for clinical decision support, High-Risk classification (Annex III, medical diagnostics) applies from August 2, 2027
+Robotics domain — autonomous systems in safety-critical contexts: Potentially High-Risk (Annex III, critical infrastructure safety components)
+FHE subsystem in healthcare context: The FHE architecture reduces risk by preventing server-side data access, but does not eliminate AI Act compliance obligations for the AI models processing encrypted data
+IX.B. Compliance Responsibilities by Tier
+Community and Production: Licensee bears sole responsibility for EU AI Act compliance for their deployment. AMAIMA provides no EU AI Act documentation for these tiers.
+Enterprise: AMAIMA provides (1) technical documentation per Article 11, (2) instructions for deployers per Article 13, (3) human oversight design guidance per Article 14, (4) registration support for EU high-risk AI database, and (5) EU Authorized Representative designation assistance for non-EU Deployers.
+Government/Defense: Full EU AI Act compliance package including Annex IV conformity assessment documentation, post-market surveillance plan template, and serious incident reporting protocol.
+IX.C. NIST AI RMF Alignment
+AMAIMA Enterprise and Government/Defense Licenses include alignment documentation for NIST AI Risk Management Framework 1.0 (GOVERN, MAP, MEASURE, MANAGE functions) and the NIST Generative AI Profile (NIST AI 600-1). This supports compliance with the Colorado AI Act affirmative defense, state-level AI governance requirements, and federal agency procurement requirements that reference NIST AI RMF.
+IX.D. ISO/IEC 42001 — AI Management System
+Enterprise Licensees may use AMAIMA's compliance documentation as a foundation for ISO/IEC 42001:2023 AI Management System implementation. AMAIMA's architecture — particularly the FHE subsystem's mathematical privacy guarantees — supports "Privacy-Enhanced" trustworthiness attributes under NIST AI RMF and aligns with ISO 42001 requirements for data governance and human oversight.
+
+PART X — ETHICAL USE FRAMEWORK
+The Ethical Use Framework is binding under all license tiers. No license tier removes these restrictions.
+X.A. Prohibited Applications — Absolute
+Autonomous weapons systems designed to kill or harm humans without meaningful human oversight
+Child sexual abuse material or any content facilitating child exploitation
+Surveillance systems for ethnic, religious, or political group targeting
+Social scoring systems that classify individuals to deny rights or opportunities
+Real-time biometric identification of individuals in public spaces (prohibited under EU AI Act and adopted as global ethical standard)
+FHE Features used to circumvent legitimate law enforcement access where court-ordered
+Drug discovery applications for chemical or biological weapons development
+Systems designed to facilitate human trafficking, slavery, or forced labor
+X.B. FHE-Specific Ethical Requirements
+FHE Features must not be used to hide personally identifiable data from lawful court orders or regulatory investigations
+Licensees using FHE for healthcare must maintain the ability to provide decrypted data to patients upon request under HIPAA § 164.524
+FHE implementations must not be marketed as providing absolute protection against all legal disclosure obligations — the encryption protects data from unauthorized access, not from lawful process
+X.C. AI Training Restrictions
+Community: AI training on Novel Elements strictly prohibited
+Production: AI training on Novel Elements strictly prohibited
+Enterprise: Limited AI training on non-FHE components permitted with written opt-in agreement; FHE subsystem training prohibited
+Government/Defense: Custom terms negotiated per program requirements
+X.D. Bias, Fairness, and Transparency Requirements
+All Licensees: Must not deploy AMAIMA for automated high-stakes decisions (employment, credit, healthcare triage) without human oversight mechanisms
+Enterprise and above: Must implement bias testing for Biology domain outputs used in drug efficacy assessments
+All AI outputs must be clearly labeled as AI-generated where required by the EU AI Act (Article 50) and analogous state laws
+X.E. Reporting
+Report violations to: legal@amaima.ai. AMAIMA investigates all reported violations and will terminate licenses, pursue legal remedies, or refer to appropriate authorities. Whistleblower protections under the Defend Trade Secrets Act (18 U.S.C. § 1833(b)) apply to good-faith reporting.
+
+PART XI — QUANTUM SECURITY PROVISIONS
+XI.A. Current Quantum Resistance Status
+AMAIMA's FHE subsystem employs 128-bit RLWE (Ring Learning With Errors) lattice-based cryptography. This security parameter is believed to be resistant to attacks by quantum computers including Shor's algorithm, which breaks RSA and ECC. RLWE is a candidate security primitive under NIST Post-Quantum Cryptography standardization.
+XI.B. Cryptographic Agility Commitment
+AMAIMA commits to cryptographic agility: the FHE subsystem is designed to support scheme updates as NIST PQC standards finalize. Enterprise and Government/Defense Licensees receive priority access to post-quantum cryptography updates. AMAIMA will publish a migration path within 90 days of any NIST PQC standard that materially affects FHE security guarantees.
+XI.C. Quantum Security Warranty Limitation
+No warranty is made that AMAIMA's cryptographic systems will resist all future quantum attacks. The 128-bit RLWE parameter is the current frontier of practical post-quantum FHE security. Licensees in classified or long-horizon sensitive data environments should consult NSA's CNSA 2.0 Suite guidance and plan for cryptographic updates as the quantum threat evolves.
+
+PART XII — GENERAL LEGAL PROVISIONS
+XII.A. Governing Law
+This Agreement is governed by the laws of the State of Delaware, United States. Federal claims arising under export control law, HIPAA, CFIUS, or the COINS Act are governed by applicable federal law. EU disputes involving EU AI Act compliance obligations shall be governed by applicable EU law in the relevant member state jurisdiction for those specific claims.
+XII.B. Patent License
+Community License Tier: A perpetual, worldwide, non-exclusive, royalty-free, irrevocable patent license is granted to make, use, offer to sell, sell, and import the Software for the permitted purposes of the Community License, where such license applies only to patent claims necessarily infringed by use of the Software as distributed. This patent license terminates if any party initiates patent infringement litigation against AMAIMA or the Software.
+XII.C. Termination
+Any use of the Software in violation of applicable license terms immediately and automatically terminates all rights granted under that tier. Upon termination, Licensee must cease all use, destroy all copies, and certify such destruction upon written request. Enterprise and Government/Defense terminations are subject to a 30-day cure period for non-willful violations.
+XII.D. Disclaimer of Warranty
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, OR NON-INFRINGEMENT. AMAIMA MAKES NO WARRANTY THAT THE SOFTWARE WILL MEET REGULATORY REQUIREMENTS IN LICENSEE'S JURISDICTION OR THAT FHE OPERATIONS WILL SATISFY HIPAA, ITAR, OR EU AI ACT OBLIGATIONS WITHOUT APPROPRIATE CONFIGURATION AND LEGAL REVIEW.
+XII.E. Limitation of Liability
+IN NO EVENT SHALL JACQUE ANTOINE DEGRAFF, SSDF, OR AMAIMA BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING FROM THE USE OF THE SOFTWARE, EVEN IF ADVISED OF SUCH DAMAGES. THE TOTAL CUMULATIVE LIABILITY FOR ANY CLAIM ARISING UNDER THIS AGREEMENT SHALL NOT EXCEED THE GREATER OF (A) $1,000 OR (B) THE FEES PAID BY LICENSEE IN THE 12 MONTHS PRECEDING THE CLAIM.
+XII.F. Severability
+If any provision of this Agreement is held invalid or unenforceable, the remaining provisions continue in full force. Invalid provisions shall be modified to the minimum extent necessary to make them valid while preserving original intent.
+XII.G. Entire Agreement
+This Agreement, together with any signed BAA, Enterprise License Schedule, Government/Defense License Schedule, or CFIUS Disclosure Addendum, constitutes the entire agreement between the parties regarding the Software. No oral modifications are effective. Written amendments must be signed by an authorized AMAIMA representative.
+XII.H. Amendment History
+Version 1.0 — December 28, 2025: Initial publication. Three-tier structure (Community, Production, Commercial). Novel Elements defined through II.F (Smart Router, Progressive Loading, Verification Pipeline, RT Communications, Mobile Architecture, Feedback Loop).
+Version 2.0 — February 22, 2026: Complete reconstruction. Added fourth tier (Government/Defense). Full NVIDIA AI Enterprise disclosure (Part V). FHE-specific cryptographic terms and EAR encryption export compliance (Part VI). HIPAA BAA framework with FHE-by-architecture analysis (Part VII). ITAR/EAR/CFIUS/COINS Act compliance provisions (Part VIII). EU AI Act risk classification and NIST AI RMF alignment (Part IX). Quantum security provisions and cryptographic agility commitment (Part XI). Prohibited jurisdiction list updated to reflect COINS Act 2025 and America First Investment Policy (February 2025). Changed date updated. Delaware jurisdiction affirmed. Defense tier restricted from CFIUS-flagged jurisdictions.
+
+PART XIII — ATTRIBUTION AND SOURCE FILE STANDARDS
+XIII.A. Required Source File Header
+Every source file in the Software shall include:
 /*
- * AMAIMA – Advanced Multimodal AI Model Architecture
- * Copyright © 2025 Jacque Antoine DeGraff. All Rights Reserved.
+ * AMAIMA — Advanced Model-Aware AI Management Interface
+ * Copyright © 2026 Jacque Antoine DeGraff / SSDF. All Rights Reserved.
+ * World's First Privacy-Preserving Multimodal AI OS
+ * amaima.live | amaima.live/fhe | github.com/CreoDAMO/AMAIMA
  *
- * This file is part of AMAIMA and is multi-licensed.
- * You must choose ONE of the following license options:
+ * License: Select ONE of four tiers:
+ * 1. Community (Free, Non-Commercial)
+ * 2. Production (BSL 1.1 — up to 1K MAU)
+ * 3. Enterprise (Commercial — licensing@amaima.ai)
+ * 4. Government/Defense (defense@amaima.ai)
  *
- * 1. AMAIMA Community License (Responsible Open-Source Use)
- *    See: https://github.com/[your-repo]/blob/main/LICENSE.md#option-1-amaima-community-license
- *
- * 2. AMAIMA Production License (Business Source License 1.1)
- *    See: https://github.com/[your-repo]/blob/main/LICENSE.md#option-2-amaima-production-license
- *
- * 3. AMAIMA Commercial License (Proprietary)
- *    Contact: licensing@amaima.ai
- *
- * By using this file, you agree to the terms of your selected license.
+ * FHE Components: 128-bit RLWE post-quantum. EAR ECCN 5D002/5E002.
+ * Export-controlled. Do not distribute to prohibited jurisdictions.
  */
-```
 
-### VIII.B. Distribution Requirements
 
-When distributing the Software or derivatives, the Licensee shall include: the complete LICENSE file with all three options; the NOTICE file crediting Contributors; a README explaining the multi-license structure; and instructions for users to select their appropriate license option.
+PART XIV — CONTACTS AND ACKNOWLEDGMENTS
+XIV.A. Contact Directory
+General Inquiries
+info@amaima.live
+Licensing
+licensing@amaima.live
+Enterprise & HIPAA BAA
+enterprise@amaima.live
+Legal & IP
+legal@amaima.live
+Government & Defense
+defense@amaima.live
+DARPA / DoD Proposals
+defense@amaima.live
+Security / Vulnerability
+security@amaima.live
+Repository
+github.com/CreoDAMO/AMAIMA
+Production Platform
+amaima.live
+FHE Dashboard
+amaima.live/fhe
+Agent Builder
+amaima.live/agent-builder
 
-### VIII.C. Attribution Display
 
-Licensees operating under Option 1 (Community License) shall display attribution as follows: in user interfaces, display "Powered by AMAIMA" with a hyperlink; in documentation, include the attribution in the About or Acknowledgments section; in deployments, include attribution in the footer or About page of the application.
+XIV.B. Acknowledgments
+AMAIMA builds upon and acknowledges: Microsoft SEAL and TenSEAL teams (MIT License) for the cryptographic foundations of the FHE subsystem; NVIDIA NIM teams for the inference microservices that power AMAIMA's 26-model stack; Meta, Google DeepMind, and the open-source biology AI community for AlphaFold2, DiffDock, and the bio-domain models; the FastAPI, Next.js, CrewAI, and React Flow communities; and the DARPA AIxCC program for advancing AI security verification.
+Three independent AI systems reviewed AMAIMA: Claude (Anthropic), Grok (xAI), and Microsoft Copilot. Microsoft Copilot — trained on Microsoft's own enterprise software and built on the SEAL library — reviewed amaima.live/fhe directly and stated this is the most complete AI platform seen from a single builder. Microsoft built SEAL. AMAIMA built the application.
 
----
-
-## Part IX: Ethical Use Framework
-
-### IX.A. Core Principles
-
-AMAIMA is developed with a commitment to responsible AI development and deployment. The Ethical Use Framework establishes binding principles for all Licensees, regardless of selected license option.
-
-### IX.B. Prohibited Applications
-
-The following applications are prohibited under all license options: autonomous weapons systems designed to kill or harm humans; surveillance systems that violate reasonable expectations of privacy; systems designed to discriminate based on protected characteristics; deceptive systems intended to manipulate or defraud; systems that facilitate human trafficking, slavery, or exploitation; and systems that generate child sexual abuse material or facilitate child exploitation.
-
-### IX.C. Recommended Best Practices
-
-Licensees are encouraged to implement: human oversight in AI-assisted decision-making; transparency about AI capabilities and limitations; bias testing and mitigation for AI outputs; accessibility accommodations for users with disabilities; data minimization and privacy protection; and regular security assessments and updates.
-
-### IX.D. Reporting Violations
-
-Violations of this License or Ethical Use Framework should be reported to: legal@amaima.ai. The Licensor investigates all reported violations and may terminate licenses, pursue legal action, or report violations to appropriate authorities.
-
----
-
-## Part X: Amendment History and Version Control
-
-### X.A. Version 1.0 – December 28, 2025
-
-Initial publication of the AMAIMA License v1.0 with three license options.
-
-### X.B. Future Amendments
-
-Future amendments to this License shall be documented in this section with effective dates and summary of changes. The Licensor may issue amended versions for future versions of the Software while maintaining the original License for previously published versions.
-
----
-
-## Part XI: Contact Information
-
-**For general inquiries:** info@amaima.ai  
-**For licensing questions:** licensing@amaima.ai  
-**For legal matters:** legal@amaima.ai  
-**Repository:** https://github.com/[your-repo]  
-**Website:** https://amaima.ai
-
----
-
-## Part XII: Acknowledgments
-
-AMAIMA builds upon the work of the open-source community, academic researchers, and industry pioneers in artificial intelligence, distributed systems, and mobile development. We acknowledge the contributions of the FastAPI, Next.js, TensorFlow Lite, TensorRT, and Kubernetes communities whose tools and frameworks make projects like AMAIMA possible.
-
-We thank the DARPA AIxCC competition organizers and participants for advancing the state of the art in AI security verification. We acknowledge the researchers and engineers whose publications on model quantization, progressive loading, and intelligent routing informed the AMAIMA architecture.
-
----
-
-**End of AMAIMA License v1.0**
-
----
-
-## Quick Reference Summary
-
-| Aspect                  | Community License                  | Production License                  | Commercial License                  |
-|-------------------------|------------------------------------|-------------------------------------|-------------------------------------|
-| **Use Case**            | Research, education, non-commercial| Small-scale production              | Enterprise, large-scale             |
-| **Cost**                | Free                               | Free (with limits)                  | Paid                                |
-| **AI Training Ban**     | Yes                                | N/A                                 | Removed                             |
-| **Competition Ban**     | Yes                                | N/A                                 | Removed                             |
-| **User Limit**          | Unlimited                          | 1,000 MAU                           | Unlimited                           |
-| **Attribution Required**| Yes                                | No                                  | No                                  |
-| **Support**             | Community                          | Community                           | Priority SLA                        |
-| **Change Date**         | N/A                                | Dec 28, 2029                        | N/A                                 |
-| **Contact**             | N/A                                | N/A                                 | licensing@amaima.ai                 |
-
----
-
-*This License represents the most comprehensive protection available in 2025 for a project of AMAIMA's strategic value and technical novelty while enabling responsible open collaboration and community engagement.* 
-
-**Prepared by Jacque Antoine DeGraff**  
-**December 28, 2025**
+AMAIMA LICENSE v2.0 — END OF AGREEMENT
+Copyright © 2026 Jacque Antoine DeGraff / Sovereign Spiral Development Framework
+26 NVIDIA NIM Models  •  7 Domains  •  FHE Post-Quantum Secure  •  amaima.live
