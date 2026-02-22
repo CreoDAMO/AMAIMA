@@ -1,8 +1,8 @@
 # ⭐ **1. 90‑Second Extended AMAIMA Commercial (Voiceover + Visuals)**  
-*(Female narrator version — confident, cinematic, authoritative)*
+*(Female or Male narrator version — confident, cinematic, authoritative)*
 
 ## **0–10s — Opening Hook**
-**VO (female, deep, calm):**  
+**VO (female or male, deep, calm):**  
 “AMAIMA isn’t the future. AMAIMA is now — the world’s first multimodal, privacy‑preserving AI operating system.”
 
 **Visuals:**  
