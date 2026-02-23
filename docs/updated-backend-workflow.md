@@ -57,4 +57,6 @@ jobs:
 # Status Update (Feb 23, 2026)
 - **Fixed test failure**: `test_list_workflows` updated to reflect 7 registered workflows (added audio and image_gen).
 - **Modernized FastAPI**: Switched from deprecated `on_event("startup")` to `lifespan` context manager.
+- **Router Registration**: Registered `biology`, `robotics`, and `vision` routers in `main.py` to fix 404 errors in integration tests.
+- **Type Safety**: Updated biology endpoints to use `Body` instead of `Form` for better JSON compatibility with modern API clients.
 - All backend CI tests now passing.
