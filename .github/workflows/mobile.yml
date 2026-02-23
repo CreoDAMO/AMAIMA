@@ -1,0 +1,86 @@
+name: Mobile CI/CD
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'mobile/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'mobile/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      # 1️⃣ Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Java
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # 3️⃣ Cache Gradle
+      - name: Cache Gradle files
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # 4️⃣ Ensure Gradle executable
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      # 5️⃣ Decode Keystore (only on main branch)
+      - name: Decode Keystore
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > amaima-release.keystore
+
+      # 6️⃣ Build Release (main branch only)
+      - name: Build Signed Release APK
+        if: github.ref == 'refs/heads/main'
+        run: ./gradlew assembleRelease --no-daemon
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      # 7️⃣ Build Debug (for PR validation)
+      - name: Build Debug APK
+        if: github.event_name == 'pull_request'
+        run: ./gradlew assembleDebug --no-daemon
+
+      # 8️⃣ Verify APK exists
+      - name: Verify APK output
+        run: |
+          APK_COUNT=$(find . -type f -name "*.apk" | wc -l)
+          if [ "$APK_COUNT" -eq 0 ]; then
+            echo "APK not generated"
+            exit 1
+          fi
+          echo "APK(s) generated: $APK_COUNT"
+
+      # 9️⃣ Upload artifact
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amaima-apk
+          path: mobile/**/build/outputs/**/*.apk
