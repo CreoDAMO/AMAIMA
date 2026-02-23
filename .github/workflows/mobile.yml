@@ -12,7 +12,7 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'mobile/**'
+      - 'amaima/mobile/**'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: mobile
+        working-directory: amaima/mobile/**
 
     steps:
       - name: Checkout repository
