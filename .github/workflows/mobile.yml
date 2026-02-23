@@ -2,12 +2,17 @@ name: Mobile CI/CD
 
 permissions:
   contents: read
+  actions: read
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'mobile/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'mobile/**'
   workflow_dispatch:
 
 jobs:
@@ -16,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: amaima/mobile
+        working-directory: mobile
 
     steps:
       - name: Checkout repository
@@ -34,27 +39,27 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/**/*.gradle*', 'amaima/mobile/**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x gradlew
 
-      - name: Decode Keystore
-        if: github.ref == 'refs/heads/main'
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > amaima-release.keystore
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon
 
-      - name: Build Signed Release APK
-        if: github.ref == 'refs/heads/main'
-        run: ./gradlew assembleRelease --no-daemon
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Verify APK output
+        run: |
+          APK_COUNT=$(find . -type f -name "*.apk" | wc -l)
+          if [ "$APK_COUNT" -eq 0 ]; then
+            echo "APK not generated"
+            exit 1
+          fi
+          echo "APK(s) generated: $APK_COUNT"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: amaima-release-apk
-          path: "**/build/outputs/**/*.apk"
+          name: amaima-debug-apk
+          path: mobile/**/build/outputs/**/*.apk
