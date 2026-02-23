@@ -111,31 +111,11 @@ class AppState:
 
 app_state = AppState()
 
-app = FastAPI(
-    title="AMAIMA API",
-    description="Advanced Multimodal AI Model Architecture - Production API",
-    version="5.0.0"
-)
+from contextlib import asynccontextmanager
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-from app.fhe.router import router as fhe_router
-
-app.include_router(biology_router.router)
-app.include_router(robotics_router.router)
-app.include_router(vision_router.router)
-app.include_router(fhe_router)
-
-
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
     from app.database import init_db
     from app.modules.observability_framework import get_metrics
     from app.modules.plugin_manager import initialize_builtin_plugins
@@ -159,6 +139,16 @@ async def startup():
     db_url = get_database_url()
     logger.info(f"Database configured: {bool(db_url)}")
     logger.info("AMAIMA API server started")
+    yield
+    # Shutdown logic (if any)
+    logger.info("AMAIMA API server shutting down")
+
+app = FastAPI(
+    title="AMAIMA API",
+    description="Advanced Multimodal AI Model Architecture - Production API",
+    version="5.0.0",
+    lifespan=lifespan
+)
 
 
 @app.get("/health", response_model=HealthResponse)

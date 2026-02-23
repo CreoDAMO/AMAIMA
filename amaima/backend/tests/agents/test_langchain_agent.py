@@ -233,14 +233,20 @@ class TestRunLangchainAgent:
         assert "biology" in WORKFLOW_REGISTRY
         assert "robotics" in WORKFLOW_REGISTRY
         assert "vision" in WORKFLOW_REGISTRY
+        assert "audio" in WORKFLOW_REGISTRY
+        assert "image_gen" in WORKFLOW_REGISTRY
 
 
 class TestListWorkflows:
     @pytest.mark.asyncio
     async def test_list_workflows(self):
         workflows = await list_workflows()
-        assert len(workflows) == 5
+        assert len(workflows) == 7
         ids = [w["id"] for w in workflows]
         assert "research" in ids
         assert "complex_reasoning" in ids
         assert "biology" in ids
+        assert "robotics" in ids
+        assert "vision" in ids
+        assert "audio" in ids
+        assert "image_gen" in ids
