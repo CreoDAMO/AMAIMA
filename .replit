@@ -5,7 +5,7 @@ integrations = ["stripe:2.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["jdk17_headless", "libiconv", "libxcrypt", "libyaml", "postgresql"]
+packages = ["cargo", "jdk17_headless", "libiconv", "libxcrypt", "libyaml", "postgresql", "rustc"]
 
 [workflows]
 runButton = "Project"
