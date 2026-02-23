@@ -1,4 +1,4 @@
-modules = ["python-3.11", "nodejs-20", "java-graalvm22.3"]
+modules = ["python-3.11", "nodejs-20"]
 [agent]
 expertMode = true
 integrations = ["stripe:2.0.0"]
