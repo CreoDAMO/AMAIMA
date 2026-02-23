@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp, Microscope, Bot, Eye, Users, LogIn, Settings } from 'lucide-react';
+import { Brain, Zap, Shield, Globe, Sparkles, Send, Loader2, Activity, Cpu, Server, History, Trash2, ChevronDown, ChevronUp, Microscope, Bot, Eye, Users, LogIn, Settings, Mic, ImagePlus, Volume2 } from 'lucide-react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -288,10 +288,10 @@ export default function HomePage() {
       
       const data = await res.json();
 
-      if (['biology', 'robotics', 'vision', 'agents'].includes(operation)) {
+      if (['biology', 'robotics', 'vision', 'agents', 'audio', 'image_gen'].includes(operation)) {
         const domainResponse: QueryResponse = {
-          response_id: data.crew || data.service || 'domain-' + Date.now(),
-          response_text: data.response || data.final_output || data.plan || data.predicted_outcome || (typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data)),
+          response_id: data.response_id || data.crew || data.service || 'domain-' + Date.now(),
+          response_text: data.response || data.final_output || data.plan || data.predicted_outcome || data.transcript || data.audio_url || data.image_url || (typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data)),
           model_used: data.model || data.agents_used?.join(', ') || operation,
           routing_decision: {
             execution_mode: data.execution_mode || data.process || 'domain_specific',
@@ -377,6 +377,8 @@ export default function HomePage() {
     { value: 'biology', label: 'Biology', icon: Microscope },
     { value: 'robotics', label: 'Robotics', icon: Bot },
     { value: 'vision', label: 'Vision', icon: Eye },
+    { value: 'audio', label: 'Audio', icon: Mic },
+    { value: 'image_gen', label: 'Image Gen', icon: ImagePlus },
     { value: 'agents', label: 'Agents', icon: Users },
   ];
 
@@ -683,10 +685,18 @@ export default function HomePage() {
 
                 {response && !isSubmitting && !isStreaming && (
                   <div className="space-y-4 mt-6">
-                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-lg font-semibold text-white">Response</h3>
+                    <div className="p-4 rounded-xl bg-white/5 border border-white/10 shadow-2xl relative group">
+                      <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-cyan-400" />
+                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                            AMAIMA Intelligence Output
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                            {response.model_used}
+                          </span>
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(response.response_text).then(() => {
@@ -694,14 +704,39 @@ export default function HomePage() {
                                 setTimeout(() => setCopied(false), 2000);
                               }).catch(() => {});
                             }}
-                            className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20 text-slate-300 border border-white/10 transition-colors"
+                            className="p-1 rounded hover:bg-white/10 text-slate-400 transition-colors"
+                            title="Copy response"
                           >
-                            {copied ? 'Copied!' : 'Copy'}
+                            {copied ? <span className="text-[10px] text-emerald-400 font-bold">COPIED</span> : <History className="h-3.5 w-3.5" />}
                           </button>
-                          <span className="text-xs text-slate-400">ID: {response.response_id.slice(0, 8)}...</span>
                         </div>
                       </div>
-                      <p className="text-slate-300 whitespace-pre-wrap select-text">{response.response_text}</p>
+
+                      <div className="prose prose-invert max-w-none">
+                        <div className="text-slate-200 leading-relaxed whitespace-pre-wrap font-sans text-lg">
+                          {response.response_text.startsWith('http') && (response.response_text.endsWith('.png') || response.response_text.includes('placeholder')) ? (
+                            <div className="mt-4">
+                              <img src={response.response_text} alt="Generated Visual" className="rounded-lg shadow-lg border border-white/10 max-w-full h-auto mx-auto" />
+                              <p className="mt-3 text-center text-sm text-slate-400 italic">Advanced Visual Generation Engine</p>
+                            </div>
+                          ) : response.response_text.includes('.wav') || response.response_text.includes('.mp3') || response.response_text.includes('/api/v1/audio') ? (
+                            <div className="mt-4 p-6 rounded-xl bg-slate-800/50 border border-white/5 flex items-center gap-6 shadow-inner">
+                              <div className="p-4 rounded-full bg-pink-500/20 animate-pulse">
+                                <Volume2 className="h-8 w-8 text-pink-400" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold text-white mb-3">Neural Audio Synthesis (Enterprise Grade)</p>
+                                <audio controls className="w-full h-10 accent-pink-500">
+                                  <source src={response.response_text} type="audio/wav" />
+                                  Your browser does not support the audio element.
+                                </audio>
+                              </div>
+                            </div>
+                          ) : (
+                            response.response_text
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">

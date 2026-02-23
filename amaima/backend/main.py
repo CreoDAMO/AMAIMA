@@ -14,6 +14,7 @@ import json
 import logging
 import uuid
 import os
+import hashlib
 
 from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
@@ -236,6 +237,10 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
         start_time_ms = datetime.now()
         
         # Route the query using the smart router
+        if not app_state.smart_router:
+             from app.core.unified_smart_router import SmartRouter
+             app_state.smart_router = SmartRouter(darpa_enabled=False)
+             
         routing_decision = app_state.smart_router.route(request.query, operation=request.operation)
         detected_domain = routing_decision.reasoning.get("detected_domain", "general")
         
