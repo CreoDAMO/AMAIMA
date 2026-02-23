@@ -1,37 +1,16 @@
-# Fixed Mobile CI/CD Workflow
+# Mobile CI/CD Workflow
 
-The original `.github/workflows/mobile.yml` fails at the "Cache Gradle files" step with:
-
-```
-Error: Key Validation Error: gradle-$( {{ runner.os }}- ){{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }} cannot contain commas.
-```
-
-**Root Cause:** The `key` field in the cache step has malformed template expressions — `\(` and `\)` instead of proper `${{ }}` syntax. This causes the `hashFiles()` call (which contains a comma-separated argument list) to not be evaluated as an expression, leaving literal commas in the cache key string.
-
-**Fix:** Replace the broken `key` line with proper GitHub Actions expression syntax.
-
----
-
-## Fixed `mobile.yml`
-
-Copy the content below and replace your `.github/workflows/mobile.yml` file:
-
-```yaml
+```yml
 name: Mobile CI/CD
 
 permissions:
   contents: read
-  actions: read
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'mobile/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'mobile/**'
   workflow_dispatch:
 
 jobs:
@@ -40,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: mobile
+        working-directory: amaima/mobile
 
     steps:
       - name: Checkout repository
@@ -58,38 +37,61 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/**/*.gradle*', 'amaima/mobile/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon
+      - name: Decode Keystore
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > amaima-release.keystore
 
-      - name: Verify APK output
-        run: |
-          APK_COUNT=$(find . -type f -name "*.apk" | wc -l)
-          if [ "$APK_COUNT" -eq 0 ]; then
-            echo "APK not generated"
-            exit 1
-          fi
-          echo "APK(s) generated: $APK_COUNT"
+      - name: Build Signed Release APK
+        if: github.ref == 'refs/heads/main'
+        run: ./gradlew assembleRelease --no-daemon
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: amaima-debug-apk
-          path: mobile/**/build/outputs/**/*.apk
+          name: amaima-release-apk
+          path: "**/build/outputs/**/*.apk"
 ```
 
-## What Changed
+# Add files via upload #25
 
-**Line 36 (the `key` field):**
+## Error:
+```txt
+Run ./gradlew assembleRelease --no-daemon
+  ./gradlew assembleRelease --no-daemon
+  shell: /usr/bin/bash -e {0}
+  env:
+    JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    KEYSTORE_PASSWORD: ***
+    KEY_ALIAS: ***
+    KEY_PASSWORD: ***
+Error: Invalid or corrupt jarfile /home/runner/work/AMAIMA/AMAIMA/amaima/mobile/gradle/wrapper/gradle-wrapper.jar
+Error: Process completed with exit code 1.
+```
 
-| Before (broken) | After (fixed) |
-|---|---|
-| `key: gradle-\( {{ runner.os }}- \){{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}` | `key: gradle-${{ runner.os }}-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties') }}` |
+# Delete amaima/mobile/gradle/wrapper/gradle-wrapper.jar #26
 
-The fix uses proper `${{ }}` expression syntax so that `hashFiles()` is correctly evaluated as a GitHub Actions expression instead of being treated as a literal string containing commas.
+## Error:
+```txt
+Run ./gradlew assembleRelease --no-daemon
+  ./gradlew assembleRelease --no-daemon
+  shell: /usr/bin/bash -e {0}
+  env:
+    JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    KEYSTORE_PASSWORD: ***
+    KEY_ALIAS: ***
+    KEY_PASSWORD: ***
+Error: Unable to access jarfile /home/runner/work/AMAIMA/AMAIMA/amaima/mobile/gradle/wrapper/gradle-wrapper.jar
+Error: Process completed with exit code 1.
