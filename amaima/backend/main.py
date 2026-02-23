@@ -22,6 +22,7 @@ from app.security import get_api_key, enforce_tier_limit, get_current_user, requ
 from app.routers import biology as biology_router
 from app.routers import robotics as robotics_router
 from app.routers import vision as vision_router
+from app.services import audio_service, image_service
 from fastapi import Depends
 
 logging.basicConfig(level=logging.INFO)
@@ -233,57 +234,54 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
         await enforce_tier_limit(api_key_info)
 
         start_time_ms = datetime.now()
-        decision = route_query(request.query, simulate=False)
-        model_used = decision.get("model", "unknown")
+        
+        # Route the query using the smart router
+        routing_decision = app_state.smart_router.route(request.query, operation=request.operation)
+        detected_domain = routing_decision.reasoning.get("detected_domain", "general")
+        
+        # Handle specialized domains
+        if detected_domain == "audio":
+            if "transcript" in request.query.lower() or "speech to text" in request.query.lower():
+                execution_result = await audio_service.speech_to_text("dummy_path")
+            else:
+                execution_result = await audio_service.text_to_speech(request.query)
+            output = execution_result.get("transcript") or execution_result.get("audio_url")
+        elif detected_domain == "image_gen":
+            execution_result = await image_service.generate_image(request.query)
+            output = execution_result.get("image_url")
+        else:
+            decision = route_query(request.query, simulate=False)
+            model_used = decision.get("model", "unknown")
 
-        try:
-            from app.benchmarks import get_cached_response, set_cached_response
-            cached = await get_cached_response(request.query, model_used)
-            if cached:
-                cached["cache_hit"] = True
-                app_state.query_count += 1
-                return cached
-        except Exception as cache_err:
-            logger.debug(f"Cache lookup skipped: {cache_err}")
+            try:
+                from app.benchmarks import get_cached_response, set_cached_response
+                cached = await get_cached_response(request.query, model_used)
+                if cached:
+                    cached["cache_hit"] = True
+                    app_state.query_count += 1
+                    return cached
+            except Exception as cache_err:
+                logger.debug(f"Cache lookup skipped: {cache_err}")
 
-        decision["_original_query"] = request.query
-        execution_result = await execute_model(decision)
-        decision.pop("_original_query", None)
-        response = {**decision, **execution_result}
+            decision["_original_query"] = request.query
+            execution_result = await execute_model(decision)
+            decision.pop("_original_query", None)
+            output = execution_result.get("output", "")
+
+        response = {
+            "query_hash": hashlib.md5(request.query.encode()).hexdigest(),
+            "complexity_level": routing_decision.complexity.name,
+            "model": routing_decision.model_size.name,
+            "execution_mode": routing_decision.execution_mode.value,
+            "confidence": {"overall": routing_decision.confidence},
+            "reasons": {"routing": [str(routing_decision.reasoning)]},
+            "simulated": False,
+            "output": output,
+            "actual_latency_ms": int((datetime.now() - start_time_ms).total_seconds() * 1000),
+            "actual_cost_usd": routing_decision.estimated_cost
+        }
         
         app_state.query_count += 1
-
-        latency = int((datetime.now() - start_time_ms).total_seconds() * 1000)
-        tokens_est = len(response.get("output", "")) // 4
-
-        try:
-            from app.billing import record_usage
-            await record_usage(
-                api_key_id=api_key_info.get("id", "admin"),
-                endpoint="/v1/query",
-                model_used=response.get("model", ""),
-                tokens_estimated=tokens_est,
-                latency_ms=latency,
-            )
-        except Exception as usage_err:
-            logger.warning(f"Usage tracking failed: {usage_err}")
-
-        try:
-            from app.benchmarks import set_cached_response, record_benchmark
-            await set_cached_response(request.query, model_used, response)
-            await record_benchmark(
-                model=model_used,
-                query_complexity=decision.get("complexity_level", "SIMPLE"),
-                domain=decision.get("domain", "general"),
-                latency_ms=latency,
-                tokens_input=len(request.query) // 4,
-                tokens_output=tokens_est,
-                cost_usd=response.get("actual_cost_usd", 0),
-                success=True
-            )
-        except Exception as bench_err:
-            logger.debug(f"Benchmark/cache write skipped: {bench_err}")
-
         return response
         
     except HTTPException:

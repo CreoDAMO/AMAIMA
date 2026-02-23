@@ -365,6 +365,15 @@ class SmartRouter:
         ModelSize.XL_34B: 1.20,
         ModelSize.ULTRA_200B: 1.50,
     }
+
+    # Domain Detection Keywords
+    DOMAIN_KEYWORDS = {
+        "biology": [r"protein", r"molecule", r"drug", r"smiles", r"docking", r"biomedical", r"gene", r"sequence"],
+        "robotics": [r"robot", r"arm", r"navigation", r"path", r"grasp", r"manipulation", r"actuator", r"ros2", r"isaac"],
+        "vision": [r"image", r"picture", r"photo", r"video", r"scene", r"detect", r"segment", r"visual"],
+        "audio": [r"audio", r"speech", r"voice", r"listen", r"transcript", r"stt", r"tts", r"sound"],
+        "image_gen": [r"generate image", r"create image", r"make a picture", r"draw", r"illustrate"],
+    }
     
     # Latency estimates (baseline ms + per token)
     LATENCY_BASELINE = {
@@ -431,6 +440,13 @@ class SmartRouter:
         Returns:
             Complete routing decision with rationale
         """
+        query_lower = query.lower()
+        detected_domain = "general"
+        for domain, keywords in self.DOMAIN_KEYWORDS.items():
+            if any(re.search(kw, query_lower) for kw in keywords):
+                detected_domain = domain
+                break
+        
         device = self._get_device_capability()
         connectivity = self._get_connectivity_status()
         complexity, confidence = self.complexity_analyzer.analyze(query)
@@ -444,6 +460,8 @@ class SmartRouter:
                 complexity, device, connectivity, security_level
             )
             reasoning = self._build_reasoning(complexity, device, connectivity, security_level)
+        
+        reasoning["detected_domain"] = detected_domain
         
         model_size = self._select_model(complexity, device, security_level)
         fallback_chain = self._build_fallback_chain(mode, device, connectivity)
