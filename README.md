@@ -437,7 +437,7 @@ See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for step
 
 ## License
 
-**AMAIMA License v1.0**
+**AMAIMA License v1.0 Amended To v2.0**
 
 Three licensing options:
 1. **Community License** - Free for non-commercial use, research, and individuals
