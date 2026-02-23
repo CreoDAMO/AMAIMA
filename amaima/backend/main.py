@@ -464,14 +464,10 @@ async def simulate_query_endpoint(request: QueryRequest):
         logger.error(f"Simulation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/v1/stats")
-async def get_statistics():
-    return {
-        "total_queries": app_state.query_count,
-        "uptime_seconds": (datetime.now() - app_state.start_time).total_seconds(),
-        "active_connections": len(app_state.active_connections),
-        "version": "5.0.0"
-    }
+@app.get("/v1/cache/stats")
+async def get_cache_stats_endpoint():
+    from app.modules.nvidia_nim_client import get_cache_stats
+    return get_cache_stats()
 
 
 class AgentCrewRequest(BaseModel):

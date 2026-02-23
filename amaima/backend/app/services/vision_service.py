@@ -50,7 +50,7 @@ async def cosmos_inference(
         elif media_type == "image":
             media_content.append({"type": "image", "image": media_path})
         media_content.append({"type": "text", "text": query})
-        messages[1]["content"] = media_content
+        messages[1]["content"] = media_content # type: ignore
 
     try:
         api_messages = []

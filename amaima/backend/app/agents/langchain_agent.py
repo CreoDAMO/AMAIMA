@@ -240,6 +240,16 @@ def build_domain_workflow(domain: str) -> StatefulWorkflow:
             "specialist_prompt": "You are a computer vision and multimodal reasoning expert. Analyze visual scenarios, scene understanding, object detection, and spatial reasoning tasks. Provide structured analysis with confidence levels.",
             "reviewer_prompt": "You are a vision system reviewer. Validate analysis for accuracy, check for biases, and ensure robust handling of edge cases.",
         },
+        "audio": {
+            "name": "Neural Audio Synthesis Workflow",
+            "specialist_prompt": "You are an audio engineering and speech synthesis expert. Analyze text for emotional tone, pacing, and prosody to prepare for high-fidelity speech generation. Provide detailed synthesis parameters.",
+            "reviewer_prompt": "You are an audio quality reviewer. Ensure the synthesis plan meets enterprise standards for clarity, naturalness, and emotional accuracy.",
+        },
+        "image_gen": {
+            "name": "Visual Art Generation Workflow",
+            "specialist_prompt": "You are a creative director and prompt engineering expert. Expand user concepts into detailed, high-fidelity visual descriptions using artistic terminology (lighting, composition, style).",
+            "reviewer_prompt": "You are a visual quality reviewer. Validate that the generated prompt avoids artifacts, maintains consistency, and aligns with professional aesthetic standards.",
+        },
     }
 
     config = domain_configs.get(domain, domain_configs["biology"])
@@ -281,6 +291,8 @@ WORKFLOW_REGISTRY = {
     "biology": lambda: build_domain_workflow("biology"),
     "robotics": lambda: build_domain_workflow("robotics"),
     "vision": lambda: build_domain_workflow("vision"),
+    "audio": lambda: build_domain_workflow("audio"),
+    "image_gen": lambda: build_domain_workflow("image_gen"),
 }
 
 
@@ -301,4 +313,6 @@ async def list_workflows() -> List[Dict[str, str]]:
         {"id": "biology", "name": "Biology Research", "description": "Domain-specific biology analysis with peer review"},
         {"id": "robotics", "name": "Robotics Planning", "description": "Robot task planning with safety validation"},
         {"id": "vision", "name": "Vision Analysis", "description": "Visual reasoning with structured analysis"},
+        {"id": "audio", "name": "Audio Synthesis", "description": "Neural speech synthesis and emotional tone analysis"},
+        {"id": "image_gen", "name": "Visual Generation", "description": "Creative direction and high-fidelity prompt engineering"},
     ]
