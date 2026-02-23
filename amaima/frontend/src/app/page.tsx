@@ -363,11 +363,11 @@ export default function HomePage() {
 
   const features = [
     { icon: Brain, title: 'Intelligent Routing', description: 'Automatic model selection with domain-aware classification', color: 'text-cyan-400', bgColor: 'bg-cyan-400/20' },
+    { icon: Shield, title: 'FHE & Zero Trust', description: 'Post-quantum secure computation on encrypted data without decryption', color: 'text-emerald-400', bgColor: 'bg-emerald-400/20' },
     { icon: Microscope, title: 'Drug Discovery', description: 'BioNeMo-powered molecular generation and protein analysis', color: 'text-green-400', bgColor: 'bg-green-400/20' },
     { icon: Bot, title: 'Robotics / Physical AI', description: 'ROS2/Isaac robot planning, navigation, and simulation', color: 'text-orange-400', bgColor: 'bg-orange-400/20' },
     { icon: Eye, title: 'Vision & Reasoning', description: 'Cosmos R2 embodied reasoning and multimodal analysis', color: 'text-purple-400', bgColor: 'bg-purple-400/20' },
     { icon: Users, title: 'Multi-Agent Crews', description: 'CrewAI-based agent orchestration for complex tasks', color: 'text-pink-400', bgColor: 'bg-pink-400/20' },
-    { icon: Shield, title: 'Secure & Extensible', description: 'Plugin architecture with enterprise-grade security', color: 'text-emerald-400', bgColor: 'bg-emerald-400/20' },
   ];
 
   const operations = [

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Brain, Shield, Zap, Lock, Activity, ShieldCheck, Microscope, Search, Vote, BarChart3, Calculator } from 'lucide-react';
+import Link from 'next/link';
 
 interface FHEStatus {
   subsystem: string;
@@ -138,6 +140,23 @@ export default function FHEPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+            <Brain className="w-5 h-5" />
+            <span className="font-medium">Dashboard</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/agent-builder" className="text-gray-400 hover:text-white text-sm font-medium transition-colors">
+              Agent Builder
+            </Link>
+            <div className="h-4 w-px bg-gray-800" />
+            <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
+              <Shield className="w-4 h-4" />
+              FHE Secured
+            </div>
+          </div>
+        </div>
+
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-4">
             <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
