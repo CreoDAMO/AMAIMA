@@ -57,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: amaima-release-apk
-          path: **/build/outputs/**/*.apk
+          path: "**/build/outputs/**/*.apk"
