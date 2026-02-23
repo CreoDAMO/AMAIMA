@@ -86,3 +86,49 @@ jobs:
 - **Resolved Jar Corruption**: Added automated recovery logic to regenerate `gradle-wrapper.jar` if missing or invalid.
 - **Modernized Action**: Integrated `gradle/actions/setup-gradle` for better reliability and performance.
 - **Fixed Pathing**: Updated artifact upload path to correctly target the release APK location.
+
+---
+
+## Error Report:
+Run # If the wrapper jar is missing or invalid, regenerate it
+  # If the wrapper jar is missing or invalid, regenerate it
+  if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || [ ! -s "gradle/wrapper/gradle-wrapper.jar" ]; then
+    echo "Gradle wrapper jar missing or corrupt. Regenerating..."
+    gradle wrapper
+  fi
+  chmod +x gradlew
+  shell: /usr/bin/bash -e {0}
+  env:
+    JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
+    GRADLE_ACTION_ID: gradle/actions/setup-gradle
+    GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+    GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+    DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+    DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
+    GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+Gradle wrapper jar missing or corrupt. Regenerating...
+Welcome to Gradle 9.3.1!
+Here are the highlights of this release:
+ - Test reporting improvements
+ - Error and warning improvements
+ - Build authoring improvements
+For more details see https://docs.gradle.org/9.3.1/release-notes.html
+Starting a Gradle Daemon (subsequent builds will be faster)
+Calculating task graph as no cached configuration is available for tasks: wrapper
+[Incubating] Problems report is available at: file:///home/runner/work/AMAIMA/AMAIMA/amaima/mobile/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+* What went wrong:
+org/gradle/api/internal/HasConvention
+> org.gradle.api.internal.HasConvention
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+BUILD FAILED in 1m 50s
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+Configuration cache entry stored.
+Error: Process completed with exit code 1.
