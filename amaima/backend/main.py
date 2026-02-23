@@ -20,9 +20,9 @@ from app.core.unified_smart_router import SmartRouter, RoutingDecision
 from app.modules.smart_router_engine import route_query
 from app.modules.execution_engine import execute_model
 from app.security import get_api_key, enforce_tier_limit, get_current_user, require_admin
-from app.routers import biology as biology_router
-from app.routers import robotics as robotics_router
-from app.routers import vision as vision_router
+from app.routers.biology import router as biology_router
+from app.routers.robotics import router as robotics_router
+from app.routers.vision import router as vision_router
 from app.services import audio_service, image_service
 from fastapi import Depends
 
@@ -149,6 +149,21 @@ app = FastAPI(
     version="5.0.0",
     lifespan=lifespan
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+from app.fhe.router import router as fhe_router
+
+app.include_router(biology_router)
+app.include_router(robotics_router)
+app.include_router(vision_router)
+app.include_router(fhe_router)
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -824,13 +839,13 @@ class MessageRequest(BaseModel):
     role: str = "user"
 
 @app.post("/v1/conversations")
-async def create_conversation(request: ConversationRequest, api_key_info: dict = Depends(get_api_key)):
+async def create_conversation_endpoint(request: ConversationRequest, api_key_info: dict = Depends(get_api_key)):
     from app.conversations import create_conversation
     result = await create_conversation(
         api_key_id=api_key_info["id"],
         title=request.title or "New Conversation",
         operation_type=request.operation_type or "general",
-        model=request.model
+        model=request.model or "unknown"
     )
     return result
 
@@ -858,7 +873,8 @@ async def send_message(conversation_id: str, request: MessageRequest, api_key_in
     user_msg = await add_message(
         conversation_id=conversation_id,
         role="user",
-        content=request.content
+        content=request.content,
+        model="user"
     )
 
     decision = route_query(request.content, simulate=False)
@@ -883,7 +899,7 @@ async def send_message(conversation_id: str, request: MessageRequest, api_key_in
         conversation_id=conversation_id,
         role="assistant",
         content=result.get("output", ""),
-        model=model_used,
+        model=model_used or "unknown",
         tokens_used=tokens,
         latency_ms=latency,
         metadata={"routing": decision}
@@ -987,8 +1003,8 @@ async def get_timeseries(model_id: str, days: int = 7):
 
 # ── Response Cache ──────────────────────────────────────
 
-@app.get("/v1/cache/stats")
-async def cache_stats():
+@app.get("/v1/benchmarks/cache-stats")
+async def get_benchmarks_cache_stats():
     from app.benchmarks import get_cache_stats
     stats = await get_cache_stats()
     return stats

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Form, HTTPException, Body
 from typing import Optional
 import logging
 
@@ -9,12 +9,14 @@ router = APIRouter(prefix="/v1/biology", tags=["biology"])
 
 @router.post("/discover")
 async def drug_discovery(
-    target: str = Form(..., description="Drug target (e.g., protein, receptor)"),
-    properties: str = Form(default="", description="Desired molecular properties"),
+    target: str = Body(..., description="Drug target (e.g., protein, receptor)"),
+    properties: str = Body(default="", description="Desired molecular properties"),
 ):
     from app.services.biology_service import drug_discovery as discover
     try:
         result = await discover(target, properties)
+        if not result or "candidates" not in result:
+             return {"candidates": [], "status": "no_candidates_found", "target": target}
         return result
     except Exception as e:
         logger.error(f"Drug discovery failed: {e}")

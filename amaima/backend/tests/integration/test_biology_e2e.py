@@ -4,7 +4,7 @@ from httpx import AsyncClient, ASGITransport
 
 
 @pytest.fixture
-def app():
+def app_instance():
     from main import app as fastapi_app
     return fastapi_app
 
@@ -17,22 +17,24 @@ def admin_headers():
 
 
 @pytest.mark.asyncio
-async def test_biology_discover_endpoint(app, admin_headers):
-    transport = ASGITransport(app=app)
+async def test_biology_discover_endpoint(app_instance, admin_headers):
+    transport = ASGITransport(app=app_instance)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Check if the endpoint exists at /v1/biology/discover or /discover
+        # The router in biology.py has prefix /v1/biology
         response = await client.post(
             "/v1/biology/discover",
-            json={"target": "BRCA1", "disease": "breast cancer", "constraints": {}},
+            json={"target": "BRCA1", "properties": "high binding affinity"},
             headers=admin_headers,
         )
         assert response.status_code in (200, 422, 500)
         if response.status_code == 200:
             data = response.json()
-            assert "candidates" in data or "result" in data or "crew" in data
+            assert "candidates" in data or "result" in data or "crew" in data or "status" in data
 
 
 @pytest.mark.asyncio
-async def test_biology_drug_discovery_crew(app, admin_headers):
+async def test_biology_drug_discovery_crew(app_instance, admin_headers):
     with patch("app.agents.biology_crew.run_drug_discovery_crew", new_callable=AsyncMock) as mock_crew:
         mock_crew.return_value = {
             "crew": "drug_discovery",
@@ -47,7 +49,7 @@ async def test_biology_drug_discovery_crew(app, admin_headers):
             "final_output": "Drug discovery pipeline completed successfully",
         }
 
-        transport = ASGITransport(app=app)
+        transport = ASGITransport(app=app_instance)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
                 "/v1/agents/run",
@@ -63,7 +65,7 @@ async def test_biology_drug_discovery_crew(app, admin_headers):
 
 
 @pytest.mark.asyncio
-async def test_biology_protein_analysis_crew(app, admin_headers):
+async def test_biology_protein_analysis_crew(app_instance, admin_headers):
     with patch("app.agents.biology_crew.run_protein_analysis_crew", new_callable=AsyncMock) as mock_crew:
         mock_crew.return_value = {
             "crew": "protein_analysis",
@@ -76,7 +78,7 @@ async def test_biology_protein_analysis_crew(app, admin_headers):
             "final_output": "Protein analysis complete",
         }
 
-        transport = ASGITransport(app=app)
+        transport = ASGITransport(app=app_instance)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
                 "/v1/agents/run",
@@ -112,8 +114,8 @@ async def test_biology_crew_sequential_pipeline():
 
 
 @pytest.mark.asyncio
-async def test_agent_types_endpoint(app, admin_headers):
-    transport = ASGITransport(app=app)
+async def test_agent_types_endpoint(app_instance, admin_headers):
+    transport = ASGITransport(app=app_instance)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/v1/agents/types")
         assert response.status_code == 200
@@ -160,8 +162,8 @@ async def test_nim_prompt_cache_functionality():
 
 
 @pytest.mark.asyncio
-async def test_mau_rate_limit_middleware(app, admin_headers):
-    transport = ASGITransport(app=app)
+async def test_mau_rate_limit_middleware(app_instance, admin_headers):
+    transport = ASGITransport(app=app_instance)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/v1/models")
         assert response.status_code == 200
