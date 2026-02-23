@@ -6,8 +6,10 @@ permissions:
 on:
   push:
     branches: [ main ]
+    paths: [ 'amaima/mobile/**' ]
   pull_request:
     branches: [ main ]
+    paths: [ 'amaima/mobile/**' ]
   workflow_dispatch:
 
 jobs:
@@ -25,21 +27,22 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Cache Gradle files
-        uses: actions/cache@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('amaima/mobile/**/*.gradle*', 'amaima/mobile/**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
+          gradle-version: wrapper # Uses version from gradle-wrapper.properties
 
-      - name: Grant execute permission for Gradle wrapper
-        run: chmod +x gradlew
+      - name: Fix/Regenerate Gradle Wrapper
+        run: |
+          # If the wrapper jar is missing or invalid, regenerate it
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || [ ! -s "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "Gradle wrapper jar missing or corrupt. Regenerating..."
+            gradle wrapper
+          fi
+          chmod +x gradlew
 
       - name: Decode Keystore
         if: github.ref == 'refs/heads/main'
@@ -57,4 +60,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: amaima-release-apk
-          path: "**/build/outputs/**/*.apk"
+          path: "amaima/mobile/app/build/outputs/apk/release/*.apk"
