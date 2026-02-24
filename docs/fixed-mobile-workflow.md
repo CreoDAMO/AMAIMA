@@ -64,7 +64,7 @@ jobs:
 
       - name: Build Signed Release APK
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --no-daemon -Pandroid.nonTransitiveRClass=false
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -90,13 +90,13 @@ jobs:
 ---
 
 ## build summary
-Gradle Root Project	Requested Tasks	Gradle Version	Build Outcome	Build Scan®
-AMAIMA	wrapper --gradle-version 8.14.2	8.14.2	✅	Build Scan not published
-AMAIMA	assembleRelease	8.14.2	❌	Build Scan not published
+Gradle Root Project     Requested Tasks Gradle Version  Build Outcome   Build Scan®
+AMAIMA  wrapper --gradle-version 8.14.2 8.14.2  ✅       Build Scan not published
+AMAIMA  assembleRelease 8.14.2  ❌       Build Scan not published
 Caching for Gradle actions was enabled - expand for details
-Count	Total Size (Mb)
-Entries Restored	0	0
-Entries Saved	0	0
+Count   Total Size (Mb)
+Entries Restored        0       0
+Entries Saved   0       0
 Cache Entry Details
     Entry: Gradle User Home
     Requested Key : gradle-home-v1|Linux|build[2efe194e8363a66cc916e2eba443ead7]-76283e9dde6d6ab5771b9d155f84f4b4547eb3d3
@@ -270,9 +270,9 @@ Calculating task graph as no cached configuration is available for tasks: assemb
 
 > Task :app:processReleaseMainManifest
 [org.tensorflow:tensorflow-lite:2.14.0] /home/runner/.gradle/caches/8.14.2/transforms/2e17a794639dc98d8a4a0d27d44a48e9/transformed/tensorflow-lite-2.14.0/AndroidManifest.xml Warning:
-	Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+        Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
 [org.tensorflow:tensorflow-lite-support:0.4.4] /home/runner/.gradle/caches/8.14.2/transforms/e1c87f087bdd12e6dc0d124e7367d04d/transformed/tensorflow-lite-support-0.4.4/AndroidManifest.xml Warning:
-	Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+        Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
 
 > Task :app:processReleaseManifest
 > Task :app:parseReleaseLocalResources
