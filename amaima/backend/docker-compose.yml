@@ -1,0 +1,158 @@
+# AMAIMA docker-compose v2
+# amaima/backend/docker-compose.yml
+#
+# FHE changes vs v1:
+#   BUG 11 FIXED  FHE_ENABLED now explicitly set in amaima-backend environment
+#   BUG 12 FIXED  Added SEAL_THREADS + OMP_NUM_THREADS so SEAL NTT runs
+#                 across all container cores instead of single-threaded
+#   BUG 13 FIXED  healthcheck start-period 15s → 60s (Dockerfile change handles
+#                 this; compose override shown here for deployments that override
+#                 the Dockerfile HEALTHCHECK)
+
+version: '3.8'
+
+services:
+  amaima-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # ── Existing env vars (unchanged) ──────────────────────────────────────
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - AMAIMA_EXECUTION_MODE=${AMAIMA_EXECUTION_MODE:-execution-enabled}
+      - COSMOS_NIM_URL=${COSMOS_NIM_URL:-https://integrate.api.nvidia.com/v1}
+      - BIONEMO_NIM_URL=${BIONEMO_NIM_URL:-https://integrate.api.nvidia.com/v1}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      # ── FHE engine config (BUG 11 + 12 FIX) ───────────────────────────────
+      # Explicitly enable FHE — no silent disablement from missing env var
+      - FHE_ENABLED=${FHE_ENABLED:-true}
+      # SEAL NTT thread parallelism — set to container vCPU count
+      # Tune this to match your host's --cpus limit; default 4 is safe for 2-core hosts
+      - SEAL_THREADS=${SEAL_THREADS:-4}
+      - OMP_NUM_THREADS=${OMP_NUM_THREADS:-4}
+      # LRU payload store capacity — increase for high-throughput deployments
+      - FHE_MAX_PAYLOADS=${FHE_MAX_PAYLOADS:-512}
+    depends_on:
+      - redis
+    volumes:
+      - upload_data:/app/uploads
+    restart: unless-stopped
+    # BUG 13 FIX: extended start-period for FHE context pool warm
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - amaima-network
+
+  amaima-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_URL=http://amaima-backend:8000
+    depends_on:
+      - amaima-backend
+    restart: unless-stopped
+    networks:
+      - amaima-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - amaima-network
+
+  cosmos-nim:
+    image: nvcr.io/nim/nvidia/cosmos-reason2-7b:latest
+    ports:
+      - "8001:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - MODEL_NAME=nvidia/cosmos-reason2-7b
+    volumes:
+      - model_cache:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - gpu
+
+  bionemo-nim:
+    image: nvcr.io/nim/nvidia/bionemo-megamolbart:latest
+    ports:
+      - "8002:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - MODEL_NAME=nvidia/bionemo-megamolbart
+    volumes:
+      - model_cache:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - gpu
+
+  isaac-ros:
+    image: osrf/ros:humble-desktop
+    command: ros2 run demo_nodes_cpp talker
+    ports:
+      - "11311:11311"
+    environment:
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - ./robotics:/ros_ws/src
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - robotics
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - amaima-network
+    profiles:
+      - monitoring
+
+volumes:
+  upload_data:
+  redis_data:
+  model_cache:
+  prometheus_data:
+
+networks:
+  amaima-network:
+    driver: bridge
