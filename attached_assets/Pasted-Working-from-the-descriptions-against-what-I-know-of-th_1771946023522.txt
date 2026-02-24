@@ -1,0 +1,64 @@
+Working from the descriptions against what I know of the AMAIMA codebase from the README.
+
+Good. Now I have the baseline clearly. Here's the full analysis.
+
+---
+
+## Analysis: 4 Features Added, Not Yet in Production
+
+### What the README said AMAIMA had before these changes
+
+The platform shipped with **3 domain services** (Biology, Robotics, Vision), **14 NVIDIA NIM models** (no dedicated audio/image-gen models in the registry), Smart Router with keyword detection for biology/vision/robotics only, Agent Builder with 6 crew types (Research, Drug Discovery, Protein Analysis, Navigation, Manipulation, Swarm), and the FHE subsystem existing but buried — not wired into the main nav or home page.
+
+---
+
+### Feature 1 — Audio + Visual Domain Services
+
+**What was added:** A new `audio_service.py` module (ASR + TTS via NVIDIA speech models), an `image_generation_service.py` (SDXL-Turbo via NVIDIA NIM), and Smart Router keyword expansion to detect "audio" and "image generation" intent and route to the new services. Main API updated with new endpoints.
+
+**Assessment — Solid addition.** The README listed the Android app as having a Whisper-style audio engine on-device, but the backend had no `/v1/audio/` endpoints. This closes that gap. The Smart Router expansion is the right place to add this — `smart_router_engine.py` is where biology/vision/robotics routing already lives.
+
+**One thing to verify when you push:** The README's domain routing listed 6 domains in the pitch materials (Speech, Vision, Robotics, Biology, Embeddings, LLMs) but only 3 had backend services. Features 1 and 2 together now cover Speech and Image Gen — but **Embeddings** still has no dedicated `/v1/embeddings/` service endpoint in the original README. Worth checking if that's been wired up or is still mobile-only.
+
+---
+
+### Feature 2 — Frontend Audio + Image Gen Rendering
+
+**What was added:** New "Audio" and "Image Gen" mode buttons in the query interface, image display in chat with "Advanced Visual Generation Engine" label, an audio playback component ("Neural Audio Synthesis" player), and new icons (Mic, ImagePlus, Volume2).
+
+**Assessment — High-value for demo purposes.** This is the layer that makes Features 1 real to any audience watching a live demo or investor video. The image-in-chat rendering and the audio player are what the Narrative Motion and Commercial videos already imply AMAIMA can do — now the actual UI matches the pitch.
+
+**One flag:** The description says "ElevenLabs-grade" audio player. That's a UX description, not a capability claim — make sure the copy in the UI itself doesn't say "ElevenLabs-grade" or imply ElevenLabs integration, since the underlying model is NVIDIA NIM speech, not ElevenLabs. That distinction matters in a due diligence conversation.
+
+---
+
+### Feature 3 — Agent Builder ↔ AMAIMA Brain Connection
+
+**What was added:** Agent Builder now calls `/api/v1/agents/run` directly (previously it was visual-only with no live execution). New workflow registry entries for Neural Audio Synthesis and Visual Art Generation pipelines. New agent roles: Audio Engineer (pacing, emotional tone) and Creative Director (lighting, composition, aesthetic validation). Domain auto-detection in the builder based on nodes being orchestrated.
+
+**Assessment — This is the most architecturally significant of the four.** Before this, the Agent Builder at `/agent-builder` was a React Flow UI with pre-built templates that had no live connection to the execution engine. It was a visual demo. This change makes it a real orchestration tool. The addition of Audio Engineer and Creative Director agent roles also directly supports the multimodal pitch — you can now show a workflow where Vision → LLM → Audio nodes execute in sequence with actual results.
+
+**One thing to verify:** The description says the builder "directly communicates with AMAIMA's main agent execution engine." The existing `/v1/agents/run` endpoint takes a `crew_type` and `task` payload. Confirm the Agent Builder is passing structured `crew_type` values that `crew_manager.py` recognizes — including the two new ones (audio, image gen) — rather than freeform strings that might silently fall through to a default crew.
+
+---
+
+### Feature 4 — FHE Dashboard Integration + Nav Promotion
+
+**What was added:** "FHE & Zero Trust" promoted to a primary feature on the home page. Direct nav links connecting main dashboard → Agent Builder → FHE subsystem. FHE page updated with a professional header and breadcrumb navigation. New iconography (Shield, Lock, Brain) across the FHE UI.
+
+**Assessment — Correct priority shift, mostly cosmetic.** The FHE subsystem existed but was buried. For any NVIDIA or investor audience, FHE is the moat — it should be the first thing someone sees, not something they have to find. Promoting it to the home page is the right call. The breadcrumb nav (main → agent builder → FHE) also tells a coherent story: AMAIMA is the brain, Agent Builder is the workflow, FHE is the trust layer beneath everything.
+
+**This is navigation and UI work, not FHE implementation.** Which is fine — you've already noted FHE implementation is next. Just be precise when describing this to investors: Feature 4 makes FHE *visible and prominent* in the interface. The actual encrypted inference pipeline (the 1.1s → <100ms work) is still coming.
+
+---
+
+### Summary Table
+
+| # | Feature | Type | Status | Key Risk |
+|---|---------|------|--------|----------|
+| 1 | Audio + Image Gen backend services | New domain services | Ready to push | Verify Embeddings domain gap |
+| 2 | Audio + Image frontend rendering | UI/UX | Ready to push | Remove "ElevenLabs-grade" copy from UI |
+| 3 | Agent Builder live execution | Architecture | Ready to push | Verify crew_type mapping for new agents |
+| 4 | FHE nav promotion | UI/Navigation | Ready to push | Clarify to investors: UI visibility ≠ FHE implementation |
+
+All four are push-ready from a description standpoint. Feature 3 is the one I'd want to actually test before a live demo — a broken agent execution in front of an NVIDIA audience is the highest-stakes failure point of the four.

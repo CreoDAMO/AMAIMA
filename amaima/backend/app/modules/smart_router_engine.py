@@ -69,10 +69,11 @@ def detect_domain(query: str) -> Tuple[str, float]:
         "robotics": robotics_score,
         "vision": vision_score,
         "speech": speech_score,
+        "image_gen": sum(1 for kw in ["generate image", "create image", "draw", "diagram", "visualize"] if kw in q_lower),
         "general": 0,
     }
 
-    best_domain = max(scores, key=scores.get)
+    best_domain = max(scores, key=lambda k: scores[k])
     best_score = scores[best_domain]
 
     if best_score == 0:

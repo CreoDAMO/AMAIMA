@@ -534,6 +534,8 @@ async def list_agent_types():
             {"id": "manipulation", "name": "Manipulation Crew", "description": "Perception, Grasp Planner, Action Executor, Safety Monitor"},
             {"id": "swarm", "name": "Swarm Coordination Crew", "description": "Coordinator, Perception, Path Planner, Safety Monitor"},
             {"id": "custom", "name": "Custom Crew", "description": "Build your own crew with custom roles"},
+            {"id": "audio_engineer", "name": "Audio Engineer Crew", "description": "Specialized in ASR, TTS, and neural audio synthesis pipelines"},
+            {"id": "creative_director", "name": "Visual Arts Crew", "description": "Specialized in image generation, aesthetics, and visual composition"},
             {"id": "workflow", "name": "Stateful Workflow", "description": "Multi-step stateful workflows with conditional logic (research, complex_reasoning, biology, robotics, vision)"},
         ],
         "processes": ["sequential", "parallel", "hierarchical"],
