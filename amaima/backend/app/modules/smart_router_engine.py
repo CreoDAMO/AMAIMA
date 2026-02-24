@@ -1,6 +1,7 @@
 import yaml
 import hashlib
 import os
+import re
 from typing import Dict, Any, Tuple, List
 
 # Load configuration from YAML file
@@ -9,6 +10,48 @@ with open(config_path, "r") as f:
     config = yaml.safe_load(f)
 
 router_config = config.get("router", {})
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Keyword lists
+# Priority-ordered: IMAGE_GEN and SPEECH are checked FIRST (before complexity
+# scoring) because they must route to specialized services, not LLMs.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# These patterns must trigger image_gen routing unconditionally.
+IMAGE_GEN_PATTERNS = [
+    r"\bgenerate\s+(an?\s+)?image\b",
+    r"\bcreate\s+(an?\s+)?image\b",
+    r"\bdraw\s+(an?\s+)?(me\s+)?(a|an)?\b",
+    r"\brender\s+(an?\s+)?image\b",
+    r"\btext.?to.?image\b",
+    r"\bsdxl\b",
+    r"\bstable\s+diffusion\b",
+    r"\bpaint\s+(me\s+)?(a|an)\b",
+    r"\bcreate\s+(a\s+)?picture\b",
+    r"\bgenerate\s+(a\s+)?picture\b",
+    r"\bvisualize\s+(this|a|an)\b",
+    r"\bmake\s+(an?\s+)?image\b",
+    r"\billustrate\b",
+]
+
+# These patterns must trigger speech/audio routing unconditionally.
+SPEECH_PATTERNS = [
+    r"\btext.?to.?speech\b",
+    r"\bconvert\s+.{0,30}to\s+speech\b",
+    r"\bspeak\s+(this|the|aloud)\b",
+    r"\bread\s+aloud\b",
+    r"\bnarrate\b",
+    r"\bsynthesize\s+(voice|speech|audio)\b",
+    r"\btts\b",
+    r"\briva\s+tts\b",
+    r"\bgenerate\s+(a\s+)?voice\b",
+    r"\baudio\s+synthesis\b",
+    r"\btranscribe\b",
+    r"\bspeech.?to.?text\b",
+    r"\basr\b",
+    r"\bdictate\b",
+    r"\brecognize\s+speech\b",
+]
 
 BIOLOGY_KEYWORDS = [
     "drug", "protein", "molecule", "smiles", "fasta", "dna", "rna",
@@ -24,16 +67,18 @@ ROBOTICS_KEYWORDS = [
     "robot", "navigate", "navigation", "manipulate", "grasp",
     "autonomous", "slam", "path planning", "ros", "ros2",
     "actuator", "sensor", "lidar", "swarm", "drone",
-    "humanoid", "amr", "isaac", "simulation", "kinematics",
+    "humanoid", "amr", "isaac", "kinematics",
     "pick and place", "assembly", "grasping", "manipulation",
     "tool use", "industrial robot", "cumotion", "foundationpose",
 ]
 
 VISION_KEYWORDS = [
-    "image", "video", "visual", "scene", "camera", "detect",
-    "object detection", "segmentation", "depth", "3d",
-    "cosmos", "embodied", "spatial", "temporal",
+    "analyze this image", "analyze the image", "describe this image",
+    "what is in the image", "what do you see", "identify objects",
+    "video analysis", "scene understanding", "object detection",
+    "segmentation", "depth", "cosmos", "embodied", "spatial",
     "recognize", "classify image", "analyze video",
+    "camera feed", "visual analysis",
 ]
 
 SPEECH_KEYWORDS = [
@@ -51,12 +96,33 @@ FHE_KEYWORDS = [
 ]
 
 
+def _match_patterns(query: str, patterns: List[str]) -> bool:
+    """Returns True if any regex pattern matches the query (case-insensitive)."""
+    q_lower = query.lower()
+    return any(re.search(p, q_lower) for p in patterns)
+
+
 def detect_privacy_intent(query: str) -> bool:
     q_lower = query.lower()
     return any(kw in q_lower for kw in FHE_KEYWORDS)
 
 
 def detect_domain(query: str) -> Tuple[str, float]:
+    """
+    Domain detection — IMAGE_GEN and SPEECH are checked via regex FIRST.
+    If either matches, we return immediately with confidence 1.0.
+    This ensures the smart router never falls through to a general LLM
+    for these specialized service domains.
+    """
+    # ── Priority 1: Image Generation ─────────────────────────────────────────
+    if _match_patterns(query, IMAGE_GEN_PATTERNS):
+        return "image_gen", 1.0
+
+    # ── Priority 2: Speech / Audio ────────────────────────────────────────────
+    if _match_patterns(query, SPEECH_PATTERNS):
+        return "speech", 1.0
+
+    # ── Priority 3: Keyword-scored domains ───────────────────────────────────
     q_lower = query.lower()
 
     biology_score = sum(1 for kw in BIOLOGY_KEYWORDS if kw in q_lower)
@@ -69,7 +135,6 @@ def detect_domain(query: str) -> Tuple[str, float]:
         "robotics": robotics_score,
         "vision": vision_score,
         "speech": speech_score,
-        "image_gen": sum(1 for kw in ["generate image", "create image", "draw", "diagram", "visualize"] if kw in q_lower),
         "general": 0,
     }
 
@@ -86,14 +151,18 @@ def detect_domain(query: str) -> Tuple[str, float]:
 def _calculate_complexity(query: str) -> Tuple[float, str, List[Dict[str, str]]]:
     """
     Analyzes the query to determine its complexity level.
-    Includes domain-specific classification for biology, robotics, and vision.
+    NOTE: Domain detection has already been resolved before this runs,
+    so this function is only called for general/LLM-bound queries.
     """
     length = len(query)
     reasons = []
 
     domain, domain_confidence = detect_domain(query)
     if domain != "general":
-        reasons.append({"code": f"DOMAIN_{domain.upper()}", "label": f"Domain detected: {domain} (confidence: {domain_confidence:.2f})"})
+        reasons.append({
+            "code": f"DOMAIN_{domain.upper()}",
+            "label": f"Domain detected: {domain} (confidence: {domain_confidence:.2f})"
+        })
 
     if length > 100 or "architecture" in query or "trade-offs" in query:
         level = "EXPERT"
@@ -108,7 +177,6 @@ def _calculate_complexity(query: str) -> Tuple[float, str, List[Dict[str, str]]]
         score = 0.5
         reasons.append({"code": "GENERAL_QUERY", "label": "General query detected"})
 
-    # Check for borderline cases
     thresholds = router_config.get("borderline_threshold", [0.8, 0.9])
     if thresholds[0] <= score < thresholds[1]:
         level = f"BORDERLINE_{level}"
@@ -123,7 +191,8 @@ def _select_model(
 ) -> Tuple[float, str, List[Dict[str, str]]]:
     """
     Selects the best model based on complexity level and detected domain.
-    Domain-specific queries route to specialized models when confidence is high enough.
+    For image_gen and speech domains, this is never called — those are
+    handled directly in route_query() before model selection.
     """
     from app.modules.nvidia_nim_client import DOMAIN_TO_MODELS
 
@@ -168,53 +237,58 @@ def calculate_execution_fit(
     if domain_real_time and not interaction_real_time:
         mode = "batch_parallel"
         score = 0.88
-        rationale = [
-            {
-                "code": "DOMAIN_REAL_TIME",
-                "label": "Domain context requires batch efficiency",
-            }
-        ]
+        rationale = [{"code": "DOMAIN_REAL_TIME", "label": "Domain context requires batch efficiency"}]
     elif interaction_real_time:
         mode = "streaming_real_time"
         score = 0.95
-        rationale = [
-            {"code": "INTERACTION_REAL_TIME", "label": "User intent for live response"}
-        ]
+        rationale = [{"code": "INTERACTION_REAL_TIME", "label": "User intent for live response"}]
     else:
-        mode = "parallel_min_latency"
+        mode = "streaming"
         score = 0.80
-        rationale = [
-            {"code": "DEFAULT_OPTIMAL", "label": "Balanced latency minimization"}
-        ]
+        rationale = [{"code": "DEFAULT_OPTIMAL", "label": "Balanced latency minimization"}]
 
     return score, mode, rationale
 
 
 def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
     """
-    Routes a query to the most appropriate AI model.
-    """
-    # 1. Calculate Complexity
-    complexity_score, complexity_level, complexity_reasons = _calculate_complexity(query)
+    Routes a query to the most appropriate AI model or service.
 
-    # 2. Detect Domain
+    Execution order:
+      1. Domain detection — IMAGE_GEN and SPEECH exit early with confidence 1.0
+      2. If general domain: complexity scoring → model selection
+      3. FHE intent detection (orthogonal — any domain can require FHE)
+      4. Execution fit
+      5. Decision assembly — NO simulation fallback in production
+    """
+
+    # ── Step 1: Domain detection (runs BEFORE complexity scoring) ─────────────
     domain, domain_confidence = detect_domain(query)
 
-    # 2b. Detect Privacy/FHE Intent
+    # ── Step 2: Complexity + model selection (skipped for specialized domains) ─
+    if domain in ("image_gen", "speech"):
+        # These domains dispatch to dedicated services, not LLMs.
+        # Set synthetic complexity/model values for the decision record.
+        complexity_score, complexity_level = 0.9, "DOMAIN_SERVICE"
+        complexity_reasons = [{"code": f"DOMAIN_{domain.upper()}", "label": f"Direct dispatch to {domain} service"}]
+        from app.modules.nvidia_nim_client import DOMAIN_TO_MODELS
+        domain_models = DOMAIN_TO_MODELS.get(domain, {})
+        model = domain_models.get("primary", "nvidia/sdxl-turbo" if domain == "image_gen" else "nvidia/magpie-tts-multilingual")
+        model_fit_score = 1.0
+        model_reasons = [{"code": "SERVICE_DISPATCH", "label": f"Dispatching directly to {domain} service: {model}"}]
+    else:
+        complexity_score, complexity_level, complexity_reasons = _calculate_complexity(query)
+        model_fit_score, model, model_reasons = _select_model(complexity_level, domain, domain_confidence)
+
+    # ── Step 3: FHE intent (orthogonal — any query may require privacy) ────────
     privacy_required = detect_privacy_intent(query)
-
-    # 3. Select Model (domain-aware)
-    model_fit_score, model, model_reasons = _select_model(complexity_level, domain, domain_confidence)
-
     if privacy_required:
-        model_reasons.append({"code": "FHE_PRIVACY", "label": "Privacy intent detected - FHE encryption available"})
+        model_reasons.append({"code": "FHE_PRIVACY", "label": "Privacy intent detected — FHE encryption available"})
 
-    # 3. Determine Execution Fit
-    execution_fit_score, execution_mode, execution_reasons = calculate_execution_fit(
-        query, len(query), []
-    )
+    # ── Step 4: Execution fit ─────────────────────────────────────────────────
+    execution_fit_score, execution_mode, execution_reasons = calculate_execution_fit(query, len(query), [])
 
-    # 4. Calculate Weighted Confidence
+    # ── Step 5: Weighted confidence ───────────────────────────────────────────
     weights = router_config.get("confidence_weights", {"complexity": 0.4, "model_fit": 0.35, "execution_fit": 0.25})
     overall_confidence = (
         (complexity_score * weights["complexity"])
@@ -222,9 +296,18 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
         + (execution_fit_score * weights["execution_fit"])
     )
 
-    # Production Safeguard Toggle
-    execution_mode_env = os.getenv('AMAIMA_EXECUTION_MODE', 'decision-only')
-    execution_mode_active = execution_mode_env == 'execution-enabled'
+    # ── Step 6: Execution mode guard ──────────────────────────────────────────
+    # PRODUCTION NOTE: AMAIMA_EXECUTION_MODE must be set to 'execution-enabled'
+    # in the environment. If it is not set, queries will not execute and you
+    # will see "No response received". There is NO silent simulation fallback —
+    # a missing env var raises a clear error so misconfiguration is visible.
+    execution_mode_env = os.getenv("AMAIMA_EXECUTION_MODE", "")
+    if execution_mode_env != "execution-enabled":
+        raise EnvironmentError(
+            "AMAIMA_EXECUTION_MODE is not set to 'execution-enabled'. "
+            "Set this environment variable to enable real AI execution. "
+            "Simulation mode has been removed from production routing."
+        )
 
     decision = {
         "query_hash": hashlib.sha256(query.encode()).hexdigest(),
@@ -246,20 +329,14 @@ def route_query(query: str, simulate: bool = False) -> Dict[str, Any]:
         },
         "privacy_required": privacy_required,
         "fhe_available": True,
-        "simulated": simulate or not execution_mode_active,
-        "execution_mode_active": execution_mode_active,
-        "decision_schema_version": "1.2.0"
+        "simulated": False,
+        "execution_mode_active": True,
+        "decision_schema_version": "2.0.0",
     }
 
-    if decision["simulated"]:
-        decision["execution"] = "none"
-        decision["confidence_scope"] = "explanatory"
-        decision["output"] = "Simulation only - no execution." if not execution_mode_active else None
-    else:
-        # Log the decision for non-simulation routes to the database
-        from .observability_framework import log_decision_to_db
-        import asyncio
-
-        asyncio.create_task(log_decision_to_db(query, decision))
+    # Log the decision to the database
+    from .observability_framework import log_decision_to_db
+    import asyncio
+    asyncio.create_task(log_decision_to_db(query, decision))
 
     return decision
