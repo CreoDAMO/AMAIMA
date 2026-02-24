@@ -9,18 +9,28 @@ import com.amaima.app.data.local.WorkflowDao
 import com.amaima.app.data.repository.AuthRepository
 import com.amaima.app.data.repository.AuthRepositoryImpl
 import com.amaima.app.data.repository.QueryRepository
-import com.amaima.app.data.repository.QueryRepositoryImpl
-import com.amaima.app.network.WebSocketManager
-import com.amaima.app.network.WebSocketManagerImpl
+import com.amaima.app.data.local.entity.QueryRepositoryImpl
+import com.amaima.app.data.websocket.WebSocketManager
+import com.amaima.app.data.websocket.WebSocketManagerImpl
 import com.amaima.app.data.local.UserDao
-import com.amaima.app.data.remote.AmaimaApi
-import com.amaima.app.data.remote.AmaimaWebSocket
+import com.amaima.app.data.remote.api.AmaimaApi
+import com.amaima.app.data.remote.websocket.AmaimaWebSocket
+import com.amaima.app.data.remote.interceptor.AuthInterceptor
+import com.amaima.app.security.EncryptedPreferences
+import com.amaima.app.ml.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -55,12 +65,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
-        return NetworkMonitor(context)
-    }
-
-    @Provides
-    @Singleton
     fun provideEncryptedPreferences(
         @ApplicationContext context: Context
     ): EncryptedPreferences {
@@ -75,8 +79,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        authInterceptor: AuthInterceptor,
-        certificatePinning: CertificatePinning
+        authInterceptor: AuthInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -87,7 +90,6 @@ object NetworkModule {
                     HttpLoggingInterceptor.Level.NONE
                 }
             })
-            .certificatePinner(certificatePinning.getCertificatePinner())
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
