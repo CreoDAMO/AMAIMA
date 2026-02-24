@@ -215,7 +215,7 @@ We're working to restore all services as soon as possible. Please check back soo
 
 ---
 
-Annotations
+## Annotations
 1 error and 11 warnings
 build
 Process completed with exit code 1.
