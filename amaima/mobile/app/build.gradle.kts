@@ -125,6 +125,9 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
 
+    // Google Play Services (required for AndroidManifest meta-data)
+    implementation("com.google.android.gms:play-services-basement:18.4.0")
+
     // Biometric
     implementation("androidx.biometric:biometric:1.1.0")
 
