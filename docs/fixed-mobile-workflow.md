@@ -89,100 +89,131 @@ jobs:
 
 ---
 
+## build summary
+Gradle Root Project	Requested Tasks	Gradle Version	Build Outcome	Build Scan®
+AMAIMA	wrapper --gradle-version 8.14.2	8.14.2	✅	Build Scan not published
+AMAIMA	assembleRelease	8.14.2	❌	Build Scan not published
+Caching for Gradle actions was enabled - expand for details
+Count	Total Size (Mb)
+Entries Restored	0	0
+Entries Saved	0	0
+Cache Entry Details
+    Entry: Gradle User Home
+    Requested Key : gradle-home-v1|Linux|build[2efe194e8363a66cc916e2eba443ead7]-76283e9dde6d6ab5771b9d155f84f4b4547eb3d3
+    Restored  Key : 
+              Size: 
+              (Entry not restored: Cache service responded with 400)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0XRmdaQAAAAAuIO+vj2JyRp/5Y3q+4VcMUEFPRURHRTA1MTAARWRnZQ==)
+---
+Entry: /home/runner/work/AMAIMA/AMAIMA/amaima/mobile/.gradle/configuration-cache
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: No encryption key provided)
+---
+Entry: /home/runner/.gradle/caches/8.14.2/generated-gradle-jars/gradle-api-8.14.2.jar
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WBmdaQAAAADSCtLmciqPR4R+SSIsGf8QUEFPRURHRTA1MTcARWRnZQ==)
+---
+Entry: /home/runner/.gradle/wrapper/dists/gradle-8.14.2-bin/2pb3mgt1p815evrl3weanttgr
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WBmdaQAAAAB5dAXA9/+DSql4++KhagOuUEFPRURHRTA2MjEARWRnZQ==)
+---
+Entry: /home/runner/.gradle/caches/modules-*/files-*/*/*/*/*
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WhmdaQAAAAA2GNaIuzQZQKMg09Mz6gh5UEFPRURHRTA1MTMARWRnZQ==)
+---
+Entry: /home/runner/.gradle/caches/jars-*/*/
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WBmdaQAAAAD4xB9OB6r8TIh0M0kQ3/cuUEFPRURHRTA2MjAARWRnZQ==)
+---
+Entry: /home/runner/.gradle/caches/*/kotlin-dsl/accessors/*/
+/home/runner/.gradle/caches/*/kotlin-dsl/scripts/*/
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WBmdaQAAAAD59afFlQeWS7/e0V5YU9s6UEFPRURHRTA1MTQARWRnZQ==)
+---
+Entry: /home/runner/.gradle/caches/*/groovy-dsl/*/
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0WBmdaQAAAADqzF+Cz6uVSJdKG9P1SyBDUEFPRURHRTA2MDgARWRnZQ==)
+---
+Entry: /home/runner/.gradle/caches/transforms-4/*/
+/home/runner/.gradle/caches/*/transforms/*/
+    Requested Key : 
+    Restored  Key : 
+              Size: 
+              (Entry not restored: not requested)
+    Saved     Key : 
+              Size: 
+              (Entry not saved: 
+Our services aren't available right now
+We're working to restore all services as soon as possible. Please check back soon.
+
+0XBmdaQAAAABfNYfQzqLcSKzJzqM9nfugUEFPRURHRTA2MjIARWRnZQ==)
+
+---
+
+
 ## Error Report:
-Run ./gradlew assembleRelease --no-daemon
-  ./gradlew assembleRelease --no-daemon
-  shell: /usr/bin/bash -e {0}
-  env:
-    JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
-    JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
-    GRADLE_ACTION_ID: gradle/actions/setup-gradle
-    GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
-    GRADLE_BUILD_ACTION_CACHE_RESTORED: true
-    DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
-    DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
-    GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-    KEYSTORE_PASSWORD: ***
-    KEY_ALIAS: ***
-    KEY_PASSWORD: ***
-Downloading https://services.gradle.org/distributions/gradle-8.14.2-bin.zip
-.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%..............100%
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-Daemon will be stopped at the end of the build 
-Calculating task graph as no cached configuration is available for tasks: assembleRelease
-> Task :app:preBuild UP-TO-DATE
-> Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:checkKotlinGradlePluginConfigurationErrors
-> Task :app:buildKotlinToolingMetadata
-> Task :app:generateReleaseResValues
-> Task :app:generateReleaseBuildConfig
-> Task :app:generateReleaseResources
-> Task :app:createReleaseCompatibleScreenManifests
-> Task :app:packageReleaseResources
-> Task :app:mapReleaseSourceSetPaths
-> Task :app:parseReleaseLocalResources
-> Task :app:extractDeepLinksRelease
-> Task :app:checkReleaseAarMetadata
-> Task :app:extractProguardFiles
-> Task :app:mergeReleaseJniLibFolders
-> Task :app:javaPreCompileRelease
-> Task :app:mergeReleaseNativeLibs
-
-> Task :app:processReleaseMainManifest
-[org.tensorflow:tensorflow-lite:2.14.0] /home/runner/.gradle/caches/8.14.2/transforms/2e17a794639dc98d8a4a0d27d44a48e9/transformed/tensorflow-lite-2.14.0/AndroidManifest.xml Warning:
-	Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
-[org.tensorflow:tensorflow-lite-support:0.4.4] /home/runner/.gradle/caches/8.14.2/transforms/e1c87f087bdd12e6dc0d124e7367d04d/transformed/tensorflow-lite-support-0.4.4/AndroidManifest.xml Warning:
-	Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
-/home/runner/work/AMAIMA/AMAIMA/amaima/mobile/app/src/main/AndroidManifest.xml:68:9-71:45 Warning:
-	meta-data#com.google.android.gms.version@android:value was tagged at AndroidManifest.xml:68 to replace other declarations but no other declaration present
-
-> Task :app:processReleaseManifest
-
-> Task :app:stripReleaseDebugSymbols
-Unable to strip the following libraries, packaging them as they are: libonnxruntime.so, libonnxruntime4j_jni.so, libonnxruntime_extensions4j_jni.so, libortextensions.so, libtensorflowlite_jni.so.
-
-> Task :app:processReleaseManifestForPackage
-> Task :app:mergeReleaseResources
-> Task :app:extractReleaseNativeSymbolTables
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:mergeReleaseShaders FROM-CACHE
-> Task :app:compileReleaseShaders NO-SOURCE
-> Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseAssets FROM-CACHE
-> Task :app:compressReleaseAssets
-> Task :app:processApplicationManifestReleaseForBundle
-> Task :app:collectReleaseDependencies
-> Task :app:mergeReleaseArtProfile
-> Task :app:writeReleaseAppMetadata
-> Task :app:writeReleaseSigningConfigVersions
-> Task :app:processReleaseResources FAILED
-> Task :app:sdkReleaseDependencyData
-> Task :app:checkReleaseDuplicateClasses
-
-[Incubating] Problems report is available at: file:///home/runner/work/AMAIMA/AMAIMA/amaima/mobile/build/reports/problems/problems-report.html
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:processReleaseResources'.
-> A failure occurred while executing com.android.build.gradle.internal.res.LinkApplicationAndroidResourcesTask$TaskAction
-   > Android resource linking failed
-     ERROR: /home/runner/work/AMAIMA/AMAIMA/amaima/mobile/app/src/main/AndroidManifest.xml:68:9-71:45: AAPT: error: resource integer/google_play_services_version (aka com.amaima.app:integer/google_play_services_version) not found.
-         
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 2m 14s
-
-Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
-
-You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
-
-For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
-31 actionable tasks: 29 executed, 2 from cache
-Configuration cache entry stored.
-Error: Process completed with exit code 1.
