@@ -245,3 +245,318 @@ build
 Failed to restore gradle-home-v1|Linux|build[2efe194e8363a66cc916e2eba443ead7]-76283e9dde6d6ab5771b9d155f84f4b4547eb3d3: Error: Cache service responded with 400
 
 ## Error Report:
+1m 1s
+Run ./gradlew assembleRelease --no-daemon
+Downloading https://services.gradle.org/distributions/gradle-8.14.2-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%..............100%
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Calculating task graph as no cached configuration is available for tasks: assembleRelease
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:extractProguardFiles
+> Task :app:generateReleaseBuildConfig
+> Task :app:buildKotlinToolingMetadata
+> Task :app:generateReleaseResValues
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:generateReleaseResources
+> Task :app:javaPreCompileRelease
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:extractDeepLinksRelease
+> Task :app:checkReleaseAarMetadata
+> Task :app:packageReleaseResources
+> Task :app:mergeReleaseJniLibFolders
+
+> Task :app:processReleaseMainManifest
+[org.tensorflow:tensorflow-lite:2.14.0] /home/runner/.gradle/caches/8.14.2/transforms/2e17a794639dc98d8a4a0d27d44a48e9/transformed/tensorflow-lite-2.14.0/AndroidManifest.xml Warning:
+	Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+[org.tensorflow:tensorflow-lite-support:0.4.4] /home/runner/.gradle/caches/8.14.2/transforms/e1c87f087bdd12e6dc0d124e7367d04d/transformed/tensorflow-lite-support-0.4.4/AndroidManifest.xml Warning:
+	Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+
+> Task :app:processReleaseManifest
+> Task :app:parseReleaseLocalResources
+> Task :app:mergeReleaseResources
+> Task :app:mergeReleaseNativeLibs
+> Task :app:processReleaseManifestForPackage
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libonnxruntime.so, libonnxruntime4j_jni.so, libonnxruntime_extensions4j_jni.so, libortextensions.so, libtensorflowlite_jni.so.
+
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders FROM-CACHE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:processApplicationManifestReleaseForBundle
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:mergeReleaseAssets FROM-CACHE
+> Task :app:compressReleaseAssets
+> Task :app:processReleaseResources
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:bundleReleaseResources
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.RepositoryModule' because 'error.NonExistentClass' could not be resolved.
+
+> Task :app:kspReleaseKotlin FAILED
+
+Dependency trace:
+    => element (CLASS): com.amaima.app.di.RepositoryModule
+    => element (METHOD): bindAuthRepository(error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.ServiceModule' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.amaima.app.di.ServiceModule
+    => element (METHOD): bindWebSocketManager(error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.AppModule' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.AppModule
+    => element (METHOD): provideNetworkMonitor(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.NetworkModule' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.DatabaseModule' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.DatabaseModule
+    => element (METHOD): provideDatabase(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.amaima.app.di.MLModule' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideContext(android.content.Context)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.AppModule
+    => element (METHOD): provideNetworkMonitor(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideNetworkMonitor(android.content.Context)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.AppModule
+    => element (METHOD): provideNetworkMonitor(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideEncryptedPreferences(android.content.Context)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.AppModule
+    => element (METHOD): provideNetworkMonitor(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideRetrofit(error.NonExistentClass,error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideAmaimaApi(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideWebSocketClient(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideMoshi()' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.NetworkModule
+    => element (METHOD): provideOkHttpClient(error.NonExistentClass,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideDatabase(android.content.Context)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.DatabaseModule
+    => element (METHOD): provideDatabase(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideQueryDao(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.DatabaseModule
+    => element (METHOD): provideDatabase(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideWorkflowDao(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.DatabaseModule
+    => element (METHOD): provideDatabase(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideUserDao(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.DatabaseModule
+    => element (METHOD): provideDatabase(android.content.Context)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideModelDownloader(android.content.Context,error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideOnDeviceMLManager(android.content.Context,error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideModelRegistry(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideModelStore(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideEmbeddingEngine(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideAudioEngine(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideVisionEngine(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideVectorStore(android.content.Context)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.amaima.app.di.MLModule
+    => element (METHOD): provideModelDownloader(android.content.Context,error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'bindAuthRepository(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.amaima.app.di.RepositoryModule
+    => element (METHOD): bindAuthRepository(error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'bindQueryRepository(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.amaima.app.di.RepositoryModule
+    => element (METHOD): bindAuthRepository(error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'bindWebSocketManager(error.NonExistentClass)' because 'error.NonExistentClass' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.amaima.app.di.ServiceModule
+    => element (METHOD): bindWebSocketManager(error.NonExistentClass)
+    => type (ERROR return type): error.NonExistentClass
+
+If type 'error.NonExistentClass' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'error.NonExistentClass' is on your classpath.
+e: Error occurred in KSP, check log for detail
+
+
+[Incubating] Problems report is available at: file:///home/runner/work/AMAIMA/AMAIMA/amaima/mobile/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:kspReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+> Get more help at https://help.gradle.org.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 1m
+33 actionable tasks: 31 executed, 2 from cache
+Configuration cache entry stored.
+Error: Process completed with exit code 1.
