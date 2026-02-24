@@ -90,13 +90,8 @@ jobs:
 ---
 
 ## Error Report:
-Run # If the wrapper jar is missing or invalid, regenerate it
-  # If the wrapper jar is missing or invalid, regenerate it
-  if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || [ ! -s "gradle/wrapper/gradle-wrapper.jar" ]; then
-    echo "Gradle wrapper jar missing or corrupt. Regenerating..."
-    gradle wrapper
-  fi
-  chmod +x gradlew
+Run ./gradlew assembleRelease --no-daemon
+  ./gradlew assembleRelease --no-daemon
   shell: /usr/bin/bash -e {0}
   env:
     JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64
@@ -107,28 +102,87 @@ Run # If the wrapper jar is missing or invalid, regenerate it
     DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
     DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
     GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-Gradle wrapper jar missing or corrupt. Regenerating...
-Welcome to Gradle 9.3.1!
-Here are the highlights of this release:
- - Test reporting improvements
- - Error and warning improvements
- - Build authoring improvements
-For more details see https://docs.gradle.org/9.3.1/release-notes.html
-Starting a Gradle Daemon (subsequent builds will be faster)
-Calculating task graph as no cached configuration is available for tasks: wrapper
+    KEYSTORE_PASSWORD: ***
+    KEY_ALIAS: ***
+    KEY_PASSWORD: ***
+Downloading https://services.gradle.org/distributions/gradle-8.14.2-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%..............100%
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Calculating task graph as no cached configuration is available for tasks: assembleRelease
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:buildKotlinToolingMetadata
+> Task :app:generateReleaseResValues
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:packageReleaseResources
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:parseReleaseLocalResources
+> Task :app:extractDeepLinksRelease
+> Task :app:checkReleaseAarMetadata
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:javaPreCompileRelease
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:processReleaseMainManifest
+[org.tensorflow:tensorflow-lite:2.14.0] /home/runner/.gradle/caches/8.14.2/transforms/2e17a794639dc98d8a4a0d27d44a48e9/transformed/tensorflow-lite-2.14.0/AndroidManifest.xml Warning:
+	Namespace 'org.tensorflow.lite' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite:2.14.0, org.tensorflow:tensorflow-lite-api:2.14.0. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+[org.tensorflow:tensorflow-lite-support:0.4.4] /home/runner/.gradle/caches/8.14.2/transforms/e1c87f087bdd12e6dc0d124e7367d04d/transformed/tensorflow-lite-support-0.4.4/AndroidManifest.xml Warning:
+	Namespace 'org.tensorflow.lite.support' is used in multiple modules and/or libraries: org.tensorflow:tensorflow-lite-support:0.4.4, org.tensorflow:tensorflow-lite-support-api:0.4.4. Please ensure that all modules and libraries have a unique namespace. For more information, See https://developer.android.com/studio/build/configure-app-module#set-namespace
+/home/runner/work/AMAIMA/AMAIMA/amaima/mobile/app/src/main/AndroidManifest.xml:68:9-71:45 Warning:
+	meta-data#com.google.android.gms.version@android:value was tagged at AndroidManifest.xml:68 to replace other declarations but no other declaration present
+
+> Task :app:processReleaseManifest
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libonnxruntime.so, libonnxruntime4j_jni.so, libonnxruntime_extensions4j_jni.so, libortextensions.so, libtensorflowlite_jni.so.
+
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseShaders FROM-CACHE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets FROM-CACHE
+> Task :app:compressReleaseAssets
+> Task :app:processApplicationManifestReleaseForBundle
+> Task :app:collectReleaseDependencies
+> Task :app:mergeReleaseArtProfile
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:processReleaseResources FAILED
+> Task :app:sdkReleaseDependencyData
+> Task :app:checkReleaseDuplicateClasses
+
 [Incubating] Problems report is available at: file:///home/runner/work/AMAIMA/AMAIMA/amaima/mobile/build/reports/problems/problems-report.html
+
 FAILURE: Build failed with an exception.
+
 * What went wrong:
-org/gradle/api/internal/HasConvention
-> org.gradle.api.internal.HasConvention
+Execution failed for task ':app:processReleaseResources'.
+> A failure occurred while executing com.android.build.gradle.internal.res.LinkApplicationAndroidResourcesTask$TaskAction
+   > Android resource linking failed
+     ERROR: /home/runner/work/AMAIMA/AMAIMA/amaima/mobile/app/src/main/AndroidManifest.xml:68:9-71:45: AAPT: error: resource integer/google_play_services_version (aka com.amaima.app:integer/google_play_services_version) not found.
+         
+
 * Try:
 > Run with --stacktrace option to get the stack trace.
 > Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
-BUILD FAILED in 1m 50s
-Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+BUILD FAILED in 2m 14s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
 You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
-For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+For more on this, please refer to https://docs.gradle.org/8.14.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+31 actionable tasks: 29 executed, 2 from cache
 Configuration cache entry stored.
 Error: Process completed with exit code 1.
