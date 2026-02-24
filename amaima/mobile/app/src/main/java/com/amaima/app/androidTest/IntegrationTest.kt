@@ -14,9 +14,8 @@ class IntegrationTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        // Initialize with actual dependencies or mock them if using Hilt test injections
-        // For the sake of fixing syntax, we'll use property assignment if they were not lateinit
-        // But since they are lateinit, we need to ensure they are initialized.
+        // authRepository, queryRepository, and webSocketManager should be @Inject annotated in a real Hilt test
+        // but for now we fix the syntax error by removing the invalid (...)
     }
 
     @Test

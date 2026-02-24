@@ -6,34 +6,42 @@ import com.amaima.app.BuildConfig
 import com.amaima.app.data.local.AmaimaDatabase
 import com.amaima.app.data.local.QueryDao
 import com.amaima.app.data.local.WorkflowDao
+import com.amaima.app.data.repository.AuthRepository
+import com.amaima.app.data.repository.AuthRepositoryImpl
+import com.amaima.app.data.repository.QueryRepository
+import com.amaima.app.data.repository.QueryRepositoryImpl
+import com.amaima.app.network.WebSocketManager
+import com.amaima.app.network.WebSocketManagerImpl
 import com.amaima.app.data.local.UserDao
 import com.amaima.app.data.remote.AmaimaApi
 import com.amaima.app.data.remote.AmaimaWebSocket
-import com.amaima.app.ml.AudioEngine
-import com.amaima.app.ml.EmbeddingEngine
-import com.amaima.app.ml.ModelDownloader
-import com.amaima.app.ml.ModelRegistry
-import com.amaima.app.ml.ModelStore
-import com.amaima.app.ml.OnDeviceMLManager
-import com.amaima.app.ml.VectorStore
-import com.amaima.app.ml.VisionEngine
-import com.amaima.app.network.AuthInterceptor
-import com.amaima.app.network.CertificatePinning
-import com.amaima.app.network.NetworkMonitor
-import com.amaima.app.security.EncryptedPreferences
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindQueryRepository(impl: QueryRepositoryImpl): QueryRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ServiceModule {
+    @Binds
+    @Singleton
+    abstract fun bindWebSocketManager(impl: WebSocketManagerImpl): WebSocketManager
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
