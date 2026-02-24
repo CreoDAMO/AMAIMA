@@ -33,14 +33,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: wrapper # Uses version from gradle-wrapper.properties
+          gradle-version: 8.14.2
 
       - name: Fix/Regenerate Gradle Wrapper
         run: |
-          # If the wrapper jar is missing or invalid, regenerate it
+          # If the wrapper jar is missing or invalid, regenerate it using the correct version
           if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || [ ! -s "gradle/wrapper/gradle-wrapper.jar" ]; then
-            echo "Gradle wrapper jar missing or corrupt. Regenerating..."
-            gradle wrapper
+            echo "Gradle wrapper jar missing or corrupt. Regenerating with version 8.14.2..."
+            gradle wrapper --gradle-version 8.14.2
           fi
           chmod +x gradlew
 
