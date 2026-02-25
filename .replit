@@ -5,7 +5,7 @@ integrations = ["stripe:2.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "jdk17_headless", "libiconv", "libxcrypt", "libyaml", "postgresql", "rustc"]
+packages = ["cargo", "freetype", "jdk17_headless", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "libyaml", "openjpeg", "postgresql", "rustc", "tcl", "tk", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -32,20 +32,20 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd amaima/frontend && npm run dev -- --webpack"
+args = "cd amaima/frontend && npm run dev"
 waitForPort = 5000
 
 [[workflows.workflow]]
 name = "AMAIMA Backend"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd amaima/backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 waitForPort = 8000
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[ports]]
 localPort = 5000
