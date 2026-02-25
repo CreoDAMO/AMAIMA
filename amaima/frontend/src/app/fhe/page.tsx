@@ -218,7 +218,7 @@ export default function FHEPage() {
                   ))}
                 </div>
                 <div className="mt-3 text-xs text-gray-500">
-                  Polynomial degrees: {scheme.poly_modulus_degrees.join(', ')}
+                  Polynomial degrees: {scheme.poly_modulus_degrees?.join(', ') || 'N/A'}
                 </div>
               </div>
             ))}
@@ -346,13 +346,13 @@ export default function FHEPage() {
                     <div key={op} className="grid grid-cols-3 gap-3 text-sm">
                       <div className="bg-gray-800 px-3 py-1.5 rounded-md font-medium text-pink-300">{op}</div>
                       <div className="bg-gray-800 px-3 py-1.5 rounded-md font-mono text-gray-300">
-                        FHE: {Array.isArray(val) ? val.map((v: number) => v.toFixed(4)).join(', ') : typeof val === 'number' ? val.toFixed(6) : val}
+                        FHE: {Array.isArray(val) ? val.map((v: number) => v.toFixed(4)).join(', ') : typeof val === 'number' ? val.toFixed(6) : (val?.toString() || 'N/A')}
                       </div>
                       <div className="bg-gray-800 px-3 py-1.5 rounded-md font-mono text-emerald-300">
                         Plain: {(() => {
                           const pv = customResult.plaintext_verification?.[op];
-                          if (!pv) return 'N/A';
-                          return Array.isArray(pv) ? pv.map((v: number) => v.toFixed(4)).join(', ') : typeof pv === 'number' ? pv.toFixed(6) : pv;
+                          if (pv === undefined || pv === null) return 'N/A';
+                          return Array.isArray(pv) ? pv.map((v: number) => v.toFixed(4)).join(', ') : typeof pv === 'number' ? pv.toFixed(6) : pv.toString();
                         })()}
                       </div>
                     </div>
