@@ -202,10 +202,24 @@ def build_complex_reasoning_workflow() -> StatefulWorkflow:
     )
 
     def needs_revision(state: WorkflowState) -> bool:
+        # Only trigger on explicit affirmative revision signals from the validator.
+        # Loose keywords like "error" or "missing" appear constantly in normal
+        # technical prose and cause false-positive loops that burn 6× token cost.
         last_response = state.history[-1].get("response", "").lower() if state.history else ""
-        revision_indicators = ["error", "incorrect", "gap", "missing", "incomplete", "revision needed"]
-        has_issues = any(indicator in last_response for indicator in revision_indicators)
-        return has_issues and state.iteration < 6
+        revision_signals = [
+            "requires revision",
+            "needs revision",
+            "revise the solution",
+            "revise the answer",
+            "incorrect conclusion",
+            "logically inconsistent",
+            "factually incorrect",
+            "significant gap",
+            "critical error",
+            "must be corrected",
+        ]
+        has_explicit_revision_signal = any(signal in last_response for signal in revision_signals)
+        return has_explicit_revision_signal and state.iteration < 6
 
     workflow.add_node(decomposer)
     workflow.add_node(solver)
