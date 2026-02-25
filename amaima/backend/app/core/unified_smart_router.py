@@ -366,14 +366,10 @@ class SmartRouter:
         ModelSize.ULTRA_200B: 1.50,
     }
 
-    # Domain Detection Keywords
-    DOMAIN_KEYWORDS = {
-        "biology": [r"protein", r"molecule", r"drug", r"smiles", r"docking", r"biomedical", r"gene", r"sequence"],
-        "robotics": [r"robot", r"arm", r"navigation", r"path", r"grasp", r"manipulation", r"actuator", r"ros2", r"isaac"],
-        "vision": [r"image", r"picture", r"photo", r"video", r"scene", r"detect", r"segment", r"visual"],
-        "audio": [r"audio", r"speech", r"voice", r"listen", r"transcript", r"stt", r"tts", r"sound"],
-        "image_gen": [r"generate image", r"create image", r"make a picture", r"draw", r"illustrate"],
-    }
+    # Domain detection is fully delegated to smart_router_engine.detect_domain().
+    # That function runs regex priority patterns for image_gen and speech FIRST,
+    # preventing them from being shadowed by the weaker vision/audio keyword matches
+    # that a simple dict would produce. Do NOT add a local DOMAIN_KEYWORDS dict here.
     
     # Latency estimates (baseline ms + per token)
     LATENCY_BASELINE = {
@@ -440,12 +436,11 @@ class SmartRouter:
         Returns:
             Complete routing decision with rationale
         """
-        query_lower = query.lower()
-        detected_domain = "general"
-        for domain, keywords in self.DOMAIN_KEYWORDS.items():
-            if any(re.search(kw, query_lower) for kw in keywords):
-                detected_domain = domain
-                break
+        # Delegate domain detection to smart_router_engine — the single source of truth.
+        # This ensures image_gen and speech regex patterns fire FIRST (confidence=1.0)
+        # before any keyword scoring, which matches the behaviour of route_query().
+        from app.modules.smart_router_engine import detect_domain as _detect_domain
+        detected_domain, _domain_confidence = _detect_domain(query)
         
         device = self._get_device_capability()
         connectivity = self._get_connectivity_status()
