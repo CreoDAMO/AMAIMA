@@ -409,9 +409,9 @@ VIDEO_CAPABILITIES = {
 Nothing existed. This is the root cause of the hallucination you saw — AMAIMA had no video generation pipeline whatsoever. The new service wires to Cosmos Predict 2.5 NIM, handles both synchronous and async response shapes (Cosmos returns a `requestId` rather than immediate bytes), and polls up to 4 minutes waiting for completion. Includes both `generate_video()` and `video_to_video()`. To register it in `main.py`, add:
 
 ```python
-from app.services import video_service (ADDED)
-# then in your domain routing: (NEED TO ADD)
-elif detected_domain == "video_gen":
+from app.services import video_service (**ADDED**)
+# then in your domain routing:
+elif detected_domain == "video_gen": (**NEED TO ADD**)
     execution_result = await video_service.generate_video(request.query)
     output = execution_result.get("video_url")
 ```
@@ -438,7 +438,7 @@ Clean deployment. Everything is healthy. Here's what the logs confirm:
 ```
 WARNING: FHE startup: engine not available (TenSEAL missing or FHE_ENABLED=false)
 ```
-The FHE pool warm-up gracefully degraded as designed, but TenSEAL isn't installed in the container. To enable FHE you need either `FHE_ENABLED=true` set in Render's environment variables, or TenSEAL added to `requirements.txt`. That's the next thing to tackle when you're ready — the Dockerfile 3-stage SEAL/HEXL build we started earlier is the right fix for that.
+The FHE pool warm-up gracefully degraded as designed, but TenSEAL isn't installed in the container. To enable FHE you need either `FHE_ENABLED=true` set in Render's environment variables(**COMPLETED**), or TenSEAL added to `requirements.txt`. That's the next thing to tackle when you're ready — the Dockerfile 3-stage SEAL/HEXL build we started earlier is the right fix for that. (**NEED TO ADD**)
 
 **Minor noise to clean up when convenient:**
 - The lifespan is running 4 times (lines 1–39 show 4 identical startup sequences before the DB connects) — Render is spawning 4 uvicorn workers, which is fine, but the `SmartRouter` is being instantiated once per worker rather than shared. Not a bug, just worth noting.
