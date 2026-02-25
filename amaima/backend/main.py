@@ -348,6 +348,10 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
             # Return the base64 data URI; frontend renders it as <img>
             output = execution_result.get("image_data", "")
 
+        elif detected_domain == "video_gen":
+            execution_result = await video_service.generate_video(request.query)
+            output = execution_result.get("video_url")
+
         else:
             decision = route_query(request.query, simulate=False)
             model_used = decision.get("model", "unknown")

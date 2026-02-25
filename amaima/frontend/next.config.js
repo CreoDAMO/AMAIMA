@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
     reactStrictMode: true,
     poweredByHeader: false,
@@ -67,6 +69,7 @@ const nextConfig = {
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion'],
     },
+    outputFileTracingRoot: path.join(__dirname, '../../'),
     turbopack: {},
 };
 
