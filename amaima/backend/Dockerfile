@@ -101,9 +101,18 @@ RUN groupadd --gid 1000 appgroup && \
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
-    # FHE engine config
+    # Production execution mode — required by smart_router_engine.py.
+    # Without this every query raises EnvironmentError.
+    AMAIMA_EXECUTION_MODE=execution-enabled \
+    # FHE_ENABLED=true is correct here: TenSEAL was compiled from source
+    # in the builder stage and is present in /opt/venv. This differs from
+    # the root Dockerfile which defaults to false (no TenSEAL installed).
     FHE_ENABLED=true \
-    # Thread count for SEAL NTT parallelism — matches uvicorn worker cores
+    # NVIDIA_NIM_API_KEY is the primary key name checked by audio_service.py
+    # and image_service.py. Inject via -e at runtime; this is just an alias
+    # so the fallback chain resolves correctly if only NVIDIA_API_KEY is set.
+    NVIDIA_NIM_API_KEY="" \
+    # Thread count for SEAL NTT parallelism — matches uvicorn worker cores.
     # Override at runtime: -e SEAL_THREADS=8
     SEAL_THREADS=4 \
     OMP_NUM_THREADS=4 \
@@ -117,7 +126,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /app /app
+# Copy only the backend source — the root Dockerfile handles the full-stack copy.
+# This Dockerfile is for the backend service in isolation (e.g. docker compose).
+COPY --from=builder /app/amaima/backend /app
 # Copy SEAL/HEXL shared libs needed at runtime
 COPY --from=fhe-libs /usr/local/lib /usr/local/lib
 COPY --from=fhe-libs /usr/local/include /usr/local/include
