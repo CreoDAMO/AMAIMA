@@ -55,7 +55,7 @@ Removed `get_cosmos_client()` entirely — it built an OpenAI SDK instance that 
 
 The circular import risk was removed by moving `from app.services.vision_service import cosmos_inference` from module top level into a lazy import inside `vision_guided_action()` — it now only loads when that function is actually called. The `_ros2_navigate()` stub was changed from returning `{"status": "executed_on_hardware"}` (a lie — no ROS2 command was ever sent) to returning `{"status": "stub_not_executed"}` with an honest note explaining what needs to be wired to activate real hardware execution.
 
-**`video_service.py` — new file**
+**`video_service.py` — new file (ADDED)**
 
 ```py
 """
@@ -409,8 +409,8 @@ VIDEO_CAPABILITIES = {
 Nothing existed. This is the root cause of the hallucination you saw — AMAIMA had no video generation pipeline whatsoever. The new service wires to Cosmos Predict 2.5 NIM, handles both synchronous and async response shapes (Cosmos returns a `requestId` rather than immediate bytes), and polls up to 4 minutes waiting for completion. Includes both `generate_video()` and `video_to_video()`. To register it in `main.py`, add:
 
 ```python
-from app.services import video_service
-# then in your domain routing:
+from app.services import video_service (ADDED)
+# then in your domain routing: (NEED TO ADD)
 elif detected_domain == "video_gen":
     execution_result = await video_service.generate_video(request.query)
     output = execution_result.get("video_url")
