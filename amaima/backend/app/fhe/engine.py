@@ -216,17 +216,17 @@ class FHEEngine:
     # Drug scoring pipeline: 2 multiplications → depth 2, N=8192 is sufficient.
     # N=16384 (v1 "standard") doubles every operation cost with no security benefit.
     CKKS_PARAMS = {
-        "light": {                              # depth=3, drug scoring / embeddings
+        "light": {                              # depth=2, drug scoring / embeddings
             "poly_modulus_degree": 8192,
-            "coeff_mod_bit_sizes": [60, 40, 40, 40, 60],
-            "global_scale": 2 ** 40,
+            "coeff_mod_bit_sizes": [40, 21, 21, 21, 40],
+            "global_scale": 2 ** 21,
         },
-        "standard": {                           # depth=4, deeper pipelines
+        "standard": {                           # depth=3, deeper pipelines
             "poly_modulus_degree": 8192,
-            "coeff_mod_bit_sizes": [60, 40, 40, 40, 40, 60],
-            "global_scale": 2 ** 40,
+            "coeff_mod_bit_sizes": [40, 21, 21, 21, 21, 40],
+            "global_scale": 2 ** 21,
         },
-        "deep": {                               # depth=6, AlphaFold2 / multi-layer
+        "deep": {                               # depth=5
             "poly_modulus_degree": 16384,
             "coeff_mod_bit_sizes": [60, 40, 40, 40, 40, 40, 40, 60],
             "global_scale": 2 ** 40,

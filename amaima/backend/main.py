@@ -234,7 +234,9 @@ async def lifespan(app: FastAPI):
         await fhe_startup()
         logger.info("FHE context pool warmed up successfully")
     except Exception as e:
-        logger.warning(f"FHE pool warm-up skipped (FHE may be unavailable): {e}")
+        import traceback
+        logger.warning(f"FHE pool warm-up skipped: {e}")
+        logger.error(traceback.format_exc())
 
     from app.db_config import get_database_url
     db_url = get_database_url()
