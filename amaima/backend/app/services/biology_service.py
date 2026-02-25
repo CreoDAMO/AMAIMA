@@ -82,10 +82,27 @@ async def bionemo_inference(
         validated_molecules = []
         if "SMILES" in query.upper() or task_type == "molecule_generation":
             import re
-            smiles_pattern = r'[A-Za-z0-9@+\-\[\]\(\)=#/\\\.%]+'
+            # Require at least one structural SMILES character (branch, bond, ring,
+            # stereo, charge, or atom map) so plain English words and identifiers
+            # never match. Real SMILES like CC(=O)Oc1ccccc1C(=O)O will always
+            # contain at least one of: = # ( ) [ ] / \ @ %
+            smiles_pattern = (
+                r'[A-Za-z0-9@+\-\[\]\(\)=#/\\\.%]*'
+                r'[=@#\[\]\(\)/\\%]'
+                r'[A-Za-z0-9@+\-\[\]\(\)=#/\\\.%]*'
+            )
             potential_smiles = re.findall(smiles_pattern, response_text)
-            for s in potential_smiles[:10]:
-                if len(s) > 3 and any(c in s for c in ['C', 'N', 'O', 'c', 'n', 'o']):
+            seen: set = set()
+            for s in potential_smiles[:20]:
+                # Must be non-trivial length, contain carbon, have a structural
+                # character, and not be a duplicate in this response.
+                if (
+                    len(s) > 4
+                    and s not in seen
+                    and any(c in s for c in ['C', 'c'])
+                    and any(c in s for c in ['=', '#', '(', '[', '/', '\\', '@', '%'])
+                ):
+                    seen.add(s)
                     validated_molecules.append(validate_smiles(s))
 
         return {
