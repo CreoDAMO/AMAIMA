@@ -14,24 +14,26 @@
 [![License: AMAIMA v2.0](https://img.shields.io/badge/License-AMAIMA%20v2.0-blueviolet?style=for-the-badge)](LICENSE)
 [![Backend CI/CD](https://github.com/CreoDAMO/AMAIMA/actions/workflows/backend.yml/badge.svg)](https://github.com/CreoDAMO/AMAIMA/actions/workflows/backend.yml)
 
+**🟢 Live at [amaima.live](https://amaima.live)**
+
 </div>
 
 ---
 
 ## Overview
 
-AMAIMA is an enterprise-grade multimodal AI operating system that intelligently routes queries across **26 NVIDIA NIM models** spanning **6 intelligence domains**. It combines a smart routing engine, live multi-agent orchestration, Fully Homomorphic Encryption (FHE), and specialized domain services for biology, robotics, vision, audio, and image generation — backed by a full-featured Android mobile client with on-device ML inference.
+AMAIMA is an enterprise-grade multimodal AI operating system that intelligently routes queries across **26 NVIDIA NIM models** spanning **7 intelligence domains**. It combines a production smart routing engine with no simulation fallback, live multi-agent orchestration, Fully Homomorphic Encryption (FHE), and specialized domain services for biology, robotics, vision, speech, image generation, and video generation — backed by a full-featured Android mobile client with on-device ML inference.
 
 ### What It Does
 
-- **Smart Query Routing** — Analyzes query complexity (TRIVIAL to EXPERT) and automatically routes to the optimal model across 6 domains
-- **6-Domain AI** — Dedicated services for Biology (BioNeMo/GenMol), Robotics (Isaac/GR00T), Vision (Cosmos R2), Speech (Riva ASR/TTS), Image Generation (SDXL-Turbo), and Embeddings (NeMo Retriever)
-- **Live Multi-Agent Orchestration** — Agent Builder directly executes multimodal pipelines via the agent engine, with specialized Audio and Visual Art crews
-- **Fully Homomorphic Encryption** — Privacy-preserving encrypted inference via Microsoft SEAL (TenSEAL), prominently integrated across the platform
-- **Multimodal Frontend** — Rich media rendering for generated images and neural audio playback directly in the chat interface
-- **Monetization Built-In** — Three-tier subscription system with Stripe billing, JWT authentication, API key management, and usage tracking
+- **Smart Query Routing** — Regex-priority domain detection (image_gen and speech checked first) then complexity scoring (TRIVIAL to EXPERT); routes to the optimal model across 7 domains. Single source of truth shared between both routing engines.
+- **7-Domain AI** — Biology (BioNeMo/GenMol), Robotics (Isaac/GR00T), Vision (Cosmos R2), Speech (Riva ASR/TTS), Image Generation (SDXL-Turbo cascade), Video Generation (Cosmos Predict 2.5), and Embeddings (NeMo Retriever)
+- **Live Multi-Agent Orchestration** — Agent Builder executes real multimodal pipelines via `/v1/agents/run` with 10 crew types including Neural Audio Synthesis, Visual Art Generation, and Stateful Workflow
+- **Fully Homomorphic Encryption** — Privacy-preserving encrypted inference via Microsoft SEAL (TenSEAL): CKKS + BFV schemes, 128-bit post-quantum security, context pool (keygen once per process), LRU payload store, batched similarity search
+- **Multimodal Frontend** — Inline audio player and image rendering in chat; base64 data URIs returned directly from service layer
+- **Production Mode Only** — `AMAIMA_EXECUTION_MODE=execution-enabled` required; no silent simulation fallback anywhere in the stack
+- **Monetization Built-In** — Three-tier subscription system with Stripe billing, JWT authentication, API key management, and MAU usage enforcement
 - **On-Device ML** — Android app with ONNX Runtime + TFLite for offline embeddings, speech-to-text, vision, and vector search
-- **Cloud-First** — No GPU required; all cloud inference runs through NVIDIA NIM APIs
 
 ---
 
@@ -41,7 +43,7 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
                     +------------------+
                     |   Next.js 16     |
                     |   Frontend       |
-                    |   (port 5000)    |
+                    |   (port 10000)   |
                     +--------+---------+
                              |
                     API Routes (proxy)
@@ -57,17 +59,17 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 +--------+--+       +--------+--+       +---------+--+
 | Smart     |       | Domain    |       | Billing /  |
 | Router    |       | Services  |       | Auth /     |
-| Engine    |       |           |       | Admin      |
+| Engine*   |       |           |       | Admin      |
 +-----------+       +-----------+       +------------+
                          |
-     +-------------------+--------------------+
-     |          |         |         |         |
-+----+----+ +---+---+ +---+---+ +---+---+ +--+----+
-| Biology | |Robotics| | Vision| | Audio | | Image |
-| BioNeMo | |Isaac/  | |Cosmos | | Riva  | | Gen   |
-| GenMol  | |GR00T   | |  R2   | | ASR/  | |SDXL-  |
-|         | |        | |       | | TTS   | |Turbo  |
-+---------+ +--------+ +-------+ +-------+ +-------+
+     +-------------------+---------------------+
+     |          |         |         |     |     |
++----+----+ +---+---+ +---+---+ +--+--+ +-+-+ +--+---+
+| Biology | |Robotics| | Vision| |Audio| |Img| |Video |
+| BioNeMo | |Isaac/  | |Cosmos | | Riva| |Gen| |Cosmos|
+| GenMol  | |GR00T   | |  R2   | |ASR/ | |SDL| |Pred. |
+|         | |        | |       | | TTS | |XL | | 2.5  |
++---------+ +--------+ +-------+ +-----+ +---+ +------+
                     |
             +-------+-------+
             |               |
@@ -75,7 +77,11 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
     | FHE        |  | NVIDIA NIM   |
     | Subsystem  |  | Cloud APIs   |
     | (TenSEAL)  |  |              |
+    | CKKS + BFV |  |              |
     +------------+  +--------------+
+
+* unified_smart_router.py delegates domain detection
+  to smart_router_engine.py — single source of truth
 
     +------------------+
     | Android Mobile   |
@@ -92,7 +98,7 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 | Model | Parameters | Best For | Cost/1K Tokens |
 |-------|-----------|----------|----------------|
 | meta/llama-3.1-8b-instruct | 8B | Simple queries, chat | $0.0001 |
-| meta/llama-3.1-70b-instruct | 70B | Complex reasoning | $0.00088 |
+| meta/llama-3.1-70b-instruct | 70B | Complex reasoning, agent crews | $0.00088 |
 | meta/llama-3.1-405b-instruct | 405B | Expert-level tasks | $0.005 |
 | mistralai/mixtral-8x7b-instruct-v0.1 | 46.7B MoE | Cost-efficient complex | $0.0006 |
 | google/gemma-2-9b-it | 9B | Lightweight/edge | $0.0001 |
@@ -102,15 +108,15 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 | Model | Parameters | Best For |
 |-------|-----------|----------|
 | nvidia/cosmos-reason2-7b | 7B | Vision-language reasoning, embodied AI |
-| nvidia/cosmos-predict2-14b | 14B | Video generation, future prediction |
-| nvidia/llama-3.1-nemotron-nano-vl-8b | 8B | Multimodal understanding |
+| nvidia/cosmos-predict2-14b | 14B | Video generation, future state prediction |
+| nvidia/llama-3.1-nemotron-nano-vl-8b | 8B | Multimodal understanding (image/video input) |
 
 ### Biology/Drug Discovery Models
 | Model | Best For |
 |-------|----------|
 | nvidia/bionemo-megamolbart | Molecular generation, drug discovery |
 | nvidia/bionemo-esm2 | Protein structure prediction |
-| nvidia/genmol | Fragment-based molecule generation (SAFE format, QED/plogP optimization) |
+| nvidia/genmol | Fragment-based molecule generation (SAFE format, QED/plogP) |
 | AlphaFold2 *(self-hosted)* | Protein structure prediction |
 | DiffDock *(self-hosted)* | Molecular docking |
 
@@ -121,32 +127,39 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 | nvidia/alpamayo-1 | Autonomous vehicle reasoning (VLA) |
 | Isaac Manipulator *(self-hosted)* | Object manipulation |
 
-### Speech Models *(New)*
+### Speech Models
 | Model | Best For |
 |-------|----------|
-| nvidia/riva-asr | Automatic speech recognition (ASR) |
-| nvidia/riva-tts | Text-to-speech synthesis (TTS) |
+| nvidia/magpie-tts-multilingual | Text-to-speech synthesis (TTS) — primary |
+| nvidia/parakeet-ctc-1.1b | Automatic speech recognition (ASR) — 1.1B CTC |
 | Riva ASR *(self-hosted)* | On-premise speech recognition |
 | Riva TTS *(self-hosted)* | On-premise speech synthesis |
 
-### Image Generation Models *(New)*
+### Image Generation Models
 | Model | Best For |
 |-------|----------|
-| nvidia/sdxl-turbo | High-quality text-to-image generation |
+| stabilityai/sdxl-turbo | Fast text-to-image (2 steps, cascade primary) |
+| stabilityai/sdxl | Full-quality text-to-image (cascade fallback) |
+| stabilityai/stable-diffusion-3 | Highest quality (cascade final fallback) |
+
+### Video Generation Models
+| Model | Best For |
+|-------|----------|
+| nvidia/cosmos-predict2-5b | Text-to-video and video-to-video (5s, 720p) |
 
 ### Embedding Models
 | Model | Best For |
 |-------|----------|
-| nvidia/nemo-retriever-multimodal-embedding | 2048-dim text + image embeddings |
+| nvidia/nv-embedqa-e5-v5 | 2048-dim text + image embeddings |
 | NV-Embed *(self-hosted)* | On-premise multimodal embeddings |
-| VILA *(self-hosted)* | Visual-language alignment |
 
 ---
 
 ## Smart Router
 
-The routing engine classifies queries across five complexity levels and automatically routes to the optimal model:
+The routing engine uses **regex-priority domain detection** — `image_gen` and `speech` patterns are evaluated first before any complexity scoring, ensuring they never fall through to a general LLM. Both routing layers (`unified_smart_router.py` and `smart_router_engine.py`) share a single domain detection function as the source of truth.
 
+### Complexity Levels
 | Level | Description | Routed To |
 |-------|-------------|-----------|
 | TRIVIAL | Simple factual queries | Llama 8B / Gemma 9B |
@@ -155,48 +168,55 @@ The routing engine classifies queries across five complexity levels and automati
 | COMPLEX | Domain expertise needed | Mixtral 8x7B / 70B |
 | EXPERT | Specialized analysis | Llama 405B |
 
-### Domain-Aware Routing
-- **Biology** keywords (drug, protein, molecule, SMILES) → BioNeMo / GenMol
-- **Vision** keywords (image, video, scene, visual) → Cosmos Reason2 7B
-- **Robotics** keywords (robot, navigate, grasp, plan) → Isaac GR00T N1.6
-- **Speech** keywords (audio, speech, transcribe, voice, speak, TTS, ASR) → Riva ASR/TTS *(New)*
-- **Image Generation** keywords (generate image, draw, create picture, render) → SDXL-Turbo *(New)*
-- **Embeddings** keywords (embed, similarity, search, retrieve) → NeMo Retriever
-- **General** queries → Complexity-based model selection
+### Domain-Aware Routing (Priority Order)
+1. **Image Generation** — 13 regex patterns checked first (`generate image`, `draw`, `render`, `sdxl`, `stable diffusion`, etc.) → SDXL-Turbo cascade
+2. **Speech** — 15 regex patterns checked second (`tts`, `text-to-speech`, `narrate`, `transcribe`, `asr`, `riva`, etc.) → Riva TTS / Parakeet ASR
+3. **Biology** — keyword scoring → BioNeMo / GenMol
+4. **Vision** — keyword scoring → Cosmos Reason2 7B
+5. **Robotics** — keyword scoring → Isaac GR00T N1.6
+6. **General** — complexity-based model selection
 
 ---
 
 ## Domain Services
 
 ### Biology (BioNeMo + GenMol)
-- Drug discovery pipeline with molecule generation
+- Drug discovery pipeline with molecule generation (SMILES)
 - Protein sequence analysis and structure prediction
-- Molecule optimization with SMILES validation
-- Fragment-based molecule generation via GenMol (SAFE format)
-- QED/plogP scoring optimization
+- Molecule optimization with RDKit validation (falls back to cloud if RDKit unavailable)
+- Fragment-based molecule generation via GenMol (SAFE format, QED/plogP scoring)
+- Structurally-constrained SMILES extraction from LLM responses (no false positives from prose)
 
 ### Robotics (Isaac/GR00T)
 - Robot navigation and path planning
-- Action planning with step-by-step execution
-- Vision-guided robot actions
-- Physics simulation
+- Action planning with step-by-step structured execution (`ACTION | PARAMS | REASON` format)
+- Vision-guided robot actions via Cosmos inference (lazy-loaded to avoid circular imports)
+- Physics simulation via PyBullet (local) or NIM cloud fallback
+- ROS2 hardware bridge stub (honest `stub_not_executed` status — not a fake success)
 
 ### Vision (Cosmos R2)
-- Image and video analysis
-- Scene understanding and spatial reasoning
+- Image and video analysis — media content blocks preserved end-to-end (not silently discarded)
+- Routes to Nemotron VL when media is present (multimodal-capable model)
+- Scene understanding and spatial reasoning with `<think>/<answer>` structured output
 - Embodied reasoning for robotics applications
-- Future state prediction
 
-### Speech — Automatic Speech Recognition + Text-to-Speech *(New)*
-- Speech-to-text (ASR) via NVIDIA Riva models
-- Text-to-speech synthesis (TTS) via NVIDIA Riva models
-- Neural audio playback rendered directly in the chat interface
-- Smart Router auto-detects audio intent from natural language queries
+### Speech (Riva)
+- **TTS:** `POST /v1/audio/synthesize` → `nvidia/magpie-tts-multilingual` → `data:audio/wav;base64,...`
+- **ASR:** `POST /v1/audio/transcribe` → `nvidia/parakeet-ctc-1.1b` → transcript text
+- Neural audio playback rendered directly in chat interface
 
-### Image Generation *(New)*
-- High-quality text-to-image generation via SDXL-Turbo on NVIDIA NIM
-- Generated images displayed inline in the chat with "Advanced Visual Generation Engine" label
-- Smart Router auto-detects image generation intent from natural language queries
+### Image Generation (SDXL)
+- **Text-to-image:** `POST /v1/image/generate` → SDXL-Turbo (2 steps) with automatic cascade fallback to full SDXL → SD3
+- Negative prompt support
+- `inpaint_image()`, `image_to_image()`, `generate_image_variants()` (4 concurrent seeds)
+- Format conversion: PNG (default), JPEG, WebP via Pillow
+- Inline image rendering in chat interface as `data:image/png;base64,...`
+
+### Video Generation (Cosmos Predict 2.5) *(New)*
+- **Text-to-video:** `POST /v1/video/generate` → `nvidia/cosmos-predict2-5b` → 5s 720p MP4
+- **Video-to-video:** `POST /v1/video/transform` → prompt-guided video transformation
+- Handles both sync and async NIM response shapes (polls up to 4 min for async jobs)
+- Returns `data:video/mp4;base64,...` URI
 
 ### Embeddings (NeMo Retriever)
 - 2048-dimensional multimodal text + image embeddings
@@ -208,56 +228,67 @@ The routing engine classifies queries across five complexity levels and automati
 
 | Crew | Agents | Purpose |
 |------|--------|---------|
-| Research | Researcher, Analyst, Writer | General research with analysis |
-| Drug Discovery | Chemist, Pharmacologist, Toxicologist | Drug candidate evaluation |
-| Protein Analysis | Bioinformatician, Structural Biologist | Protein structure/function |
-| Navigation | Planner, Mapper, Controller | Robot path planning |
-| Manipulation | Grasp Planner, Motion Controller | Object manipulation |
-| Swarm | Coordinator, Communicator | Multi-robot coordination |
-| Neural Audio Synthesis *(New)* | Audio Engineer, Tone Analyst | Speech pacing, emotional tone analysis |
-| Visual Art Generation *(New)* | Creative Director, Aesthetic Validator | Lighting, composition, aesthetic QA |
+| Research | Researcher, Analyst, Synthesizer | General research with analysis |
+| Drug Discovery | Molecule Generator, ADMET Predictor, Lead Optimizer, Safety Reviewer | Drug candidate evaluation pipeline |
+| Protein Analysis | Structural Biologist, Binding Site Predictor | Protein structure/function |
+| Navigation | Perception, Path Planner, Action Executor, Safety Monitor | Robot path planning (ISO 10218/15066) |
+| Manipulation | Perception, Grasp Planner, Action Executor, Safety Monitor | Object manipulation |
+| Swarm | Coordinator, Perception, Path Planner, Safety Monitor | Multi-robot coordination (hierarchical) |
+| Neural Audio Synthesis | Audio Engineer, Tone Analyst | SSML markup, tone analysis → Riva TTS dispatch |
+| Visual Art Generation | Creative Director, Aesthetic Validator | Prompt engineering → SDXL-Turbo dispatch |
+| Stateful Workflow | Classifier, Specialist, Reviewer (per domain) | Multi-node reasoning with conditional edges |
+| Custom | User-defined roles | Arbitrary crew composition |
 
-### Agent Builder — Live Execution *(New)*
-The Visual Agent Builder at `/agent-builder` now directly executes pipelines via the agent engine (`/v1/agents/run`). Previously a visual-only tool, it now:
-- Runs multimodal workflows with real model calls
-- Auto-detects when a workflow requires Speech, Vision, or Image Gen domains based on the nodes being orchestrated
-- Supports all 8 crew types including the new Audio and Visual Art crews
-- Passes structured `crew_type` payloads recognized by the crew manager
+### Agent Builder — Live Execution
+The Visual Agent Builder at `/agent-builder` executes real multimodal pipelines via `/v1/agents/run`. All 10 crew types are supported. The `run_crew()` dispatcher in `crew_manager.py` is the unified entry point — Neural Audio and Visual Art crews dispatch to real NIM services at the end of their pipelines.
+
+### Stateful Workflow Engine
+`langchain_agent.py` implements a graph-based workflow engine with:
+- `WorkflowNode` — async NIM model call with state threading
+- `ConditionalEdge` — branch on state predicate (false-positive-free revision detection)
+- Domain workflows: `research`, `complex_reasoning`, `biology`, `robotics`, `vision`, `audio`, `image_gen`
+- Iterative refinement loop with cycle detection (max 6 iterations, explicit revision signals only)
 
 ---
 
 ## Fully Homomorphic Encryption (FHE)
 
-Privacy-preserving computation using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography. FHE is now a **primary platform feature** surfaced on the home page and accessible directly from the main navigation.
+Privacy-preserving computation using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography. FHE is a **primary platform feature** on the home page and accessible directly from main navigation.
+
+> **Current status:** TenSEAL not yet installed in the production container. Set `FHE_ENABLED=true` and deploy the 3-stage Dockerfile (Intel HEXL + SEAL from source) to activate. The system degrades gracefully — FHE endpoints return `503` rather than crashing when TenSEAL is unavailable.
 
 ### Schemes
-- **CKKS** — Approximate arithmetic on real/complex numbers for encrypted ML inference, secure embeddings, and private scoring
+- **CKKS** — Approximate arithmetic on real/complex numbers for encrypted ML inference, secure embeddings, and private scoring. `N=8192` standard profile; `N=16384` deep profile for >3 multiplication depths.
 - **BFV** — Exact integer arithmetic for secure voting, private counting, and encrypted databases
 
+### Performance (with 3-stage Dockerfile)
+| Optimization | Latency Saved |
+|---|---|
+| Context pool — keygen once per process (was per-call) | −200 to −400ms |
+| N=8192 vs N=16384 for standard drug scoring | −200 to −300ms per multiply |
+| Intel HEXL + AVX-512 NTT acceleration | ×2–4 speedup |
+| SEAL threading via OMP_NUM_THREADS | proportional to core count |
+| **Target vs baseline** | **~300–400ms vs ~1,100ms** |
+
 ### Security
-- **128-bit post-quantum security** based on Ring Learning With Errors (RLWE), resistant to quantum attacks
-- Server-side key management for demonstration; production deployments use client-held keys
+- **128-bit post-quantum security** based on Ring Learning With Errors (RLWE)
+- Private key never serialized to hash (`save_secret_key=False`)
+- LRU payload store with cap 512 (configurable via `FHE_MAX_PAYLOADS`) — no unbounded memory growth
 
 ### Services
 | Service | Description |
 |---------|-------------|
 | Encrypted Drug Scoring | QED/plogP scoring on encrypted molecular vectors |
-| Encrypted Similarity Search | Cosine similarity over encrypted embeddings |
+| Encrypted Similarity Search | Batched cosine similarity over encrypted embeddings (O(1) decrypt pass) |
 | Secure Aggregation | Multi-party encrypted mean computation |
 | Secure Voting | Private ballot tallying via BFV |
 | Vector Arithmetic | Encrypted vector math with verification |
-
-### Navigation Integration *(New)*
-- "FHE & Zero Trust" promoted to primary feature on the home page
-- Direct navigation links: Main Dashboard → Agent Builder → FHE Subsystem
-- FHE dashboard includes breadcrumb navigation back to the main control plane
-- Enterprise iconography (Shield, Lock, Brain) unified across all FHE UI surfaces
 
 ---
 
 ## Mobile App (Android)
 
-A native Android client built with Kotlin and Jetpack Compose, featuring on-device ML inference for offline-capable AI operations.
+Native Android client built with Kotlin and Jetpack Compose, featuring on-device ML inference for offline-capable AI operations.
 
 ### Tech Stack
 - **Language**: Kotlin 1.9.20 with Jetpack Compose (Material 3)
@@ -268,7 +299,6 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 - **Min SDK**: 26 (Android 8.0), Target SDK: 34
 
 ### On-Device ML Features
-
 | Feature | Description |
 |---------|-------------|
 | **Model Registry** | Hot-swappable model lifecycle with StateFlow-based UI observation |
@@ -281,21 +311,14 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 | **Vector Store** | In-memory vector DB with cosine/euclidean/dot-product search, metadata filtering, binary persistence (10K entries) |
 | **Model Downloader** | Asset-first loading with HTTP fallback, progress tracking, cache management |
 
-### Security
-- Biometric authentication
-- EncryptedSharedPreferences for sensitive data
-- Certificate pinning for API communication
-- Network security config with domain restrictions
-
 ---
 
 ## Monetization
 
 ### Subscription Tiers
-
 | Tier | Price | Queries/Month | Features |
 |------|-------|---------------|----------|
-| Community | Free | 1,000 | All 26 models, basic routing, all 6 domains |
+| Community | Free | 1,000 | All 26 models, basic routing, all 7 domains |
 | Production | $49/mo | 10,000 | Priority routing, all domain services, FHE access |
 | Enterprise | $299/mo | Unlimited | Custom SLA, dedicated support, analytics, admin dashboard |
 
@@ -303,9 +326,9 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 1. Users register via `/v1/auth/register` and generate API keys from the `/billing` dashboard
 2. Each query is tracked against the key's monthly quota
 3. Stripe handles subscription upgrades via checkout
-4. Webhooks automatically update tier when subscriptions change
-5. Tier limits are enforced before query execution
-6. Webhook alerts fire at 900 MAU threshold
+4. Webhooks automatically update tier when subscriptions change (`/v1/billing/webhook-tier-update`)
+5. Tier limits enforced at middleware level before query execution
+6. MAU threshold webhook fires at 900 queries/month
 
 ---
 
@@ -319,9 +342,11 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 | POST | `/v1/query` | Submit query for intelligent routing |
 | POST | `/v1/query/stream` | SSE streaming query with live token rendering |
 | GET | `/v1/models` | List all 26 available models |
-| GET | `/v1/capabilities` | System capabilities |
-| POST | `/v1/simulate` | Simulate routing without execution |
+| GET | `/v1/capabilities` | System capabilities and execution mode |
 | GET | `/v1/cache/stats` | NIM prompt cache statistics |
+| POST | `/v1/cache/clear` | Clear prompt cache (admin only) |
+
+> ⚠️ `/v1/simulate` has been removed. Simulation mode is disabled in production. Set `AMAIMA_EXECUTION_MODE=execution-enabled` for real AI responses.
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -329,7 +354,7 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 | POST | `/v1/auth/register` | Create account |
 | POST | `/v1/auth/login` | Login (returns JWT) |
 | POST | `/v1/auth/refresh` | Refresh access token |
-| GET | `/v1/auth/me` | Current user profile |
+| GET | `/v1/auth/me` | Current user profile + API keys |
 | GET/POST | `/v1/auth/api-keys` | Manage API keys |
 | POST | `/v1/auth/forgot-password` | Request password reset |
 | POST | `/v1/auth/reset-password` | Reset with token |
@@ -354,33 +379,39 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 ### Vision
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/vision/reason` | Vision reasoning |
-| POST | `/v1/vision/analyze-image` | Image analysis |
+| POST | `/v1/vision/reason` | Vision reasoning (text) |
+| POST | `/v1/vision/analyze-image` | Image analysis (preserves media content blocks) |
 | POST | `/v1/vision/embodied-reasoning` | Embodied reasoning |
 
-### Speech *(New)*
+### Speech
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/audio/transcribe` | Speech-to-text (ASR) via Riva |
-| POST | `/v1/audio/synthesize` | Text-to-speech (TTS) via Riva |
+| POST | `/v1/audio/synthesize` | Text-to-speech → `data:audio/wav;base64,...` |
+| POST | `/v1/audio/transcribe` | Speech-to-text (base64 PCM input) → transcript |
 
-### Image Generation *(New)*
+### Image Generation
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/image/generate` | Text-to-image via SDXL-Turbo |
+| POST | `/v1/image/generate` | Text-to-image → `data:image/png;base64,...` (SDXL cascade) |
+
+### Video Generation *(New)*
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/video/generate` | Text-to-video → `data:video/mp4;base64,...` (Cosmos Predict 2.5) |
+| POST | `/v1/video/transform` | Video-to-video transformation |
 
 ### Embeddings
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/embeddings` | Multimodal text + image embeddings (2048-dim) |
+| POST | `/v1/embeddings` | 2048-dim multimodal text + image embeddings |
 
 ### Agents
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/agents/run` | Run agent crew (all 8 crew types) |
-| GET | `/v1/agents/types` | List crew types |
+| POST | `/v1/agents/run` | Run agent crew (all 10 crew types) |
+| GET | `/v1/agents/types` | List crew types and workflow types |
 
-### FHE (Fully Homomorphic Encryption)
+### FHE
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/v1/fhe/status` | FHE subsystem status and capabilities |
@@ -389,7 +420,7 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 | POST | `/v1/fhe/compute` | Homomorphic operations on ciphertexts |
 | POST | `/v1/fhe/decrypt` | Decrypt ciphertext (key holder only) |
 | POST | `/v1/fhe/drug-scoring` | Encrypted drug QED/plogP scoring |
-| POST | `/v1/fhe/similarity-search` | Encrypted embedding similarity search |
+| POST | `/v1/fhe/similarity-search` | Batched encrypted embedding similarity search |
 | POST | `/v1/fhe/secure-vote` | Private ballot tallying (BFV) |
 | POST | `/v1/fhe/secure-aggregation` | Multi-party encrypted mean |
 | POST | `/v1/fhe/vector-arithmetic` | Encrypted vector math with verification |
@@ -399,19 +430,23 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/v1/admin/analytics` | Platform-wide metrics (admin only) |
-| GET | `/v1/admin/health` | System health status (admin only) |
+| GET | `/v1/admin/health` | System health (admin only) |
+| GET | `/v1/admin/users` | User list with usage (admin only) |
 | POST | `/v1/billing/api-keys` | Create API key |
 | GET | `/v1/billing/api-keys` | List API keys |
 | GET | `/v1/billing/usage/{id}` | Usage stats for key |
-| GET | `/v1/billing/tiers` | Available tiers |
+| GET | `/v1/billing/usage-by-key` | Usage for current key |
+| GET | `/v1/billing/tiers` | Available subscription tiers |
 | POST | `/v1/billing/update-tier` | Update tier (admin) |
-| GET | `/v1/billing/analytics` | Billing analytics data |
+| POST | `/v1/billing/webhook-tier-update` | Stripe webhook handler |
+| GET | `/v1/billing/analytics` | 30-day billing analytics |
 
-### Plugins
+### Plugins & Marketplace
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/v1/plugins` | List plugins |
+| GET | `/v1/plugins` | List installed plugins |
 | GET | `/v1/plugins/{id}/capabilities` | Plugin capabilities |
+| GET | `/v1/marketplace` | Plugin marketplace (installed + available) |
 
 ---
 
@@ -421,82 +456,79 @@ A native Android client built with Kotlin and Jetpack Compose, featuring on-devi
 amaima/
 ├── backend/                              # FastAPI backend (Python 3.11)
 │   ├── main.py                           # Application entry point
-│   ├── amaima_config.yaml                # Configuration
+│   ├── amaima_config.yaml                # Router and model configuration
+│   ├── requirements.txt
 │   ├── app/
 │   │   ├── auth.py                       # JWT authentication system
 │   │   ├── admin.py                      # Admin dashboard endpoints
 │   │   ├── billing.py                    # Billing, usage tracking, analytics
 │   │   ├── security.py                   # API key authentication
+│   │   ├── conversations.py              # Conversation history
+│   │   ├── experiments.py                # A/B testing framework
+│   │   ├── webhooks.py                   # MAU threshold webhooks
 │   │   ├── core/
-│   │   │   └── unified_smart_router.py   # Smart routing engine
+│   │   │   └── unified_smart_router.py   # Device/connectivity-aware routing *(Updated)*
 │   │   ├── modules/
-│   │   │   ├── nvidia_nim_client.py      # NVIDIA NIM API client + prompt cache
+│   │   │   ├── nvidia_nim_client.py      # NVIDIA NIM API client + LRU prompt cache
 │   │   │   ├── execution_engine.py       # Model execution
-│   │   │   ├── smart_router_engine.py    # Query routing + domain detection
-│   │   │   └── plugin_manager.py         # Plugin system
+│   │   │   ├── smart_router_engine.py    # Domain detection + model selection *(Updated)*
+│   │   │   ├── observability_framework.py
+│   │   │   └── plugin_manager.py
 │   │   ├── services/
-│   │   │   ├── biology_service.py        # BioNeMo + GenMol drug discovery
-│   │   │   ├── robotics_service.py       # Isaac/GR00T robotics
-│   │   │   ├── vision_service.py         # Cosmos R2 vision
-│   │   │   ├── audio_service.py          # Riva ASR + TTS *(New)*
-│   │   │   └── image_gen_service.py      # SDXL-Turbo image generation *(New)*
+│   │   │   ├── biology_service.py        # BioNeMo + GenMol *(Updated)*
+│   │   │   ├── robotics_service.py       # Isaac/GR00T *(Updated)*
+│   │   │   ├── vision_service.py         # Cosmos R2 *(Updated)*
+│   │   │   ├── audio_service.py          # Riva TTS + Parakeet ASR *(Updated)*
+│   │   │   ├── image_service.py          # SDXL-Turbo cascade *(Updated)*
+│   │   │   └── video_service.py          # Cosmos Predict 2.5 *(New)*
+│   │   ├── routers/
+│   │   │   ├── __init__.py
+│   │   │   ├── biology.py                # Biology HTTP router
+│   │   │   ├── robotics.py               # Robotics HTTP router
+│   │   │   ├── vision.py                 # Vision HTTP router
+│   │   │   ├── audio.py                  # ⚠️ Needs to be created
+│   │   │   ├── image.py                  # ⚠️ Needs to be created
+│   │   │   └── video.py                  # ⚠️ Needs to be created
 │   │   ├── agents/
-│   │   │   ├── crew_manager.py           # Multi-agent framework (8 crew types)
-│   │   │   ├── biology_crew.py           # Biology agent crews
-│   │   │   ├── robotics_crew.py          # Robotics agent crews
-│   │   │   ├── audio_crew.py             # Neural Audio Synthesis crew *(New)*
-│   │   │   └── visual_art_crew.py        # Visual Art Generation crew *(New)*
-│   │   └── middleware/
-│   │       └── rate_limiter.py           # MAU rate limiting middleware
-│   └── tests/
-│       └── integration/                  # End-to-end tests
+│   │   │   ├── crew_manager.py           # 10 crew types + run_crew() dispatcher *(Updated)*
+│   │   │   ├── langchain_agent.py        # Stateful workflow engine *(Updated)*
+│   │   │   ├── biology_crew.py           # Drug discovery + protein analysis crews
+│   │   │   └── robotics_crew.py          # Navigation + manipulation + swarm crews
+│   │   ├── fhe/
+│   │   │   ├── engine.py                 # SEAL context pool + LRU store *(Updated)*
+│   │   │   ├── service.py                # Batched FHE operations *(Updated)*
+│   │   │   └── router.py                 # FHE HTTP endpoints + fhe_startup() *(Updated)*
+│   │   └── db_config.py
 │
 ├── frontend/                             # Next.js 16 frontend
 │   ├── src/app/
-│   │   ├── page.tsx                      # Main dashboard (FHE promoted to primary) *(Updated)*
-│   │   ├── login/                        # Auth pages
-│   │   ├── admin/                        # Admin dashboard
-│   │   ├── agent-builder/page.tsx        # React Flow builder (live execution) *(Updated)*
-│   │   ├── fhe/page.tsx                  # FHE dashboard with breadcrumb nav *(Updated)*
-│   │   ├── billing/page.tsx              # Billing + analytics dashboard
-│   │   ├── conversations/page.tsx        # Conversation history
-│   │   └── benchmarks/page.tsx           # Model benchmarking
-│   └── next.config.js
+│   │   ├── page.tsx                      # Main dashboard (FHE primary feature) *(Updated)*
+│   │   ├── login/
+│   │   ├── admin/
+│   │   ├── agent-builder/page.tsx        # React Flow builder with live execution
+│   │   ├── fhe/page.tsx                  # ⚠️ Crashing — needs error boundaries
+│   │   ├── billing/page.tsx
+│   │   ├── conversations/page.tsx
+│   │   └── benchmarks/page.tsx
+│   ├── next.config.js
+│   └── package.json
 │
 ├── mobile/                               # Android mobile client (Kotlin)
-│   ├── app/
-│   │   ├── build.gradle.kts
-│   │   ├── proguard-rules.pro
-│   │   └── src/main/
-│   │       ├── AndroidManifest.xml
-│   │       ├── res/
-│   │       └── java/com/amaima/app/
-│   │           ├── ml/
-│   │           │   ├── OnDeviceMLManager.kt
-│   │           │   ├── ModelRegistry.kt
-│   │           │   ├── ModelStore.kt
-│   │           │   ├── ModelDownloader.kt
-│   │           │   ├── StreamingInference.kt
-│   │           │   ├── EmbeddingEngine.kt
-│   │           │   ├── AudioEngine.kt
-│   │           │   ├── VisionEngine.kt
-│   │           │   └── VectorStore.kt
-│   │           ├── di/
-│   │           ├── network/
-│   │           ├── security/
-│   │           └── data/
-│   ├── build.gradle.kts
-│   ├── settings.gradle.kts
-│   └── gradle/
+│   └── app/src/main/java/com/amaima/app/
+│       ├── ml/                           # On-device ML engines
+│       ├── di/                           # Hilt dependency injection
+│       ├── network/                      # Retrofit + WebSocket
+│       ├── security/                     # Biometric + cert pinning
+│       └── data/
 │
 ├── tests/
 │   ├── integration/
-│   │   └── test_biology_e2e.py
+│   │   └── test_biology_e2e.py           # 63 tests (58 passing)
 │   └── ...
 │
-├── Dockerfile
-├── start.sh
+├── Dockerfile                            # 3-stage build (⚠️ HEXL+SEAL stage pending)
 ├── docker-compose.yml
+├── start.sh
 ├── .env.example
 ├── docs/
 │   └── fullstack-deployment-guide.md
@@ -511,26 +543,31 @@ amaima/
 - Python 3.11+
 - Node.js 20+
 - PostgreSQL database
-- NVIDIA NIM API key
-- Android Studio (for mobile development)
+- NVIDIA NIM API key (`nvapi-...`)
 
 ### Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NVIDIA_NIM_API_KEY` | Yes | NVIDIA NIM API key for inference |
+| `NVIDIA_NIM_API_KEY` or `NVIDIA_API_KEY` | Yes | NVIDIA NIM API key for all inference |
 | `DATABASE_URL` | Yes | PostgreSQL connection string |
 | `JWT_SECRET_KEY` | Yes | Secret for JWT token signing |
-| `AMAIMA_EXECUTION_MODE` | Yes | Set to `execution-enabled` for real AI responses |
-| `BACKEND_URL` | No | Backend URL for frontend proxy (default: http://localhost:8000) |
-| `API_SECRET_KEY` | Yes (production) | Protects API endpoints — change from default in production |
+| `AMAIMA_EXECUTION_MODE` | Yes | Must be `execution-enabled` — no simulation fallback |
+| `API_SECRET_KEY` | Yes (prod) | API endpoint protection — change from default in production |
+| `BACKEND_URL` | No | Backend URL for frontend proxy (default: `http://localhost:8000`) |
+| `FHE_ENABLED` | No | Set `true` to activate FHE subsystem (requires TenSEAL) |
+| `SEAL_THREADS` | No | SEAL NTT parallelism (default: 4) |
+| `FHE_MAX_PAYLOADS` | No | LRU payload store cap (default: 512) |
 | `STRIPE_SECRET_KEY` | No | Stripe secret key for billing |
 | `STRIPE_WEBHOOK_SECRET` | No | Stripe webhook signing secret |
+| `WEBHOOK_INTERNAL_SECRET` | No | Internal webhook secret for tier updates |
 
 ### Start Backend
 ```bash
 cd amaima/backend
 pip install -r requirements.txt
+export AMAIMA_EXECUTION_MODE=execution-enabled
+export NVIDIA_API_KEY=nvapi-...
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -547,11 +584,6 @@ cd amaima/mobile
 ./gradlew assembleDebug
 ```
 
-### On Replit
-Both services run automatically via configured workflows:
-- **AMAIMA Backend** on port 8000
-- **AMAIMA Frontend** on port 5000 (webview)
-
 ---
 
 ## Deployment
@@ -563,59 +595,50 @@ AMAIMA deploys as a single full-stack container (frontend + backend) to any plat
 cp .env.example .env    # Fill in your API keys
 docker compose up -d    # Starts app + PostgreSQL
 ```
-App runs at `http://localhost:5000`
+
+> **Note:** Clear Docker build cache when updating files: `docker build --no-cache -t amaima:latest .`
+> On Render, use **"Clear build cache & deploy"** from the manual deploy dropdown.
 
 ### Supported Platforms
-Replit, Railway, Render, Fly.io, Docker/VPS, Google Cloud Run, AWS (App Runner/ECS/EC2), Azure Container Apps, DigitalOcean, and Heroku.
+Replit, Railway, Render (current), Fly.io, Docker/VPS, Google Cloud Run, AWS (App Runner/ECS/EC2), Azure Container Apps, DigitalOcean, Heroku.
 
-See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for step-by-step instructions for each platform, including PostgreSQL setup, environment variables, SSL, and production configuration.
-
----
-
-## Implemented Features
-
-All features below are fully built and operational:
-
-- **26-Model Registry** — Full platform catalog: 20 cloud-available NVIDIA NIM models + 6 self-hosted catalog entries across 6 intelligence domains
-- **6-Domain Smart Router** — Auto-detects Biology, Vision, Robotics, Speech, Image Generation, and Embeddings from natural language queries and routes accordingly *(Speech + Image Gen new)*
-- **Audio Service** — Server-side ASR (speech-to-text) and TTS (text-to-speech) via NVIDIA Riva, with neural audio playback in the chat UI *(New)*
-- **Image Generation Service** — Text-to-image via SDXL-Turbo on NVIDIA NIM, with inline image rendering in the chat UI *(New)*
-- **Live Agent Builder** — React Flow drag-and-drop builder at `/agent-builder` now executes real multimodal pipelines via `/v1/agents/run`, with 8 crew types including Neural Audio Synthesis and Visual Art Generation *(Updated)*
-- **FHE Primary Navigation** — "FHE & Zero Trust" promoted to primary home page feature; direct nav links connect Main Dashboard, Agent Builder, and FHE Subsystem; FHE page includes breadcrumb navigation *(Updated)*
-- **Fully Homomorphic Encryption** — Privacy-preserving computation via Microsoft SEAL (TenSEAL): CKKS + BFV schemes, 128-bit post-quantum security, encrypted drug scoring, similarity search, secure voting, and aggregation
-- **GenMol Molecule Generation** — Fragment-based molecule generation with SAFE format and QED/plogP optimization via `/v1/biology/generate-molecules`
-- **Multimodal Embeddings** — 2048-dimensional text + image embeddings via NeMo Retriever at `/v1/embeddings`
-- **SSE Streaming** — Real-time Server-Sent Events via `/v1/query/stream` with live token rendering
-- **JWT Authentication** — Email/password auth with bcrypt, JWT access/refresh tokens, role-based access control, password recovery
-- **Admin Dashboard** — Role-gated analytics with platform metrics, daily usage trends, model/endpoint breakdowns, and system health monitoring
-- **NIM Prompt Caching** — In-memory LRU cache (500 entries, 10min TTL) with SHA-256 keys, reducing latency 20–30% on repeated queries
-- **MAU Rate Limiting** — Per-API-key monthly active usage enforcement with 429 status and webhook alerts at 900 MAU threshold
-- **Billing Analytics Dashboard** — Recharts-powered analytics with daily query volume, latency trends, model usage breakdown, and cache performance
-- **Conversation History** — Persistent chat threads at `/conversations`
-- **Model Benchmarking** — Automated benchmarking at `/benchmarks`
-- **Custom Model Routing Rules** — Enterprise users can define custom routing preferences
-- **Integration Tests** — 63 tests (55 unit + 8 integration) covering biology/drug discovery crews, NIM caching, agent types, and rate limiting
-- **Multi-Platform Deployment** — Full-stack Docker container deployable to 10+ platforms
-- **Android Mobile App** — Native Kotlin + Jetpack Compose client with dual-runtime on-device ML (ONNX + TFLite), featuring model hot-swapping, quantized inference (FP16/INT8/INT4), streaming token generation, text/image embeddings, Whisper speech-to-text, vision classification/OCR/detection, and local vector search with persistence
+See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for platform-specific instructions.
 
 ---
 
-## Future Roadmap
+## Current Status & Roadmap
 
-### In Progress
-- **FHE Latency Optimization** — CPU-first hardening: Clang++ + Intel HEXL recompile, SIMD batching, parameter tuning targeting <100ms per operation (down from 1.1s baseline)
+### 🟢 Production (Live at amaima.live)
+- 7-domain smart routing with regex-priority detection
+- All NIM model calls real — no simulation anywhere
+- Audio (TTS/ASR), image generation (SDXL cascade), video generation (Cosmos Predict 2.5)
+- 10 agent crew types with live execution
+- JWT auth, Stripe billing, MAU enforcement
+- FHE backend (engine + service + router) with context pool and batched search
 
-### Medium Priority
-- **File Upload Processing** — Direct image/document upload for vision and biology endpoints
-- **Team Management** — Shared organization accounts with role-based access (admin, developer, viewer)
-- **Usage Export** — CSV/JSON export of usage data for enterprise reporting
+### 🔴 Known Issues
+- **FHE dashboard (`/fhe`) crashing** — client-side exception; needs error boundaries for graceful TenSEAL-absent state
+- **TenSEAL not installed in container** — FHE endpoints return `503` until 3-stage Dockerfile deployed
+- **`video_service.py` not yet wired** to router patterns or `main.py` domain dispatch
 
-### Lower Priority
-- **WebSocket Streaming** — Real-time bidirectional communication for interactive agent sessions
-- **A/B Testing Framework** — Compare model responses side-by-side for quality evaluation
-- **Plugin Marketplace** — Community-contributed plugins for additional domain services
-- **Multi-Region Deployment** — Route to nearest NIM endpoint for lower latency
-- **Fine-Tuning Pipeline** — Allow users to fine-tune models on their own data via NIM
+### 🟡 In Progress
+- **FHE Dockerfile 3-stage build** — Intel HEXL v1.2.5 + Microsoft SEAL v4.1.2 compiled with Clang-15, AVX-512, -O3; targeting ~300ms per FHE operation (down from ~1.1s baseline)
+- **Missing routers** — `app/routers/audio.py`, `image.py`, `video.py` need to be created
+- **Existing router audit** — `biology.py`, `robotics.py`, `vision.py` need review against updated services
+- **`app/core/` audit** — remaining files beyond `unified_smart_router.py` not yet reviewed
+- **FHE frontend** — all `/fhe` page.tsx files need error boundaries and degraded state UI
+
+### 📋 Backlog
+- Video generation async webhook (avoid holding HTTP connections up to 4 min)
+- SmartRouter singleton across uvicorn workers (currently 1 instance per worker)
+- Alembic database migrations (currently `init_db()` on every startup)
+- Streaming cursor UI (typing animation for SSE mode)
+- Model comparison tool (side-by-side output comparison)
+- DiffDock/AlphaFold integration in `biology_service.py`
+- Real ROS2/rclpy hardware bridge in `robotics_service.py`
+- Advanced Prometheus metrics for FHE latency and routing accuracy
+- `outputFileTracingRoot` in `next.config.js` to silence duplicate lockfile warning
+- `npm audit fix` for 19 frontend vulnerabilities
 
 ---
 
@@ -623,13 +646,14 @@ All features below are fully built and operational:
 
 **AMAIMA License v2.0**
 
-Three licensing options:
-1. **Community License** — Free for non-commercial use, research, and individuals
-2. **Production License** — Source-available for business use ($49/month)
-3. **Enterprise License** — Full unrestricted commercial use ($299/month)
+| License | Use Case | Price |
+|---------|----------|-------|
+| Community | Non-commercial use, research, individuals | Free |
+| Production | Business use, source-available | $49/month |
+| Enterprise | Full unrestricted commercial use | $299/month |
 
-For licensing inquiries: licensing@amaima.live
-For support: support@amaima.live
+Licensing: licensing@amaima.live  
+Support: support@amaima.live
 
 ---
 
