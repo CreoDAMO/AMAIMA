@@ -422,3 +422,24 @@ It was the cleanest of the five. Copied through unchanged.
 
 ---
 
+# Deployment Status:
+Clean deployment. Everything is healthy. Here's what the logs confirm:
+
+**All systems up:**
+- Backend started in 25s, `/health` returning `200 OK` (line 77–78)
+- Next.js 16.1.6 frontend ready in 2.3s (line 93)
+- Live at `https://amaima.live` (line 98)
+- NVIDIA NIM API key confirmed: `nvapi-WO...MoEF` (line 44)
+- Database connected via `DATABASE_URL` (line 40)
+- Auth tables initialized (line 43)
+- Production mode confirmed: `execution mode: production, simulation: disabled` (line 49)
+
+**One thing to action — FHE (line 45):**
+```
+WARNING: FHE startup: engine not available (TenSEAL missing or FHE_ENABLED=false)
+```
+The FHE pool warm-up gracefully degraded as designed, but TenSEAL isn't installed in the container. To enable FHE you need either `FHE_ENABLED=true` set in Render's environment variables, or TenSEAL added to `requirements.txt`. That's the next thing to tackle when you're ready — the Dockerfile 3-stage SEAL/HEXL build we started earlier is the right fix for that.
+
+**Minor noise to clean up when convenient:**
+- The lifespan is running 4 times (lines 1–39 show 4 identical startup sequences before the DB connects) — Render is spawning 4 uvicorn workers, which is fine, but the `SmartRouter` is being instantiated once per worker rather than shared. Not a bug, just worth noting.
+- The duplicate `package-lock.json` warning (line 87) — add `outputFileTracingRoot` to your `next.config.js` to silence it.
