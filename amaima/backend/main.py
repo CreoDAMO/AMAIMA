@@ -23,7 +23,8 @@ from app.security import get_api_key, enforce_tier_limit, get_current_user, requ
 from app.routers.biology import router as biology_router
 from app.routers.robotics import router as robotics_router
 from app.routers.vision import router as vision_router
-from app.services import audio_service, image_gen_service
+from app.services import audio_service
+from app.services import image_service as image_gen_service
 from fastapi import Depends
 
 logging.basicConfig(level=logging.INFO)
