@@ -23,6 +23,9 @@ from app.security import get_api_key, enforce_tier_limit, get_current_user, requ
 from app.routers.biology import router as biology_router
 from app.routers.robotics import router as robotics_router
 from app.routers.vision import router as vision_router
+from app.routers.audio import router as audio_router   # NEW — /v1/audio/*
+from app.routers.image import router as image_router   # NEW — /v1/image/*
+from app.routers.video import router as video_router   # NEW — /v1/video/*
 from app.services import video_service
 from app.services import audio_service
 from app.services import image_service as image_gen_service
@@ -273,6 +276,9 @@ from app.fhe.router import router as fhe_router
 app.include_router(biology_router)
 app.include_router(robotics_router)
 app.include_router(vision_router)
+app.include_router(audio_router)   # NEW — synthesize, transcribe, voices, transcribe-b64
+app.include_router(image_router)   # NEW — generate, variants, edit, inpaint, download
+app.include_router(video_router)   # NEW — generate, transform, download
 app.include_router(fhe_router)
 
 
@@ -335,24 +341,38 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
         # ── Specialized domain dispatch ───────────────────────────────────────
         if detected_domain == "audio":
             if "transcribe" in request.query.lower() or "speech to text" in request.query.lower():
-                # ASR path — in production, caller should POST audio bytes to /v1/audio/transcribe
-                raise HTTPException(
-                    status_code=400,
-                    detail="ASR requires audio input. POST audio bytes to /v1/audio/transcribe instead."
+                # ASR requires real audio bytes — direct the caller to the upload endpoint
+                output = (
+                    "To transcribe audio, POST your audio file to "
+                    "POST /v1/audio/transcribe (multipart upload) or "
+                    "POST /v1/audio/transcribe-b64 (base64 JSON payload)."
                 )
             else:
+                # TTS — synthesize speech from the query text
                 execution_result = await audio_service.text_to_speech(request.query)
-            # Return the base64 data URI; frontend renders it as <audio>
-            output = execution_result.get("audio_data", "")
+                # audio_url is the canonical key in the updated service; audio_data is the alias
+                output = (
+                    execution_result.get("audio_url")
+                    or execution_result.get("audio_data")
+                    or ""
+                )
 
         elif detected_domain == "image_gen":
             execution_result = await image_gen_service.generate_image(request.query)
-            # Return the base64 data URI; frontend renders it as <img>
-            output = execution_result.get("image_data", "")
+            # image_url is the canonical key; image_data is the alias
+            output = (
+                execution_result.get("image_url")
+                or execution_result.get("image_data")
+                or ""
+            )
 
         elif detected_domain == "video_gen":
             execution_result = await video_service.generate_video(request.query)
-            output = execution_result.get("video_url")
+            output = (
+                execution_result.get("video_url")
+                or execution_result.get("video_data")
+                or ""
+            )
 
         else:
             decision = route_query(request.query, simulate=False)
@@ -463,75 +483,30 @@ async def stream_query(request: QueryRequest, api_key_info: dict = Depends(get_a
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Audio endpoints — real Riva ASR + TTS
+# Audio, Image, and Video endpoints
 # ─────────────────────────────────────────────────────────────────────────────
+# These are now served by the dedicated routers registered above:
+#   audio_router  →  /v1/audio/synthesize, /transcribe, /transcribe-b64, /voices, /capabilities
+#   image_router  →  /v1/image/generate, /variants, /edit, /inpaint, /generate/download
+#   video_router  →  /v1/video/generate, /transform, /generate/download, /capabilities
+#
+# The Pydantic request models below are retained because image_gen_service is
+# still referenced directly in the /v1/query domain dispatch above.
 
 class TTSRequest(BaseModel):
-    text: str = Field(..., description="Text to synthesize")
+    text:  str = Field(..., description="Text to synthesize")
     voice: str = Field(default="English-US.Female-1", description="TTS voice identifier")
 
 
 class ASRRequest(BaseModel):
     audio_base64: str = Field(..., description="Base64-encoded PCM audio bytes")
-    sample_rate: int = Field(default=16000, description="Audio sample rate in Hz")
+    sample_rate:  int = Field(default=16000, description="Audio sample rate in Hz")
 
-
-@app.post("/v1/audio/synthesize")
-async def synthesize_speech(request: TTSRequest, api_key_info: dict = Depends(get_api_key)):
-    """
-    Text-to-speech via NVIDIA Riva (Magpie TTS Multilingual).
-    Returns a base64 data URI (data:audio/wav;base64,...) for inline playback.
-    """
-    try:
-        result = await audio_service.text_to_speech(request.text, voice=request.voice)
-        return result
-    except Exception as e:
-        logger.error(f"TTS failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/v1/audio/transcribe")
-async def transcribe_speech(request: ASRRequest, api_key_info: dict = Depends(get_api_key)):
-    """
-    Automatic speech recognition via NVIDIA Parakeet CTC 1.1B.
-    Accepts base64-encoded PCM audio, returns transcript text.
-    """
-    import base64
-    try:
-        audio_bytes = base64.b64decode(request.audio_base64)
-        result = await audio_service.speech_to_text(audio_bytes, sample_rate=request.sample_rate)
-        return result
-    except Exception as e:
-        logger.error(f"ASR failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Image generation endpoint — real SDXL-Turbo
-# ─────────────────────────────────────────────────────────────────────────────
 
 class ImageGenRequest(BaseModel):
-    prompt: str = Field(..., description="Text prompt for image generation")
+    prompt:          str = Field(..., description="Text prompt for image generation")
     negative_prompt: str = Field(default="", description="Negative prompt")
-    steps: int = Field(default=2, description="Diffusion steps (2-4 for SDXL-Turbo)")
-
-
-@app.post("/v1/image/generate")
-async def generate_image_endpoint(request: ImageGenRequest, api_key_info: dict = Depends(get_api_key)):
-    """
-    Text-to-image generation via NVIDIA NIM SDXL-Turbo.
-    Returns a base64 data URI (data:image/png;base64,...) for inline rendering.
-    """
-    try:
-        result = await image_gen_service.generate_image(
-            prompt=request.prompt,
-            negative_prompt=request.negative_prompt,
-            steps=request.steps,
-        )
-        return result
-    except Exception as e:
-        logger.error(f"Image generation failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    steps:           int = Field(default=2, description="Diffusion steps (2-4 for SDXL-Turbo)")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
