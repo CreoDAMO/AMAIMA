@@ -89,6 +89,7 @@ const SAMPLE_QUERIES = [
   { text: 'Navigate robot to pick up the red box from shelf B3', operation: 'robotics', label: 'Robot Navigation' },
   { text: 'Analyze the warehouse scene for safety hazards and obstacles', operation: 'vision', label: 'Scene Analysis' },
   { text: 'Research the latest advances in protein folding prediction', operation: 'agents', label: 'Agent Research' },
+  { text: 'Cinematic drone shot of a futuristic city at sunset, 4k, highly detailed', operation: 'video_gen', label: 'Video Generation' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,6 +97,32 @@ const SAMPLE_QUERIES = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 function parseApiResponse(data: any, operation: string): QueryResponse {
+  // ── Video response ────────────────────────────────────────────────────────
+  if (operation === 'video_gen' || data.service === 'video') {
+    const videoData = data.video_data || data.video_url || data.output;
+    return {
+      response_id: data.response_id || `video-${Date.now()}`,
+      response_text: data.label || 'Cosmos Video Generation Engine',
+      response_type: 'video' as any,
+      media_data: videoData,
+      media_label: 'Cosmos Video Generation Engine',
+      model_used: data.model || 'nvidia/cosmos-predict2-5b',
+      routing_decision: {
+        execution_mode: 'domain_specific',
+        model_size: 'N/A',
+        complexity: 'DOMAIN',
+        security_level: 'standard',
+        confidence: 0.95,
+        estimated_latency_ms: data.latency_ms || 0,
+        estimated_cost: 0,
+        reasoning: { domain: 'video_gen', service: 'Cosmos Predict 2.5' },
+      },
+      confidence: 0.95,
+      latency_ms: data.latency_ms || 0,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   // ── Audio response ────────────────────────────────────────────────────────
   if (operation === 'audio' || data.service === 'audio') {
     // audio_data is a base64 data URI returned by the real TTS service
@@ -334,6 +361,14 @@ export default function HomePage() {
           body: JSON.stringify({ prompt: query }),
         });
 
+      } else if (operation === 'video_gen') {
+        // Real Cosmos Predict 2.5 dispatch — no simulation
+        res = await fetch(`/api/v1/video/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: query }),
+        });
+
       } else if (useStreaming) {
         // ── SSE streaming for general/LLM queries ─────────────────────────
         setIsStreaming(true);
@@ -538,6 +573,7 @@ export default function HomePage() {
     { value: 'vision',         label: 'Vision',    icon: Eye       },
     { value: 'audio',          label: 'Audio',     icon: Mic       },
     { value: 'image_gen',      label: 'Image Gen', icon: ImagePlus },
+    { value: 'video_gen',      label: 'Video Gen', icon: Sparkles  },
     { value: 'agents',         label: 'Agents',    icon: Users     },
   ];
 
@@ -572,6 +608,21 @@ export default function HomePage() {
           />
           <p className="mt-3 text-center text-sm text-slate-400 italic">
             {response.media_label || 'Advanced Visual Generation Engine'}
+          </p>
+        </div>
+      );
+    }
+
+    if (response.response_type === ('video' as any) && response.media_data) {
+      return (
+        <div className="mt-4">
+          <video
+            src={response.media_data}
+            controls
+            className="rounded-lg shadow-lg border border-white/10 max-w-full h-auto mx-auto"
+          />
+          <p className="mt-3 text-center text-sm text-slate-400 italic">
+            {response.media_label || 'Cosmos Video Generation Engine'}
           </p>
         </div>
       );
