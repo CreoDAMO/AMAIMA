@@ -103,7 +103,7 @@ export default function BenchmarksPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
                     <p className="text-sm text-gray-400 mb-1">Total Entries</p>
-                    <p className="text-2xl font-bold text-white">{cacheStats.total_entries.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-white">{(cacheStats.total_entries ?? 0).toLocaleString()}</p>
                   </div>
                   <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
                     <p className="text-sm text-gray-400 mb-1">Hit Rate</p>
@@ -112,7 +112,7 @@ export default function BenchmarksPage() {
                   <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
                     <p className="text-sm text-gray-400 mb-1">Cache Size</p>
                     <p className="text-2xl font-bold text-white">
-                      {cacheStats.size || (cacheStats.size_mb ? `${cacheStats.size_mb.toFixed(1)} MB` : 'N/A')}
+                      {cacheStats.size || (cacheStats.size_mb ? `${cacheStats.size_mb.toFixed(1)} MB` : '0.0 MB')}
                     </p>
                   </div>
                 </div>
