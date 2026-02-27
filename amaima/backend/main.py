@@ -374,6 +374,21 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
                 or ""
             )
 
+        elif detected_domain == "biology":
+            from app.services import biology_service
+            execution_result = await biology_service.bionemo_inference(request.query)
+            output = execution_result.get("content", "")
+
+        elif detected_domain == "robotics":
+            from app.services import robotics_service
+            execution_result = await robotics_service.plan_robot_action(request.query)
+            output = str(execution_result.get("plan", execution_result))
+
+        elif detected_domain == "vision":
+            from app.services import vision_service
+            execution_result = await vision_service.cosmos_inference(request.query)
+            output = execution_result.get("response", "")
+
         else:
             decision = route_query(request.query, simulate=False)
             model_used = decision.get("model", "unknown")

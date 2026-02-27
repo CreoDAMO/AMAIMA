@@ -394,11 +394,12 @@ amaima/
 - ✅ File upload support (10MB)
 - ✅ Full frontend with billing, benchmarks, conversations, settings
 
-### Phase 2 (Q2 2026)
-- [ ] Android mobile client (Kotlin + Jetpack Compose)
-- [ ] WebSocket streaming responses
-- [ ] Advanced workflow builder with visual programming
-- [ ] Multi-modal input (voice, images, video in query interface)
+### Phase 2 (Completed - Q2 2026)
+- ✅ Android mobile client (Kotlin + Jetpack Compose)
+- ✅ WebSocket streaming responses
+- ✅ Advanced workflow builder with visual programming
+- ✅ Multi-modal input (voice, images, video in query interface)
+- ✅ Domain-specialized routing (Biology, Robotics, Vision)
 
 ### Phase 3 (Q3 2026)
 - [ ] Collaborative workspaces (shared conversations, team analytics)
