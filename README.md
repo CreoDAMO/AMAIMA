@@ -201,22 +201,25 @@ The routing engine uses **regex-priority domain detection** — `image_gen` and 
 - Embodied reasoning for robotics applications
 
 ### Speech (Riva)
-- **TTS:** `POST /v1/audio/synthesize` → `nvidia/magpie-tts-multilingual` → `data:audio/wav;base64,...`
-- **ASR:** `POST /v1/audio/transcribe` → `nvidia/parakeet-ctc-1.1b` → transcript text
+- **TTS:** `POST /v1/audio/synthesize` → `nvidia/magpie-tts-multilingual` → `data:audio/wav;base64,...`; raw WAV download via `/synthesize/file`
+- **ASR:** `POST /v1/audio/transcribe` (multipart file upload) or `/transcribe-b64` (base64 JSON) → `nvidia/parakeet-ctc-1.1b` → transcript text
+- `GET /v1/audio/voices` — 10 available voices (EN-US/GB, ES-US, FR, DE, male/female)
 - Neural audio playback rendered directly in chat interface
+- `speech_to_text()` accepts `bytes`, file path, data URI, or `"dummy_path"` placeholder (graceful empty response)
 
 ### Image Generation (SDXL)
 - **Text-to-image:** `POST /v1/image/generate` → SDXL-Turbo (2 steps) with automatic cascade fallback to full SDXL → SD3
-- Negative prompt support
-- `inpaint_image()`, `image_to_image()`, `generate_image_variants()` (4 concurrent seeds)
-- Format conversion: PNG (default), JPEG, WebP via Pillow
-- Inline image rendering in chat interface as `data:image/png;base64,...`
+- **Variants:** `POST /v1/image/variants` → up to 4 concurrent generations with different seeds
+- **Edit:** `POST /v1/image/edit` → prompt-guided image-to-image transformation
+- **Inpaint:** `POST /v1/image/inpaint` → fill masked regions via SDXL inpainting
+- Raw image download via `/generate/download`; format conversion: PNG (default), JPEG, WebP via Pillow
+- Negative prompt support; inline rendering in chat as `data:image/png;base64,...`
 
-### Video Generation (Cosmos Predict 2.5) *(New)*
+### Video Generation (Cosmos Predict 2.5)
 - **Text-to-video:** `POST /v1/video/generate` → `nvidia/cosmos-predict2-5b` → 5s 720p MP4
 - **Video-to-video:** `POST /v1/video/transform` → prompt-guided video transformation
 - Handles both sync and async NIM response shapes (polls up to 4 min for async jobs)
-- Returns `data:video/mp4;base64,...` URI
+- Returns `data:video/mp4;base64,...` URI; raw MP4 download via `/generate/download`
 
 ### Embeddings (NeMo Retriever)
 - 2048-dimensional multimodal text + image embeddings
@@ -387,18 +390,29 @@ Native Android client built with Kotlin and Jetpack Compose, featuring on-device
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/v1/audio/synthesize` | Text-to-speech → `data:audio/wav;base64,...` |
-| POST | `/v1/audio/transcribe` | Speech-to-text (base64 PCM input) → transcript |
+| POST | `/v1/audio/synthesize/file` | Text-to-speech → raw WAV binary download |
+| POST | `/v1/audio/transcribe` | Speech-to-text (multipart audio file upload) → transcript |
+| POST | `/v1/audio/transcribe-b64` | Speech-to-text (base64 JSON payload) → transcript |
+| GET | `/v1/audio/voices` | List available TTS voices |
+| GET | `/v1/audio/capabilities` | Audio service capabilities and NIM config status |
 
 ### Image Generation
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/v1/image/generate` | Text-to-image → `data:image/png;base64,...` (SDXL cascade) |
+| POST | `/v1/image/generate/download` | Text-to-image → raw image binary download (PNG/JPEG/WebP) |
+| POST | `/v1/image/variants` | Generate up to 4 concurrent variants with different seeds |
+| POST | `/v1/image/edit` | Image-to-image transformation (prompt-guided) |
+| POST | `/v1/image/inpaint` | Masked region inpainting |
+| GET | `/v1/image/capabilities` | Supported models, formats, and features |
 
-### Video Generation *(New)*
+### Video Generation
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/video/generate` | Text-to-video → `data:video/mp4;base64,...` (Cosmos Predict 2.5) |
-| POST | `/v1/video/transform` | Video-to-video transformation |
+| POST | `/v1/video/generate` | Text-to-video → `data:video/mp4;base64,...` (Cosmos Predict 2.5, ~30–90s) |
+| POST | `/v1/video/generate/download` | Text-to-video → raw MP4 binary download |
+| POST | `/v1/video/transform` | Video-to-video prompt-guided transformation |
+| GET | `/v1/video/capabilities` | Model info, duration limits, latency expectations |
 
 ### Embeddings
 | Method | Endpoint | Description |
@@ -455,7 +469,7 @@ Native Android client built with Kotlin and Jetpack Compose, featuring on-device
 ```
 amaima/
 ├── backend/                              # FastAPI backend (Python 3.11)
-│   ├── main.py                           # Application entry point
+│   ├── main.py                           # Application entry point *(Updated — 3 routers registered, domain dispatch fixed)*
 │   ├── amaima_config.yaml                # Router and model configuration
 │   ├── requirements.txt
 │   ├── app/
@@ -475,20 +489,20 @@ amaima/
 │   │   │   ├── observability_framework.py
 │   │   │   └── plugin_manager.py
 │   │   ├── services/
-│   │   │   ├── biology_service.py        # BioNeMo + GenMol *(Updated)*
-│   │   │   ├── robotics_service.py       # Isaac/GR00T *(Updated)*
-│   │   │   ├── vision_service.py         # Cosmos R2 *(Updated)*
-│   │   │   ├── audio_service.py          # Riva TTS + Parakeet ASR *(Updated)*
-│   │   │   ├── image_service.py          # SDXL-Turbo cascade *(Updated)*
-│   │   │   └── video_service.py          # Cosmos Predict 2.5 *(New)*
+│   │   │   ├── biology_service.py        # BioNeMo + GenMol *(Updated — audited, no critical bugs)*
+│   │   │   ├── robotics_service.py       # Isaac/GR00T *(Updated — circular import + misleading stub fixed)*
+│   │   │   ├── vision_service.py         # Cosmos R2 *(Updated — media blocks preserved end-to-end)*
+│   │   │   ├── audio_service.py          # Riva TTS + Parakeet ASR *(Updated — accepts path/bytes/data URI)*
+│   │   │   ├── image_service.py          # SDXL-Turbo cascade *(Updated — inpaint, img2img, variants, formats)*
+│   │   │   └── video_service.py          # Cosmos Predict 2.5 *(New — text-to-video + video-to-video)*
 │   │   ├── routers/
 │   │   │   ├── __init__.py
 │   │   │   ├── biology.py                # Biology HTTP router
 │   │   │   ├── robotics.py               # Robotics HTTP router
 │   │   │   ├── vision.py                 # Vision HTTP router
-│   │   │   ├── audio.py                  # ⚠️ Needs to be created
-│   │   │   ├── image.py                  # ⚠️ Needs to be created
-│   │   │   └── video.py                  # ⚠️ Needs to be created
+│   │   │   ├── audio.py                  # *(New)* TTS, ASR file upload, voices, transcribe-b64
+│   │   │   ├── image.py                  # *(New)* generate, variants, edit, inpaint, download
+│   │   │   └── video.py                  # *(New)* generate, transform, download
 │   │   ├── agents/
 │   │   │   ├── crew_manager.py           # 10 crew types + run_crew() dispatcher *(Updated)*
 │   │   │   ├── langchain_agent.py        # Stateful workflow engine *(Updated)*
@@ -506,7 +520,7 @@ amaima/
 │   │   ├── login/
 │   │   ├── admin/
 │   │   ├── agent-builder/page.tsx        # React Flow builder with live execution
-│   │   ├── fhe/page.tsx                  # ⚠️ Crashing — needs error boundaries
+│   │   ├── fhe/page.tsx                  # ⚠️ Crashing — needs error boundaries (backlog)
 │   │   ├── billing/page.tsx
 │   │   ├── conversations/page.tsx
 │   │   └── benchmarks/page.tsx
@@ -526,7 +540,7 @@ amaima/
 │   │   └── test_biology_e2e.py           # 63 tests (58 passing)
 │   └── ...
 │
-├── Dockerfile                            # 3-stage build (⚠️ HEXL+SEAL stage pending)
+├── Dockerfile                            # 3-stage build (⚠️ HEXL+SEAL stage pending — in progress)
 ├── docker-compose.yml
 ├── start.sh
 ├── .env.example
@@ -616,20 +630,44 @@ See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for plat
 - JWT auth, Stripe billing, MAU enforcement
 - FHE backend (engine + service + router) with context pool and batched search
 
+### ✅ Recently Completed
+**Service layer audit + 13 bugs fixed across 5 services:**
+- `audio_service.py` — `speech_to_text()` crashed on every call (`TypeError`: expected `bytes`, received `str` path from `main.py`). Fixed with a `_load_audio_bytes()` resolver that accepts raw bytes, file paths, data URIs, or the `"dummy_path"` placeholder gracefully. Added `audio_url` canonical key alongside `audio_data` alias.
+- `image_service.py` — Only SDXL-Turbo was wired with no fallback. Added three-model cascade (Turbo → full SDXL → SD3). Added `inpaint_image()`, `image_to_image()`, `generate_image_variants()` (4 concurrent seeds), format conversion (PNG/JPEG/WebP via Pillow), and `image_bytes` for direct file download.
+- `vision_service.py` — Dead `get_cosmos_client()` removed. Critical bug: image/video media content was built as a structured block then immediately flattened to plain text before reaching `chat_completion()`, silently discarding all media. Fixed with `_build_messages()` that preserves `image_url`/`video_url` content blocks end-to-end. Routes to Nemotron VL when media is present.
+- `robotics_service.py` — Top-level import of `cosmos_inference` created circular import risk; moved to lazy import inside `vision_guided_action()`. `_ros2_navigate()` returned a fake `"executed_on_hardware"` status without sending any ROS2 command; now returns honest `"stub_not_executed"` with implementation instructions.
+- `biology_service.py` — Audited; no critical bugs found.
+- `video_service.py` — **New file**. This was the root cause of AMAIMA hallucinating video generation capabilities — no pipeline existed. Implements Cosmos Predict 2.5 text-to-video and video-to-video via NIM, handles both sync and async response shapes, polls up to 4 minutes for async jobs.
+
+**Three new HTTP routers created:**
+- `app/routers/audio.py` — `POST /v1/audio/synthesize`, `/synthesize/file`, `/transcribe` (multipart upload), `/transcribe-b64`, `GET /voices`, `/capabilities`
+- `app/routers/image.py` — `POST /v1/image/generate`, `/generate/download`, `/variants`, `/edit`, `/inpaint`, `GET /capabilities`
+- `app/routers/video.py` — `POST /v1/video/generate`, `/generate/download`, `/transform`, `GET /capabilities`
+
+**`main.py` patched (4 changes):**
+- Router imports added for `audio_router`, `image_router`, `video_router`
+- All three routers registered with `app.include_router()`
+- Audio domain dispatch bug fixed: old code raised `HTTPException` in the ASR branch then fell through to `execution_result.get(...)` where `execution_result` was never assigned (`UnboundLocalError`); replaced with a direct helpful message
+- Redundant inline `@app.post("/v1/audio/synthesize")`, `/transcribe`, and `/image/generate` handlers removed to eliminate route conflicts with the new routers; output key lookups normalized to prefer `audio_url`/`image_url`/`video_url`
+
+**FHE backend phase 1 optimization (13 bugs fixed):**
+- `engine.py` — Context pool implemented (keygen once per process, not per-call); N=8192 default for standard profiles; LRU payload store capped at 512; memory leak fixed
+- `service.py` — Batched similarity search (O(1) decrypt pass); CKKS vectorized operations; error propagation fixed
+- `router.py` — `fhe_startup()` warm-up on lifespan; graceful 503 degradation when TenSEAL absent; all endpoints return structured errors
+- Target latency: ~300–400ms (down from ~1,100ms baseline)
+
 ### 🔴 Known Issues
-- **FHE dashboard (`/fhe`) crashing** — client-side exception; needs error boundaries for graceful TenSEAL-absent state
+- **FHE dashboard (`/fhe`) crashing** — client-side exception; needs React error boundaries for graceful TenSEAL-absent state
 - **TenSEAL not installed in container** — FHE endpoints return `503` until 3-stage Dockerfile deployed
-- **`video_service.py` not yet wired** to router patterns or `main.py` domain dispatch
 
 ### 🟡 In Progress
 - **FHE Dockerfile 3-stage build** — Intel HEXL v1.2.5 + Microsoft SEAL v4.1.2 compiled with Clang-15, AVX-512, -O3; targeting ~300ms per FHE operation (down from ~1.1s baseline)
-- **Missing routers** — `app/routers/audio.py`, `image.py`, `video.py` need to be created
-- **Existing router audit** — `biology.py`, `robotics.py`, `vision.py` need review against updated services
+- **Existing router audit** — `biology.py`, `robotics.py`, `vision.py` need review against updated services to confirm endpoint signatures match new service return shapes
 - **`app/core/` audit** — remaining files beyond `unified_smart_router.py` not yet reviewed
-- **FHE frontend** — all `/fhe` page.tsx files need error boundaries and degraded state UI
+- **FHE frontend** — all `/fhe` page.tsx files need error boundaries and degraded-state UI
 
 ### 📋 Backlog
-- Video generation async webhook (avoid holding HTTP connections up to 4 min)
+- Video generation async webhook (avoid holding HTTP connections open for up to 4 min)
 - SmartRouter singleton across uvicorn workers (currently 1 instance per worker)
 - Alembic database migrations (currently `init_db()` on every startup)
 - Streaming cursor UI (typing animation for SSE mode)
