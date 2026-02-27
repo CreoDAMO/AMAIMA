@@ -92,6 +92,11 @@ const SAMPLE_QUERIES = [
   { text: 'Cinematic drone shot of a futuristic city at sunset, 4k, highly detailed', operation: 'video_gen', label: 'Video Generation' },
 ];
 
+const QUICK_ACTIONS = [
+  { label: 'Image Generation', icon: ImagePlus, operation: 'image_gen', prompt: 'A futuristic bioluminescent forest at night, 8k resolution, cinematic lighting' },
+  { label: 'Audio Synthesis', icon: Volume2, operation: 'audio', prompt: 'Welcome to AMAIMA, the advanced multimodal AI control plane. How can I assist you today?' },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: parse API response into QueryResponse
 // ─────────────────────────────────────────────────────────────────────────────
@@ -852,19 +857,42 @@ export default function HomePage() {
                   ))}
                 </div>
 
+                {/* Try these examples: */}
                 <div className="mb-4">
-                  <p className="text-sm text-slate-400 mb-2">Try these examples:</p>
+                  <p className="text-sm text-slate-400 mb-2 font-bold uppercase tracking-wider">Try these examples:</p>
                   <div className="flex flex-wrap gap-2">
                     {SAMPLE_QUERIES.map((sample, i) => (
                       <button
                         key={i}
                         onClick={() => handleSampleQuery(sample)}
-                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all"
+                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-slate-300 transition-all font-medium"
                       >
                         {sample.label}
                       </button>
                     ))}
                   </div>
+                </div>
+
+                {/* Quick Actions (Image & Audio) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {QUICK_ACTIONS.map((action) => (
+                    <button
+                      key={action.label}
+                      onClick={() => {
+                        setQuery(action.prompt);
+                        setOperation(action.operation);
+                      }}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group text-left"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                        <action.icon className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <div>
+                        <span className="block text-sm font-semibold text-white">{action.label}</span>
+                        <span className="block text-xs text-gray-500 truncate max-w-[200px]">{action.prompt}</span>
+                      </div>
+                    </button>
+                  ))}
                 </div>
 
                 <textarea

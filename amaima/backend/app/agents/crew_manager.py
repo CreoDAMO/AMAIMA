@@ -204,7 +204,8 @@ async def run_visual_art_crew(task: str) -> Dict[str, Any]:
       2. Aesthetic Validator — refines it for SDXL-Turbo
       3. Image generation dispatch — sends to NVIDIA NIM SDXL-Turbo
     """
-    from app.services.image_gen_service import generate_image
+    # Import moved inside function to prevent circular dependency if any
+    from app.services.image_service import generate_image
 
     crew = Crew(
         name="Visual Art Generation",
@@ -217,6 +218,7 @@ async def run_visual_art_crew(task: str) -> Dict[str, Any]:
     image_prompt = crew_result.get("final_output", task)
 
     # Dispatch to real image generation service
+    from app.services.image_service import generate_image
     image_result = await generate_image(image_prompt)
 
     crew_result["image_output"] = image_result

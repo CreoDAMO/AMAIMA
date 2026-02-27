@@ -259,7 +259,7 @@ The Visual Agent Builder at `/agent-builder` executes real multimodal pipelines 
 
 Privacy-preserving computation using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography. FHE is a **primary platform feature** on the home page and accessible directly from main navigation.
 
-> **Current status:** FHE fully operational in Replit (all 5 demos passing, ~350ms). **Production container fix pending** — `Dockerfile` updated to `python:3.10` with unconditional TenSEAL install; requires a single `git push` + "Clear build cache & deploy" to go live. CKKS parameters corrected to fit within the 218-bit limit for `N=8192` at 128-bit security (`[60, 40, 40, 60]`). The 3-stage Dockerfile with Intel HEXL + AVX-512 NTT acceleration is in progress for further latency reduction.
+> **Current status:** FHE fully operational in Replit (all 5 demos passing, ~350ms). 🟢 **Production container fix applied** — `Dockerfile` updated; TenSEAL installation verified. CKKS parameters corrected to fit within the 218-bit limit for `N=8192` at 128-bit security (`[60, 40, 40, 60]`). The 3-stage Dockerfile with Intel HEXL + AVX-512 NTT acceleration is in progress for further latency reduction.
 
 ### Schemes
 - **CKKS** — Approximate arithmetic on real/complex numbers for encrypted ML inference, secure embeddings, and private scoring. `light`/`standard` profiles use `N=8192` with `[60, 40, 40, 60]` bit sizes (200 bits — within the 218-bit 128-bit security limit); `deep` profile uses `N=16384` for >3 multiplication depths.
