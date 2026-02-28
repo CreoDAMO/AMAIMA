@@ -27,6 +27,8 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 ### What It Does
 
 - **Smart Query Routing** — Regex-priority domain detection (image_gen and speech checked first) then complexity scoring (TRIVIAL to EXPERT); routes to the optimal model across 7 domains. Single source of truth shared between both routing engines.
+- **Multimodal Inputs** — Support for file uploads (images for Vision analysis, data for Biology) directly in the chat interface.
+- **Voice-Enabled AI** — Neural TTS integration with an "Auto-Voice" toggle for real-time spoken responses.
 - **7-Domain AI** — Biology (BioNeMo/GenMol), Robotics (Isaac/GR00T), Vision (Cosmos R2), Speech (Riva ASR/TTS), Image Generation (SDXL-Turbo cascade), Video Generation (Cosmos Predict 2.5), and Embeddings (NeMo Retriever)
 - **Live Multi-Agent Orchestration** — Agent Builder executes real multimodal pipelines via `/v1/agents/run` with 10 crew types including Neural Audio Synthesis, Visual Art Generation, and Stateful Workflow
 - **Fully Homomorphic Encryption** — Privacy-preserving encrypted inference via Microsoft SEAL (TenSEAL): CKKS + BFV schemes, 128-bit post-quantum security, context pool (keygen once per process), LRU payload store, batched similarity search
