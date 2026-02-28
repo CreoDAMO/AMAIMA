@@ -1,0 +1,175 @@
+# ============================================================================
+# AMAIMA Android — Version Catalog (gradle/libs.versions.toml)
+# ============================================================================
+# Single source of truth for all dependency versions.
+# Referenced in build.gradle.kts files via libs.* accessors.
+#
+# BEFORE (current):    AFTER (this file):
+#   Kotlin   1.9.20      2.3.10
+#   AGP      unknown     9.0.1
+#   Gradle   8.14.2      9.3.1  (in gradle-wrapper.properties)
+#   kapt     (used)      removed → KSP
+#   Hilt     unknown     2.52
+#   Room     unknown     2.7.1
+#   ONNX     1.16.3      1.20.0
+#   TFLite   2.14.0      2.18.0
+#   Min SDK  26          26 (unchanged)
+#   Target   34          36
+# ============================================================================
+
+[versions]
+# ── Core Android toolchain ──────────────────────────────────────────────────
+agp                     = "9.0.1"          # Requires Gradle 9.1.0+, JDK 17+
+kotlin                  = "2.3.10"         # First KGP with full Gradle 9.0 support
+ksp                     = "2.3.10-1.0.31"  # KSP version must match KGP version prefix
+compileSdk              = "36"
+targetSdk               = "36"
+minSdk                  = "26"             # Android 8.0 — unchanged
+jvmTarget               = "17"            # Required by Gradle 9.x daemon
+
+# ── Jetpack Compose ──────────────────────────────────────────────────────────
+# AGP 9.x has built-in Kotlin/Compose support — compose-bom handles all versions
+composeBom              = "2025.01.00"
+activityCompose         = "1.10.1"
+navigationCompose       = "2.8.9"
+
+# ── AndroidX core ────────────────────────────────────────────────────────────
+coreKtx                 = "1.16.0"
+lifecycleRuntime        = "2.8.7"
+lifecycleViewModel      = "2.8.7"
+
+# ── Dependency Injection — Hilt ──────────────────────────────────────────────
+# Hilt 2.52+ supports KSP (hilt-android-compiler via ksp() instead of kapt())
+# Hilt 2.52 requires AGP 8.2.2+ and KGP 2.0.0+
+hilt                    = "2.52"
+hiltNavigationCompose   = "1.2.0"
+
+# ── Database — Room ───────────────────────────────────────────────────────────
+# Room 2.7.x supports KSP natively (was experimental in 2.5.x)
+# Room 2.7.1 requires compileSdk 34+
+room                    = "2.7.1"
+
+# ── Networking — Retrofit + OkHttp ────────────────────────────────────────────
+retrofit                = "2.11.0"
+okhttp                  = "4.12.0"
+gson                    = "2.10.1"
+
+# ── ML Runtimes ───────────────────────────────────────────────────────────────
+# ONNX Runtime: 1.16.3 → 1.20.0
+#   1.17+ requires Android API 24+ (we're on 26, so OK)
+#   1.18+ adds NNAPI EP improvements for INT4 quant
+#   1.20.0 adds ORT Extensions 0.12 for audio/vision ops
+# TFLite: 2.14.0 → 2.18.0
+#   2.16+ has improved GPU delegate for API 31+ (degraded gracefully on 26)
+#   2.18.0 adds updated MediaPipe integration support
+onnxRuntime             = "1.20.0"
+tensorflowLite          = "2.18.0"
+tensorflowLiteSupport   = "0.5.0"  # TFLite support library (image/audio processing)
+tensorflowLiteGpu       = "2.18.0"
+
+# ── Security ─────────────────────────────────────────────────────────────────
+biometric               = "1.2.0-alpha05"
+securityCrypto          = "1.1.0-alpha06"  # EncryptedSharedPreferences
+
+# ── Other ─────────────────────────────────────────────────────────────────────
+coroutines              = "1.9.0"
+workManager             = "2.10.0"
+datastore               = "1.1.2"
+
+# ── Test ─────────────────────────────────────────────────────────────────────
+junit                   = "4.13.2"
+junitAndroid            = "1.2.1"
+espresso                = "3.6.1"
+
+[libraries]
+# ── AndroidX Core ─────────────────────────────────────────────────────────────
+androidx-core-ktx               = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx  = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntime" }
+androidx-lifecycle-viewmodel    = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
+androidx-activity-compose       = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+
+# ── Compose ───────────────────────────────────────────────────────────────────
+compose-bom                     = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui                      = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics             = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling-preview      = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-tooling              = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-material3               = { group = "androidx.compose.material3", name = "material3" }
+compose-navigation              = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+
+# ── Hilt (DI) — KSP-based ─────────────────────────────────────────────────────
+# MIGRATION NOTE: Replace all kapt("...hilt-android-compiler") with ksp("...hilt-android-compiler")
+hilt-android                    = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler           = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation-compose         = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# ── Room (DB) — KSP-based ─────────────────────────────────────────────────────
+# MIGRATION NOTE: Replace kapt("...room-compiler") with ksp("...room-compiler")
+room-runtime                    = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx                        = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler                   = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+# ── Networking ────────────────────────────────────────────────────────────────
+retrofit-core                   = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-gson                   = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+okhttp-core                     = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging                  = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+gson                            = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+# ── ML Runtimes ───────────────────────────────────────────────────────────────
+# ONNX Runtime — primary ML runtime for embeddings, streaming inference, audio/vision
+onnxruntime-android             = { group = "com.microsoft.onnxruntime", name = "onnxruntime-android", version.ref = "onnxRuntime" }
+# TensorFlow Lite — secondary runtime (quantized models, legacy model support)
+tensorflow-lite                 = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
+tensorflow-lite-support         = { group = "org.tensorflow", name = "tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
+tensorflow-lite-gpu             = { group = "org.tensorflow", name = "tensorflow-lite-gpu", version.ref = "tensorflowLiteGpu" }
+tensorflow-lite-metadata        = { group = "org.tensorflow", name = "tensorflow-lite-metadata", version.ref = "tensorflowLite" }
+
+# ── Security ─────────────────────────────────────────────────────────────────
+biometric                       = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
+security-crypto                 = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# ── Coroutines ────────────────────────────────────────────────────────────────
+coroutines-android              = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# ── Work / DataStore ─────────────────────────────────────────────────────────
+work-runtime                    = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
+datastore-prefs                 = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+# ── Test ─────────────────────────────────────────────────────────────────────
+# NOTE: Gradle 9.x removes automatic test dependency inclusion.
+# All test deps must be declared explicitly (they are below).
+junit                           = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit                  = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroid" }
+androidx-espresso-core          = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+compose-ui-test-junit4          = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-ui-test-manifest        = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+[plugins]
+android-application             = { id = "com.android.application", version.ref = "agp" }
+android-library                 = { id = "com.android.library", version.ref = "agp" }
+kotlin-android                  = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp                             = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt                            = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+[bundles]
+# Convenient bundle: apply all compose UI libs at once
+compose-ui = [
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+]
+# Retrofit + OkHttp always used together
+networking = [
+    "retrofit-core",
+    "retrofit-gson",
+    "okhttp-core",
+    "okhttp-logging",
+    "gson",
+]
+# Room always needs runtime + ktx together
+room = [
+    "room-runtime",
+    "room-ktx",
+]
