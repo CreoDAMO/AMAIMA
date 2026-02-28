@@ -254,6 +254,7 @@ export default function HomePage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [useStreaming, setUseStreaming] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
 
   useEffect(() => { setCopied(false); }, [response]);
 
@@ -492,6 +493,27 @@ export default function HomePage() {
       const data = await res!.json();
       const parsed = parseApiResponse(data, operation);
       setResponse(parsed);
+
+      // Handle Auto-Voice
+      if (isVoiceEnabled && parsed.response_type === 'text' && parsed.response_text) {
+        try {
+          const ttsRes = await fetch('/api/v1/audio/synthesize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: parsed.response_text }),
+          });
+          if (ttsRes.ok) {
+            const ttsData = await ttsRes.json();
+            if (ttsData.audio_data) {
+              const audio = new Audio(ttsData.audio_data);
+              audio.play().catch(e => console.error('Audio playback failed:', e));
+            }
+          }
+        } catch (e) {
+          console.error('Auto-voice synthesis failed:', e);
+        }
+      }
+
       addToHistory({
         query: query.slice(0, 100),
         operation,
@@ -990,6 +1012,19 @@ export default function HomePage() {
                         </button>
                       </div>
                     )}
+
+                    <button
+                      onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+                      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
+                        isVoiceEnabled 
+                          ? 'bg-pink-500/20 border-pink-500/50 text-pink-300' 
+                          : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                      }`}
+                      title={isVoiceEnabled ? 'Voice Enabled' : 'Enable Voice'}
+                    >
+                      <Mic className={`h-4 w-4 ${isVoiceEnabled ? 'animate-pulse' : ''}`} />
+                      {isVoiceEnabled ? 'Voice On' : 'Voice Off'}
+                    </button>
 
                     <button
                       onClick={() => setShowHistory(!showHistory)}
