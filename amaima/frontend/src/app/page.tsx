@@ -238,6 +238,7 @@ function parseApiResponse(data: any, operation: string): QueryResponse {
 
 export default function HomePage() {
   const [query, setQuery] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [response, setResponse] = useState<QueryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -317,7 +318,7 @@ export default function HomePage() {
   // ── Query submission ──────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
-    if (!query.trim()) return;
+    if (!query.trim() && !selectedFile) return;
     setIsSubmitting(true);
     setResponse(null);
     setError(null);
@@ -325,12 +326,27 @@ export default function HomePage() {
     try {
       let res: Response;
 
-      if (operation === 'biology') {
+      // Use FormData if a file is selected or for specific endpoints
+      if (selectedFile || operation === 'vision' || operation === 'biology') {
         const formData = new FormData();
         formData.append('query', query);
-        formData.append('task_type', 'general');
-        res = await fetch(`/api/v1/biology?endpoint=query`, { method: 'POST', body: formData });
+        if (selectedFile) {
+          formData.append(operation === 'vision' ? 'media_file' : 'file', selectedFile);
+        }
 
+        if (operation === 'vision') {
+          res = await fetch(`/api/v1/vision?endpoint=reason`, { method: 'POST', body: formData });
+        } else if (operation === 'biology') {
+          formData.append('task_type', 'general');
+          res = await fetch(`/api/v1/biology?endpoint=query`, { method: 'POST', body: formData });
+        } else {
+          // General query with file - backend needs to support this or we fallback to text
+          res = await fetch(`/api/v1/query`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, operation, preferences: {} }),
+          });
+        }
       } else if (operation === 'robotics') {
         res = await fetch(`/api/v1/robotics?endpoint=plan`, {
           method: 'POST',
@@ -664,8 +680,16 @@ export default function HomePage() {
   // Render
   // ─────────────────────────────────────────────────────────────────────────
 
+  const [fileInput, setFileInput] = useState<HTMLInputElement | null>(null);
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <input
+        type="file"
+        className="hidden"
+        onChange={handleFileChange}
+        ref={(el) => setFileInput(el)}
+      />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative py-16 px-6 overflow-hidden">
@@ -937,6 +961,24 @@ export default function HomePage() {
                         </div>
                         Stream
                       </label>
+                    )}
+
+                    <button
+                      onClick={() => fileInput?.click()}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm transition-all"
+                      title="Upload File"
+                    >
+                      <ImagePlus className="h-4 w-4" />
+                      {selectedFile ? 'Change File' : 'Upload File'}
+                    </button>
+
+                    {selectedFile && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                        <span className="text-xs text-cyan-300 truncate max-w-[150px]">{selectedFile.name}</span>
+                        <button onClick={removeFile} className="text-cyan-300 hover:text-white">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
                     )}
 
                     <button
