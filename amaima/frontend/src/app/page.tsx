@@ -518,6 +518,16 @@ export default function HomePage() {
     setShowHistory(false);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+  };
+
   const getComplexityColor = (complexity: string) => {
     const colors: Record<string, string> = {
       TRIVIAL: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
