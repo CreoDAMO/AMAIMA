@@ -307,6 +307,7 @@ WORKFLOW_REGISTRY = {
     "vision": lambda: build_domain_workflow("vision"),
     "audio": lambda: build_domain_workflow("audio"),
     "image_gen": lambda: build_domain_workflow("image_gen"),
+    "agent_builder": build_research_workflow,
 }
 
 

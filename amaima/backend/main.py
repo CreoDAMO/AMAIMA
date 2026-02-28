@@ -389,6 +389,11 @@ async def process_query(request: QueryRequest, api_key_info: dict = Depends(get_
             execution_result = await vision_service.cosmos_inference(request.query)
             output = execution_result.get("response", "")
 
+        elif detected_domain == "agent_builder":
+            from app.agents.langchain_agent import run_langchain_agent
+            execution_result = await run_langchain_agent(request.query, workflow_type="research")
+            output = f"Agent Builder Workflow started: {execution_result.get('final_output', '')}"
+
         else:
             decision = route_query(request.query, simulate=False)
             model_used = decision.get("model", "unknown")

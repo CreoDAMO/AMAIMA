@@ -88,6 +88,12 @@ SPEECH_KEYWORDS = [
     "pronunciation", "synthesize voice", "riva",
 ]
 
+AGENT_BUILDER_KEYWORDS = [
+    "agent builder", "create workflow", "build agent", "workflow automation",
+    "agent crew", "multi-agent", "orchestrate agents", "design workflow",
+    "agent pipeline", "crew manager", "visual agent",
+]
+
 FHE_KEYWORDS = [
     "encrypted", "encrypt", "private", "privacy", "confidential",
     "homomorphic", "fhe", "secure computation", "zero trust",
@@ -129,12 +135,14 @@ def detect_domain(query: str) -> Tuple[str, float]:
     robotics_score = sum(1 for kw in ROBOTICS_KEYWORDS if kw in q_lower)
     vision_score = sum(1 for kw in VISION_KEYWORDS if kw in q_lower)
     speech_score = sum(1 for kw in SPEECH_KEYWORDS if kw in q_lower)
+    agent_builder_score = sum(1 for kw in AGENT_BUILDER_KEYWORDS if kw in q_lower)
 
     scores = {
         "biology": biology_score,
         "robotics": robotics_score,
         "vision": vision_score,
         "speech": speech_score,
+        "agent_builder": agent_builder_score,
         "general": 0,
     }
 
