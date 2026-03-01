@@ -264,12 +264,28 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+_ALLOWED_ORIGINS = [
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+_CORS_ORIGIN_REGEX = (
+    r"https://.*\.replit\.dev$"
+    r"|https://.*\.repl\.co$"
+    r"|https://.*\.spock\.replit\.dev$"
+    r"|https://.*\.kirk\.replit\.dev$"
+    r"|https://.*\.janeway\.replit\.dev$"
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
+    allow_origin_regex=_CORS_ORIGIN_REGEX,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "X-API-Key"],
 )
 
 from app.fhe.router import router as fhe_router
