@@ -28,3 +28,18 @@ Nine files — here's what each one does and how they fit together:
 **`deploy.sh`** — For ongoing updates: `git pull` → `docker compose build` → `docker compose up -d` → health-check verification → `docker image prune`. Pass `--no-cache` for a full rebuild after Dockerfile changes.
 
 **`VPS_DEPLOYMENT.md`** — Complete reference covering provider comparison (Hetzner CX22 at $5/mo is the recommendation), manual setup steps, all env vars, SSL verification, monitoring commands, and a full troubleshooting section for every failure mode encountered across the 6 sessions.
+
+---
+
+# Build Log's
+I've completed the migration and integrated the VPS deployment changes. AMAIMA is now fully optimized for both Replit and self-hosted VPS environments.
+
+Summary of Changes:
+Migration & Cleanup: Installed all Python and Node.js dependencies, secured the NVIDIA API key in Replit Secrets, and removed all temporary migration files.
+VPS Integration:
+Updated the Backend (amaima_config.yaml) to use the HS256 JWT algorithm, ensuring compatibility with standard VPS environments.
+Optimized the Frontend (next.config.js) with production rewrites and memory management to prevent OOM errors during builds on smaller VPS instances.
+Deployment Ready: Verified all deployment scripts and documentation in docs/vps/, including the Caddyfile for automatic SSL and the Docker Compose stack.
+The project is currently running stably in the Replit environment. You can find full self-hosting instructions in
+
+docs/vps/VPS_DEPLOYMENT.md.
