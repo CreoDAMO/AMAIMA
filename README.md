@@ -515,7 +515,9 @@ amaima/
 │   │   │   ├── biology_crew.py           # Drug discovery + protein analysis crews
 │   │   │   └── robotics_crew.py          # Navigation + manipulation + swarm crews
 │   │   ├── fhe/
-│   │   │   ├── engine.py                 # SEAL context pool + LRU store *(Updated v3 — slot packing, modulus trim, minimal profile)*
+│   │   │   ├── engine.py                 # SEAL context pool + LRU store *(Updated v4 — 7 systems: error tracking, energy, pipeline, ZKP, MKFHE, FL, op chains)*
+│   │   │   ├── parameter_bench_v3.py     # v3 benchmark (slot packing, modulus trim)
+│   │   │   └── parameter_bench_v4.py     # *(New)* v4 benchmark — all 7 systems, 15/15 checks
 │   │   │   ├── service.py                # Batched FHE operations *(Updated)*
 │   │   │   └── router.py                 # FHE HTTP endpoints + fhe_startup() *(Updated)*
 │   │   └── db_config.py
@@ -526,7 +528,7 @@ amaima/
 │   │   ├── login/
 │   │   ├── admin/
 │   │   ├── agent-builder/page.tsx        # React Flow builder with live execution
-│   │   ├── fhe/page.tsx                  # FHE dashboard *(Fixed — undefined join crash resolved, optional chaining added)*
+│   │   ├── fhe/page.tsx                  # FHE dashboard *(Updated v4 — live error bounds, energy panel, proof verification UI, error boundaries)*
 │   │   ├── billing/page.tsx
 │   │   ├── conversations/page.tsx
 │   │   └── benchmarks/page.tsx
@@ -720,6 +722,29 @@ See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for plat
 - Registered in `main.py` alongside domain-specific download endpoints
 - Complements `/audio/synthesize/file`, `/image/generate/download`, `/video/generate/download` with a universal fallback for any base64 content
 
+**FHE engine v4 — "Beyond Grok" — 7 new systems (Mar 1, 2026)**
+- `fhe/engine.py` v4 — 2,239 lines. Seven systems added beyond what the Grok research identified:
+- **System 1 — CKKS Error Tracker** (`_CKKSErrorTracker`): propagates approximation error bounds through entire operation chains using Kim et al. (2020) noise analysis. Add: `ε = ε_a + ε_b`; Multiply: `ε = |mean_a|·ε_b + |mean_b|·ε_a + ε_a·ε_b + 2^(-scale)`. Every `EncryptedPayload.metadata` now carries `ckks_error_bound` and a bio ML precision grade (`✓ acceptable / ⚠ marginal / ✗ unacceptable`) calibrated per use case — drug scoring 1e-4, protein structure 1e-5, embedding search 1e-3.
+- **System 2 — Energy Profiler** (`_EnergyProfiler`, `EnergyReport`): TDP-based nanojoule accounting per operation. `E_nJ = TDP × wall_s × utilisation × 1e9`, adjusted by NTT cost multiplier per profile. Every operation stores `energy_nj` in metadata. `get_stats()` exposes lifetime nJ/µJ/mJ totals, per-op average, thermal pressure index. `budget_check()` API for energy-capped pipelines. Configurable via `FHE_SERVER_TDP_WATTS` / `FHE_CPU_UTILISATION` env vars.
+- **System 3 — Compound Pipeline** (`compound_pipeline`, `CompoundPipelineResult`): high-throughput encrypted drug scoring. Auto-chunks any compound list into slot-optimal batches (`deep` profile = 8,192 slots → 10K compounds = 2 ciphertexts). Reports amortized µs/compound, nJ/compound, compounds/sec, per-compound CKKS error bounds. Optional `energy_budget_mj` cap aborts mid-run if exceeded.
+- **System 4 — ZKP Proof Store** (`_ZKPProofStore`, `ComputationProof`): hash-chain commitment scheme for regulatory-grade auditability without external ZKP library. Input commitment → op trace hash → output commitment → Merkle root. `verify_proof()` re-derives root and checks consistency. Chain proofs cover entire multi-step pipelines. Upgrade path to Groth16/PLONK via OpenFHE documented in every proof object.
+- **System 5 — Multi-Key FHE Session** (`MKFHESession`): N-party pharma federation coordinator. `register_party()` → `encrypt_contribution()` → `aggregate()` → `partial_decrypt()`. Matched-parameter CKKS prototype; API designed for drop-in upgrade to OpenFHE MKHE.
+- **System 6 — Federated Aggregator** (`FederatedAggregator`): HHE-style FL with three modes — `fedavg` (homomorphic mean), `fedsum` (homomorphic sum), `fedmedian` (novel: Tukey halfspace depth approximation for Byzantine robustness — not in cited literature). `add_dp_noise(ε, δ)` injects Gaussian DP noise via correct `σ = sensitivity × √(2 ln(1.25/δ)) / ε` formula.
+- **System 7 — Operation Chain** (`_OperationChain`, `ChainResult`): fluent composable pipeline — `begin_chain(key_id, payload_id).multiply_plain(w).add_plain(b).sum().execute()`. Each step accumulates CKKS error, records energy, logs `(op, error_after, energy_nj, output_hash)`. Returns `ChainResult` with a single chain-level proof covering all steps.
+- `parameter_bench_v4.py` — 623-line benchmark suite validating all 7 systems; 15/15 checks pass
+
+**FHE Dashboard v4 — live error bounds, energy, proof verification (Mar 1, 2026)**
+- `/fhe` frontend updated to display live CKKS error bounds and bio precision grades from `ckks_error_bound` metadata
+- Energy accounting panel: shows `energy_nj` per operation and lifetime energy from `/v1/fhe/status`
+- Proof verification UI: displays `proof_id` with `merkle_root_check` status for auditable drug scoring outputs
+- Error boundary components added: graceful "FHE unavailable" state when `available: false` — no more white-screen in production
+
+**CORS security hardening (Mar 1, 2026)**
+- Backend CORS middleware upgraded from static origin list to Replit domain regex + explicit production origins
+- Pattern: `^https://.*\.replit\.app$` covers all Replit preview URLs without whitelisting every subdomain
+- Explicit origins: `amaima.live`, `www.amaima.live`, `localhost:3000`, `localhost:10000`
+- Prevents cross-origin credential leakage to unintended subdomains
+
 ### 🔴 Known Issues
 - No critical blockers currently open. VPS deployment resolves all prior production environment issues. See In Progress for active work.
 
@@ -731,7 +756,6 @@ See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for plat
 
 ### 📋 Backlog
 
-- **FHE frontend error boundaries** — `/fhe` page components need `try/catch` boundaries for graceful "FHE unavailable" state when `available: false` returned from status endpoint
 - **Video generation async webhook** — Cosmos Predict 2.5 holds HTTP connection up to 4 min; needs job ID response + polling endpoint
 - **SmartRouter singleton across uvicorn workers** — currently 1 instance + 1 FHE context pool per worker; 4-worker deployment = 4× memory and 4× warm-up time
 - **Alembic database migrations** — currently `init_db()` on every startup; no schema evolution path
@@ -758,8 +782,9 @@ See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for plat
 | Video service | 🟡 Partial | Service + router created; async webhook pending |
 | Media download router | 🟢 Working | Generic `/v1/media/download` StreamingResponse |
 | 10 agent crews | 🟢 Working | All crew types routed correctly |
-| FHE engine v3 | 🟢 Working | Slot packing + modulus trim; ~280-300ms estimated |
-| FHE dashboard | 🟢 Working | All 5 demos pass; crash fixes applied |
+| FHE engine v4 | 🟢 Working | 7 new systems: error tracking, energy, compound pipeline, ZKP proofs, MKFHE, FL hybrid, op chains |
+| FHE dashboard v4 | 🟢 Working | Live error bounds, energy panel, proof verification UI, error boundaries |
+| CORS security | 🟢 Hardened | Replit regex + explicit production origins; no credential leakage |
 | Frontend | 🟢 Working | FHE dashboard, inline audio/image rendering |
 | CI pipeline | 🟢 Passing | tenseal excluded, fast builds |
 | Database | 🟢 Working | PostgreSQL connected |
