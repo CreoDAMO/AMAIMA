@@ -127,11 +127,20 @@ def _check_fhe() -> None:
 async def fhe_status():
     return {
         "subsystem": "AMAIMA FHE (Fully Homomorphic Encryption)",
-        "version": "2.0.0",
-        "cryptographic_backend": "Microsoft SEAL (via TenSEAL)",
+        "version": "4.0.0",
+        "cryptographic_backend": "Microsoft SEAL (via TenSEAL) - AMAIMA v4 Enhanced",
         "lattice_basis": "Ring Learning With Errors (RLWE)",
         "post_quantum_secure": True,
         "security_level_bits": 128,
+        "enhanced_features": [
+            "CKKS Approximation Error Tracker",
+            "Energy Profiler (nanojoule accounting)",
+            "High-Throughput Compound Pipeline (<10µs/compound)",
+            "Verifiable Computation (Hash-chain commitments)",
+            "Multi-Key FHE Session (MKFHE Prototype)",
+            "Federated Learning Hybrid Aggregator",
+            "Composable Operation Chains"
+        ],
         "supported_schemes": {
             "CKKS": {
                 "description": "Approximate arithmetic on real/complex numbers",

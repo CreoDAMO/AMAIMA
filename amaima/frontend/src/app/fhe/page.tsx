@@ -163,11 +163,11 @@ export default function FHEPage() {
             <span className="text-emerald-300 text-sm font-medium">Post-Quantum Secure</span>
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent mb-3">
-            Fully Homomorphic Encryption
+            Fully Homomorphic Encryption v4
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Compute on encrypted data without decryption. 128-bit RLWE lattice security.
-            Resistant to quantum attacks.
+            Beyond Latency: Error Tracking, Energy Profiling, and Verifiable Computation.
+            Post-Quantum RLWE Security.
           </p>
         </div>
 
@@ -274,9 +274,14 @@ export default function FHEPage() {
                 <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
                   {customResult.total_latency_ms}ms
                 </span>
-                {customResult.quantum_resistant && (
-                  <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
-                    Quantum Resistant
+                {customResult.energy_nj && (
+                  <span className="text-xs bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full">
+                    {customResult.energy_nj.toFixed(2)} nJ
+                  </span>
+                )}
+                {customResult.proof_id && (
+                  <span className="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full">
+                    Proof: {customResult.proof_id.substring(0, 8)}...
                   </span>
                 )}
               </div>
@@ -286,9 +291,16 @@ export default function FHEPage() {
                   <div className="text-sm text-gray-400">Encrypted Drug Composite Scores:</div>
                   <div className="flex gap-2 flex-wrap">
                     {customResult.composite_scores.map((s: number, i: number) => (
-                      <div key={i} className={`px-3 py-1.5 rounded-md text-sm font-mono ${i === customResult.best_molecule_index ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300' : 'bg-gray-800 text-gray-300'}`}>
-                        Mol {i}: {s.toFixed(4)}
-                        {i === customResult.best_molecule_index && ' ★'}
+                      <div key={i} className="flex flex-col gap-1">
+                        <div className={`px-3 py-1.5 rounded-md text-sm font-mono ${i === customResult.best_molecule_index ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300' : 'bg-gray-800 text-gray-300'}`}>
+                          Mol {i}: {s.toFixed(4)}
+                          {i === customResult.best_molecule_index && ' ★'}
+                        </div>
+                        {customResult.error_bounds && (
+                          <div className="text-[10px] text-gray-500 px-1">
+                            err: {customResult.error_bounds[i]?.toExponential(2)}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
