@@ -23,6 +23,7 @@ from app.security import get_api_key, enforce_tier_limit, get_current_user, requ
 from app.routers.biology import router as biology_router
 from app.routers.robotics import router as robotics_router
 from app.routers.vision import router as vision_router
+from app.routers.media import router as media_router
 from app.routers.audio import router as audio_router   # NEW — /v1/audio/*
 from app.routers.image import router as image_router   # NEW — /v1/image/*
 from app.routers.video import router as video_router   # NEW — /v1/video/*
@@ -279,6 +280,7 @@ app.include_router(vision_router)
 app.include_router(audio_router)   # NEW — synthesize, transcribe, voices, transcribe-b64
 app.include_router(image_router)   # NEW — generate, variants, edit, inpaint, download
 app.include_router(video_router)   # NEW — generate, transform, download
+app.include_router(media_router)
 app.include_router(fhe_router)
 
 
