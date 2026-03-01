@@ -23,48 +23,46 @@ const nextConfig = {
         ],
     },
     
-    async rewrites() {
-        return [
-            {
-                source: '/api/:path*',
-                destination: 'http://localhost:8000/:path*',
-            },
-        ];
-    },
+  // Combined with NODE_OPTIONS=--max-old-space-size=256 this keeps
+  // the Next.js build under 500MB and prevents OOM kills.
+  webpack: (config, { dev, isServer }) => {
+    if (!dev) {
+      config.parallelism = 1;
+    }
+    if (!isServer) {
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            fs: false,
+            path: false,
+        };
+    }
+    return config;
+  },
 
-    async headers() {
-        return [
-            {
-                source: '/:path*',
-                headers: [
-                    {
-                        key: 'X-Content-Type-Options',
-                        value: 'nosniff',
-                    },
-                    {
-                        key: 'Referrer-Policy',
-                        value: 'strict-origin-when-cross-origin',
-                    },
-                    {
-                        key: 'Cache-Control',
-                        value: 'no-cache, no-store, must-revalidate',
-                    },
-                ],
-            },
-        ];
-    },
-    
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                path: false,
-            };
-        }
-        
-        return config;
-    },
+  // ── API proxy ──────────────────────────────────────────────────────────────
+  // All /v1/* and /health requests from the browser are proxied to the
+  // FastAPI backend running on localhost:8000 inside the same container.
+  async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendUrl}/:path*`,
+      },
+      {
+        source: "/v1/:path*",
+        destination: `${backendUrl}/v1/:path*`,
+      },
+      {
+        source: "/health",
+        destination: `${backendUrl}/health`,
+      },
+      {
+        source: "/ws/:path*",
+        destination: `${backendUrl}/ws/:path*`,
+      },
+    ];
+  },
     
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion'],

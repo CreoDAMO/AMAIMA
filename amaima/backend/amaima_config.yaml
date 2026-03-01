@@ -31,7 +31,7 @@ redis:
 # JWT Authentication
 jwt:
   secret_key: "${JWT_SECRET_KEY}"
-  algorithm: "RS256"
+  algorithm: "HS256"
   access_token_expire_minutes: 15
   refresh_token_expire_days: 30
   public_key_path: "/app/keys/public.pem"
