@@ -34,7 +34,6 @@ A backward-compatible `pad_to_slots=False` parameter that lets single-vector cal
 Run this on the VPS immediately after deploying to confirm the gains: `python -m app.fhe.parameter_bench_v3`. It measures keygen (pooled), encrypt, multiply across all profiles, does a direct 240-bit vs 160-bit NTT comparison, and runs the full drug-scoring slot-packing benchmark with a correctness check (`max_error < 1e-4` CKKS approximation tolerance). Expected total runtime ~2 minutes on a Hetzner CX22.
 
 ----
-
 I have successfully implemented media download support and upgraded the Fully Homomorphic Encryption (FHE) engine to version 3.
 
 Media Download Implementation
