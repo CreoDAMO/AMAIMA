@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Python 3.10](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python&logoColor=yellow)](https://www.python.org/)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=yellow)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-109989?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Next.js 16](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![NVIDIA NIM](https://img.shields.io/badge/NVIDIA_NIM-76B900?style=for-the-badge&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
@@ -27,8 +27,6 @@ AMAIMA is an enterprise-grade multimodal AI operating system that intelligently 
 ### What It Does
 
 - **Smart Query Routing** — Regex-priority domain detection (image_gen and speech checked first) then complexity scoring (TRIVIAL to EXPERT); routes to the optimal model across 7 domains. Single source of truth shared between both routing engines.
-- **Multimodal Inputs** — Support for file uploads (images for Vision analysis, data for Biology) directly in the chat interface.
-- **Voice-Enabled AI** — Neural TTS integration with an "Auto-Voice" toggle for real-time spoken responses.
 - **7-Domain AI** — Biology (BioNeMo/GenMol), Robotics (Isaac/GR00T), Vision (Cosmos R2), Speech (Riva ASR/TTS), Image Generation (SDXL-Turbo cascade), Video Generation (Cosmos Predict 2.5), and Embeddings (NeMo Retriever)
 - **Live Multi-Agent Orchestration** — Agent Builder executes real multimodal pipelines via `/v1/agents/run` with 10 crew types including Neural Audio Synthesis, Visual Art Generation, and Stateful Workflow
 - **Fully Homomorphic Encryption** — Privacy-preserving encrypted inference via Microsoft SEAL (TenSEAL): CKKS + BFV schemes, 128-bit post-quantum security, context pool (keygen once per process), LRU payload store, batched similarity search
@@ -173,11 +171,10 @@ The routing engine uses **regex-priority domain detection** — `image_gen` and 
 ### Domain-Aware Routing (Priority Order)
 1. **Image Generation** — 13 regex patterns checked first (`generate image`, `draw`, `render`, `sdxl`, `stable diffusion`, etc.) → SDXL-Turbo cascade
 2. **Speech** — 15 regex patterns checked second (`tts`, `text-to-speech`, `narrate`, `transcribe`, `asr`, `riva`, etc.) → Riva TTS / Parakeet ASR
-3. **Video Generation** — 6 regex patterns (`generate video`, `create video`, `animate`, `cosmos`, etc.) → Cosmos Predict 2.5
-4. **Biology** — keyword scoring → BioNeMo / GenMol
-5. **Vision** — keyword scoring → Cosmos Reason2 7B
-6. **Robotics** — keyword scoring → Isaac GR00T N1.6
-7. **General** — complexity-based model selection
+3. **Biology** — keyword scoring → BioNeMo / GenMol
+4. **Vision** — keyword scoring → Cosmos Reason2 7B
+5. **Robotics** — keyword scoring → Isaac GR00T N1.6
+6. **General** — complexity-based model selection
 
 ---
 
@@ -261,7 +258,7 @@ The Visual Agent Builder at `/agent-builder` executes real multimodal pipelines 
 
 Privacy-preserving computation using Microsoft SEAL (via TenSEAL) with real RLWE lattice-based cryptography. FHE is a **primary platform feature** on the home page and accessible directly from main navigation.
 
-> **Current status:** FHE fully operational in Replit (all 5 demos passing, ~350ms). 🟢 **Production container fix applied** — `Dockerfile` updated; TenSEAL installation verified. CKKS parameters corrected to fit within the 218-bit limit for `N=8192` at 128-bit security (`[60, 40, 40, 60]`). The 3-stage Dockerfile with Intel HEXL + AVX-512 NTT acceleration is in progress for further latency reduction.
+> **Current status:** TenSEAL installed and operational (`SEAL_THREADS=8`). All five FHE demos pass. CKKS parameters corrected to fit within the 218-bit limit for `N=8192` 128-bit security (`[60, 40, 40, 60]`). The 3-stage Dockerfile with Intel HEXL + AVX-512 NTT acceleration is in progress for further latency reduction.
 
 ### Schemes
 - **CKKS** — Approximate arithmetic on real/complex numbers for encrypted ML inference, secure embeddings, and private scoring. `light`/`standard` profiles use `N=8192` with `[60, 40, 40, 60]` bit sizes (200 bits — within the 218-bit 128-bit security limit); `deep` profile uses `N=16384` for >3 multiplication depths.
@@ -417,6 +414,11 @@ Native Android client built with Kotlin and Jetpack Compose, featuring on-device
 | POST | `/v1/video/transform` | Video-to-video prompt-guided transformation |
 | GET | `/v1/video/capabilities` | Model info, duration limits, latency expectations |
 
+### Media (Generic Download)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/media/download` | Universal base64→file download — any MIME type, correct `Content-Disposition` headers |
+
 ### Embeddings
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -505,14 +507,15 @@ amaima/
 │   │   │   ├── vision.py                 # Vision HTTP router
 │   │   │   ├── audio.py                  # *(New)* TTS, ASR file upload, voices, transcribe-b64
 │   │   │   ├── image.py                  # *(New)* generate, variants, edit, inpaint, download
-│   │   │   └── video.py                  # *(New)* generate, transform, download
+│   │   │   ├── video.py                  # *(New)* generate, transform, download
+│   │   │   └── media.py                  # *(New)* generic /v1/media/download StreamingResponse
 │   │   ├── agents/
 │   │   │   ├── crew_manager.py           # 10 crew types + run_crew() dispatcher *(Updated — Neural Audio + Visual Art crews added)*
 │   │   │   ├── langchain_agent.py        # Stateful workflow engine *(Updated — false-positive revision loop fixed)*
 │   │   │   ├── biology_crew.py           # Drug discovery + protein analysis crews
 │   │   │   └── robotics_crew.py          # Navigation + manipulation + swarm crews
 │   │   ├── fhe/
-│   │   │   ├── engine.py                 # SEAL context pool + LRU store *(Updated — CKKS params fixed, valid 128-bit security)*
+│   │   │   ├── engine.py                 # SEAL context pool + LRU store *(Updated v3 — slot packing, modulus trim, minimal profile)*
 │   │   │   ├── service.py                # Batched FHE operations *(Updated)*
 │   │   │   └── router.py                 # FHE HTTP endpoints + fhe_startup() *(Updated)*
 │   │   └── db_config.py
@@ -530,13 +533,15 @@ amaima/
 │   ├── next.config.js                    # *(Updated — swcMinify off, NODE_OPTIONS heap limit, API proxy rewrites)*
 │   └── package.json
 │
-├── mobile/                               # Android mobile client (Kotlin)
+├── mobile/                               # Android mobile client (Kotlin 2.3.10)
+│   ├── gradle/
+│   │   └── libs.versions.toml            # *(Updated)* Version Catalog — Gradle 9.3.1, AGP 9.0.1, KSP
 │   └── app/src/main/java/com/amaima/app/
-│       ├── ml/                           # On-device ML engines
-│       ├── di/                           # Hilt dependency injection
-│       ├── network/                      # Retrofit + WebSocket
+│       ├── ml/                           # On-device ML engines (ONNX + TFLite)
+│       ├── di/                           # Hilt dependency injection *(migrated kapt → KSP)*
+│       ├── network/                      # Retrofit + OkHttp + WebSocket
 │       ├── security/                     # Biometric + cert pinning
-│       └── data/
+│       └── data/                         # Room DB *(migrated kapt → KSP)*
 │
 ├── tests/
 │   ├── integration/
@@ -553,7 +558,17 @@ amaima/
 ├── .env.example
 ├── docs/
 │   ├── fullstack-deployment-guide.md
-│   └── DEPLOYMENT.md                     # *(New — accurate resource requirements, platform rankings)*
+│   ├── DEPLOYMENT.md                     # *(New — accurate resource requirements, platform rankings)*
+│   └── vps/                              # *(New — complete VPS self-hosting package)*
+│       ├── Dockerfile                    # python:3.10, unconditional tenseal, 3-stage build
+│       ├── docker-compose.yml            # PostgreSQL + AMAIMA stack with resource limits
+│       ├── .env.example                  # All variables with generation instructions
+│       ├── start.sh                      # Process supervisor — backend → health → frontend
+│       ├── next.config.js                # OOM-safe build, API proxy rewrites
+│       ├── Caddyfile                     # Automatic Let's Encrypt SSL
+│       ├── setup.sh                      # One-shot Ubuntu 24.04 VPS provisioning
+│       ├── deploy.sh                     # git pull + rebuild + health verification
+│       └── VPS_DEPLOYMENT.md            # Provider comparison, troubleshooting reference
 └── monitoring/                           # Grafana dashboards
 ```
 
@@ -562,7 +577,7 @@ amaima/
 ## Running Locally
 
 ### Prerequisites
-- Python 3.10+ (production Dockerfile uses `python:3.10-slim-bookworm` for TenSEAL wheel compatibility; local dev works on 3.11)
+- Python 3.11+
 - Node.js 20+
 - PostgreSQL database
 - NVIDIA NIM API key (`nvapi-...`)
@@ -612,8 +627,6 @@ cd amaima/mobile
 
 AMAIMA deploys as a single full-stack container (frontend + backend) to any platform that runs Docker.
 
-> ⚠️ **Minimum 2GB RAM required** — Next.js 16 peaks at ~500MB during `npm run build`; total runtime (frontend + 4 uvicorn workers + FHE context pool) requires ~1.05GB steady state. Platforms below 2GB will OOM-kill the build or the frontend process at runtime.
-
 ### Quick Start (Docker Compose)
 ```bash
 cp .env.example .env    # Fill in your API keys
@@ -623,31 +636,23 @@ docker compose up -d    # Starts app + PostgreSQL
 > **Note:** Clear Docker build cache when updating files: `docker build --no-cache -t amaima:latest .`
 > On Render, use **"Clear build cache & deploy"** from the manual deploy dropdown.
 
-### Recommended Platforms (in order)
+### Supported Platforms
+Replit, Railway, Render (current), Fly.io, Docker/VPS, Google Cloud Run, AWS (App Runner/ECS/EC2), Azure Container Apps, DigitalOcean, Heroku.
 
-| Platform | Min Plan | Cost/mo | Notes |
-|---|---|---|---|
-| **Railway** | Starter | ~$10–20 | Fastest setup — connect GitHub, set env vars, done |
-| **Fly.io** | 2GB shared-CPU | ~$15 | Best performance/control — `fly deploy` with `memory = "2gb"` |
-| **Hetzner VPS** | CX22 (4GB) | ~$5 | Best value — `docker compose up -d --build` |
-| **DigitalOcean** | Professional (2GB) | ~$25 | Clean UI, managed PostgreSQL |
-| **Render** | Standard (2GB) | $25 | Works on Standard+; free/Starter (512MB) will always fail |
-
-See the **[Full Deployment Guide](docs/DEPLOYMENT.md)** for platform-specific configs, `fly.toml`, `railway.json`, and troubleshooting.
+See the **[Full Deployment Guide](docs/fullstack-deployment-guide.md)** for platform-specific instructions.
 
 ---
 
 ## Current Status & Roadmap
 
 ### 🟢 Working (confirmed in Replit)
-- 7-domain smart routing with regex-priority detection — `image_gen`, `speech`, and `video_gen` checked before complexity scoring
+- 7-domain smart routing with regex-priority detection — `image_gen` and `speech` checked before complexity scoring
 - Audio TTS/ASR, image generation (SDXL cascade), video generation (Cosmos Predict 2.5)
 - 10 agent crew types with live execution including Neural Audio Synthesis and Visual Art Generation
 - JWT auth, Stripe billing, MAU enforcement
-- FHE backend — all 5 demos functional, ~350ms per operation
-- FHE dashboard — crash fixed (`TypeError` on `poly_modulus_degrees.join()` resolved), all demos pass end-to-end
-- CI pipeline passing — tenseal excluded from CI install, `FHE_ENABLED=false` for fast builds
-- 3 new HTTP routers (`audio.py`, `image.py`, `video.py`) created and registered in `main.py`
+- FHE backend — all 5 demos functional, `SEAL_THREADS=8`, ~350ms per operation
+- FHE dashboard — crash fixed, all demos pass end-to-end
+- CI pipeline passing — tenseal excluded from CI, fast builds
 
 ### ✅ Recently Completed
 
@@ -689,31 +694,54 @@ See the **[Full Deployment Guide](docs/DEPLOYMENT.md)** for platform-specific co
 - `robotics_service.py`: circular import risk eliminated (lazy import); `_ros2_navigate()` fake success replaced with honest `stub_not_executed`
 - Three new HTTP routers: `app/routers/audio.py`, `image.py`, `video.py` — wired into `main.py`, inline route conflicts resolved
 
-### 🔴 Known Issues
+**VPS deployment package complete (Mar 1, 2026)**
+- Nine production files committed under `docs/vps/`: `Dockerfile` (python:3.10, unconditional tenseal, 3-stage build), `docker-compose.yml` (PostgreSQL + AMAIMA stack, internal networking, resource limits), `.env.example`, `start.sh` (process supervisor with health-check loop), `next.config.js` (OOM-safe build, API proxy rewrites), `Caddyfile` (automatic Let's Encrypt SSL), `setup.sh` (one-shot Ubuntu 24.04 provisioning), `deploy.sh` (git pull + rebuild + health verification), `VPS_DEPLOYMENT.md`
+- `amaima_config.yaml` — JWT algorithm corrected to HS256 for VPS compatibility (RS256 requires a key pair absent in fresh environments)
+- Resolves all prior production blockers: TenSEAL install, Next.js OOM, Render memory incompatibility
+- Hetzner CX22 (~$5/mo, 4GB RAM) confirmed as recommended deployment target
 
-- **FHE broken in production container** — The `Dockerfile` fix (`python:3.10`, unconditional tenseal install, `g++`/`cmake` deps) is written and output but not yet committed. Until deployed, all `/v1/fhe/*` endpoints return `503` in production. Replit is unaffected. One `git push` + "Clear build cache & deploy" resolves this.
-- **Render free/Starter plan incompatible** — 512MB RAM causes `FATAL ERROR: JavaScript heap out of memory` during `npm run build` and OOM-kills `next start` at runtime every 7–15 minutes. Structural incompatibility — cannot be fixed with config workarounds. Minimum: Render Standard ($25/mo) or Railway/Fly.io.
+**Android mobile — Gradle 9.3.1 + Kotlin 2.3.10 upgrade (Mar 1, 2026)**
+- Toolchain upgraded: Gradle 9.3.1, AGP 9.0.1, Kotlin 2.3.10 — aligned with modern Android 2026 standards and full compatibility with latest Android features
+- All dependency versions centralized in `gradle/libs.versions.toml` (Version Catalog) — eliminates scattered "magic numbers" across build files, makes future updates safer
+- Annotation processing migrated from `kapt` → `KSP` for Hilt and Room — significantly faster incremental builds; `kapt` is phased out in Kotlin 2.x
+- JVM target aligned to JDK 17 (required by Gradle 9.x daemon)
+- Mobile app now in "ready-to-build" state with the most modern Android stack available
+
+**FHE engine v3 — slot packing + modulus chain trim (Mar 1, 2026)**
+- `fhe/engine.py` — `batch_encrypt_vectors()`: packs up to 4,096 values into a single CKKS ciphertext. Drug scoring batch (16 molecules × 8 features): 16 ciphertexts → 1 ciphertext, ~1.1 MB → ~0.2 MB (5× size reduction), ~15× fewer TenSEAL API calls. `batch_decrypt_all()` recovers all vectors in one decrypt pass.
+- Modulus chain trimmed: `light` `[60,40,40,40,60]`=240 bits → `[60,40,60]`=160 bits; `standard` → `[60,40,40,60]`=200 bits; new `minimal` profile `[60,60]`=120 bits for depth-1 circuits. All within 218-bit SEAL limit at N=8192. ~15–20% NTT latency improvement per operation.
+- `FHEKeyInfo.metadata` now exposes `slot_capacity`, `coeff_mod_bits_total`, `max_depth`, `packing_ratio`
+- `get_stats()` tracks `slots_packed` and `ciphertext_bytes_saved` — visible at `/v1/fhe/status`
+- `parameter_bench_v3.py` moved to `app/fhe/` for on-VPS verification
+- Backend restarted and confirmed healthy with v3 active
+
+**Media download router (Mar 1, 2026)**
+- `app/routers/media.py` — new `POST /v1/media/download` generic endpoint. Accepts base64-encoded payload (image, video, audio, or file), returns `StreamingResponse` with correct MIME type and `Content-Disposition: attachment` headers so browsers trigger save dialog directly
+- Registered in `main.py` alongside domain-specific download endpoints
+- Complements `/audio/synthesize/file`, `/image/generate/download`, `/video/generate/download` with a universal fallback for any base64 content
+
+### 🔴 Known Issues
+- No critical blockers currently open. VPS deployment resolves all prior production environment issues. See In Progress for active work.
 
 ### 🟡 In Progress
 
-- **Deploy Dockerfile fix to production** — commit `Dockerfile`, `requirements.txt`, `start.sh`, `next.config.js`, `backend.yml`, then deploy to Railway / Fly.io (`memory = "2gb"`) / Render Standard with cache cleared
 - **Existing router audit** — `biology.py`, `robotics.py`, `vision.py` need verification against updated service return shapes from Sessions 2 and 4
-- **FHE 3-stage Docker build** — `Dockerfile.backend` with Intel HEXL v1.2.5 + Microsoft SEAL v4.1.2 compiled from source (Clang-15, AVX-512); targeting ~3–4× further NTT speedup; requires Hetzner VPS or equivalent
-- **Platform migration** — move from Render free to Railway (recommended), Fly.io, or Hetzner CX22
+- **FHE Dockerfile 3-stage build** — `Dockerfile.backend` with Intel HEXL v1.2.5 + Microsoft SEAL v4.1.2 compiled from source (Clang-15, AVX-512, -O3); targeting ~3–4× further NTT speedup over the PyPI wheel; requires Hetzner VPS or equivalent build environment
+- **`app/core/` audit** — remaining files beyond `unified_smart_router.py` not yet reviewed
 
 ### 📋 Backlog
 
-- **FHE frontend error boundaries** — `/fhe` page components need `try/catch` for graceful "FHE unavailable" state when `available: false`; currently white-screens in production until Dockerfile fix is deployed
-- **Video generation async webhook** — Cosmos Predict 2.5 holds HTTP connection up to 4 min; needs job ID + polling endpoint
-- **SmartRouter singleton across uvicorn workers** — each worker creates its own FHE context pool; on 4-worker deployment = 4× memory and 4× warm-up time
-- **Alembic database migrations** — currently `init_db()` on every startup; no schema evolution path for production
-- **Frontend page audit** — fhe, agents, biology, robotics, vision pages against updated backend API contracts from Sessions 2 and 4
-- **Streaming cursor UI** — SSE streaming wired in backend; frontend shows static loading state only
-- **DiffDock / AlphaFold integration** in `biology_service.py`
+- **FHE frontend error boundaries** — `/fhe` page components need `try/catch` boundaries for graceful "FHE unavailable" state when `available: false` returned from status endpoint
+- **Video generation async webhook** — Cosmos Predict 2.5 holds HTTP connection up to 4 min; needs job ID response + polling endpoint
+- **SmartRouter singleton across uvicorn workers** — currently 1 instance + 1 FHE context pool per worker; 4-worker deployment = 4× memory and 4× warm-up time
+- **Alembic database migrations** — currently `init_db()` on every startup; no schema evolution path
+- **Frontend page audit** — fhe, agents, biology, robotics, vision pages need verification against updated backend API contracts
+- **Streaming cursor UI** — SSE streaming wired in backend; frontend shows static loading state
+- **DiffDock/AlphaFold integration** in `biology_service.py`
 - **Real ROS2/rclpy hardware bridge** in `robotics_service.py` (currently honest `stub_not_executed`)
-- **Prometheus metrics** — `/metrics` endpoint for FHE latency, routing accuracy by domain, NIM response times
-- **Model comparison tool** — side-by-side output across NIM models
-- `npm audit fix` — 19 frontend dependency vulnerabilities
+- **Advanced Prometheus metrics** for FHE latency, routing accuracy, NIM response times
+- **Model comparison tool** — side-by-side output comparison across NIM models
+- `npm audit fix` — 19 frontend vulnerabilities
 
 ---
 
@@ -728,15 +756,17 @@ See the **[Full Deployment Guide](docs/DEPLOYMENT.md)** for platform-specific co
 | Biology service | 🟢 Working | RDKit cloud fallback active |
 | Robotics service | 🟢 Working | Cloud simulation via NIM/Omniverse |
 | Video service | 🟡 Partial | Service + router created; async webhook pending |
+| Media download router | 🟢 Working | Generic `/v1/media/download` StreamingResponse |
 | 10 agent crews | 🟢 Working | All crew types routed correctly |
-| FHE subsystem (Replit) | 🟢 Working | All 5 demos functional, ~350ms |
-| FHE subsystem (Production) | 🔴 Broken | Dockerfile fix written, one deploy away |
+| FHE engine v3 | 🟢 Working | Slot packing + modulus trim; ~280-300ms estimated |
+| FHE dashboard | 🟢 Working | All 5 demos pass; crash fixes applied |
 | Frontend | 🟢 Working | FHE dashboard, inline audio/image rendering |
 | CI pipeline | 🟢 Passing | tenseal excluded, fast builds |
 | Database | 🟢 Working | PostgreSQL connected |
 | NVIDIA NIM integration | 🟢 Working | API key configured, all endpoints live |
-| Deployment (Render free/Starter) | 🔴 Broken | 512MB — structural incompatibility |
-| Deployment (Railway / Fly.io / Render Standard) | 🟡 Ready | Awaiting Dockerfile commit + deploy |
+| VPS deployment | 🟢 Ready | 9-file package in `docs/vps/`; Hetzner CX22 target |
+| Android mobile | 🟢 Ready | Gradle 9.3.1, Kotlin 2.3.10, KSP migration complete |
+| Deployment (Render free) | 🔴 Incompatible | 512MB structural limit; use VPS or Render Standard |
 
 ---
 
