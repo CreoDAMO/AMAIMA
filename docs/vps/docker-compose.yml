@@ -1,0 +1,96 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AMAIMA — docker-compose.yml (VPS / self-hosted)
+#
+# Usage:
+#   cp .env.example .env   # fill in secrets
+#   docker compose up -d --build
+#
+# Ports exposed to host:
+#   10000  →  Next.js frontend (proxy this through Caddy/Nginx for SSL)
+#
+# Internal only (not exposed to host):
+#   8000   →  FastAPI backend (frontend proxies to it via localhost)
+#   5432   →  PostgreSQL
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: amaima_db
+    environment:
+      POSTGRES_DB: amaima
+      POSTGRES_USER: amaima
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amaima -d amaima"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    # Keep postgres internal — never expose port 5432 to the host
+    networks:
+      - internal
+
+  # ── AMAIMA Application ──────────────────────────────────────────────────────
+  amaima:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amaima_app
+    ports:
+      - "10000:10000"
+    environment:
+      # ── Required ─────────────────────────────────────────────────────────
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:?NVIDIA_API_KEY is required}
+      NVIDIA_NIM_API_KEY: ${NVIDIA_API_KEY}       # alias
+      API_SECRET_KEY: ${API_SECRET_KEY:?API_SECRET_KEY is required}
+      DATABASE_URL: postgresql://amaima:${DB_PASSWORD}@db:5432/amaima
+      AMAIMA_EXECUTION_MODE: execution-enabled
+      # ── FHE ──────────────────────────────────────────────────────────────
+      FHE_ENABLED: "true"
+      SEAL_THREADS: ${SEAL_THREADS:-4}
+      FHE_MAX_PAYLOADS: ${FHE_MAX_PAYLOADS:-512}
+      # ── Frontend/Backend routing ──────────────────────────────────────────
+      PORT: "10000"
+      BACKEND_URL: "http://localhost:8000"
+      # ── Auth ─────────────────────────────────────────────────────────────
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY is required}
+      # ── Billing (optional) ────────────────────────────────────────────────
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      WEBHOOK_INTERNAL_SECRET: ${WEBHOOK_INTERNAL_SECRET:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s     # FHE context pool warm-up takes 15-30s
+    networks:
+      - internal
+    # Resource limits — keeps AMAIMA within VPS memory budget
+    # Raise these on Hetzner CX32 (8GB) or larger
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+        reservations:
+          memory: 1G
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

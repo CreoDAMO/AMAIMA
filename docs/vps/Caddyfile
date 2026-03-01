@@ -1,0 +1,70 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# AMAIMA — Caddyfile
+#
+# Caddy handles:
+#   - Automatic TLS certificate provisioning via Let's Encrypt (no certbot needed)
+#   - HTTPS redirect
+#   - Reverse proxy to Next.js on port 10000
+#   - WebSocket upgrade for /v1/ws/* (streaming queries)
+#
+# Install Caddy on Ubuntu:
+#   apt install -y debian-keyring debian-archive-keyring apt-transport-https
+#   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | \
+#     gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+#   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | \
+#     tee /etc/apt/sources.list.d/caddy-stable.list
+#   apt update && apt install caddy
+#
+# Place this file at: /etc/caddy/Caddyfile
+# Then: systemctl enable --now caddy
+#
+# Replace amaima.live with your actual domain.
+# Your domain's DNS A record must point to this VPS IP before Let's Encrypt
+# will issue a certificate.
+# ─────────────────────────────────────────────────────────────────────────────
+
+amaima.live {
+    # Automatic HTTPS — Caddy provisions and renews Let's Encrypt certs
+    # No certbot, no cron jobs, no manual renewal needed.
+
+    # Proxy all traffic to the Next.js frontend
+    reverse_proxy localhost:10000 {
+        # Pass real client IP to the backend
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Health check — Caddy won't route to the app until it's up
+        health_uri /health
+        health_interval 30s
+        health_timeout 10s
+
+        # WebSocket support for /v1/ws/* (streaming query endpoint)
+        transport http {
+            dial_timeout 10s
+            response_header_timeout 300s   # video generation can take up to 4 min
+        }
+    }
+
+    # Compress responses
+    encode gzip
+
+    # Security headers (in addition to Next.js headers)
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        -Server
+    }
+
+    # Access log
+    log {
+        output file /var/log/caddy/amaima.access.log {
+            roll_size 100mb
+            roll_keep 5
+        }
+    }
+}
+
+# Redirect www to apex
+www.amaima.live {
+    redir https://amaima.live{uri} permanent
+}
